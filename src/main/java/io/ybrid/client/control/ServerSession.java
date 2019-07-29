@@ -17,8 +17,6 @@
 package io.ybrid.client.control;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class ServerSession implements Connectable {
     private String hostname;
