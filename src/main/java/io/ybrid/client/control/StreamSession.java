@@ -79,11 +79,11 @@ public class StreamSession implements Connectable {
         String data;
 
         if (parameters != null) {
-            mountpoint += "?" + parameters;
+            path += "?" + parameters;
             if (token != null)
-                mountpoint += "&token=" + token;
+                path += "&sessionId=" + token;
         } else if (token != null) {
-            mountpoint += "?token=" + token;
+            path += "?sessionId=" + token;
         }
 
         if (hostname == null)
