@@ -20,7 +20,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 public interface Connectable extends Closeable {
-    void connect();
+    void connect() throws IOException;
     void disconnect();
     boolean isConnected();
 

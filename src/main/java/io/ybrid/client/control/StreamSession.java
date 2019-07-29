@@ -16,13 +16,23 @@
 
 package io.ybrid.client.control;
 
+import org.apache.logging.log4j.core.util.IOUtils;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class StreamSession implements Connectable {
     private boolean connected = false;
     private ServerSession serverSession;
+    private String hostname;
     private String mountpoint;
+    private String token;
 
     private static void assertValidMountpoint(String mountpoint) throws MalformedURLException {
         if (!mountpoint.startsWith("/"))
@@ -41,13 +51,74 @@ public class StreamSession implements Connectable {
     }
 
     public URL getStreamURL() throws MalformedURLException {
+        String path = mountpoint;
+
         assertConnected();
-        return new URL(serverSession.getProtocol(), serverSession.getHostname(), serverSession.getPort(), mountpoint);
+
+        if (token != null)
+            path += "?sessionId=" + token;
+
+        return new URL(serverSession.getProtocol(), hostname, serverSession.getPort(), path);
+    }
+
+    private static String slrup(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        return result.toString(StandardCharsets.UTF_8.name());
+    }
+
+    private JSONObject request(String command, String parameters) throws IOException {
+        String hostname = this.hostname;
+        String path = mountpoint + "/ctrl/" + command;
+        URL url;
+        HttpURLConnection connection;
+        InputStream inputStream;
+        String data;
+
+        if (parameters != null)
+            mountpoint += "?" + parameters;
+
+        if (hostname == null)
+            hostname = serverSession.getHostname();
+
+        url = new URL(serverSession.getProtocol(), hostname, serverSession.getPort(), path);
+        connection = (HttpURLConnection) url.openConnection();
+        inputStream = connection.getInputStream();
+        data = slrup(inputStream);
+        inputStream.close();
+        connection.disconnect();
+
+        return new JSONObject(data);
+    }
+
+    private JSONObject request(String command) throws IOException {
+        return request(command, null);
     }
 
     @Override
-    public void connect() {
-        /* TODO: Obtain a valid session. */
+    public void connect() throws IOException {
+        JSONObject response;
+        String hostname;
+        String token;
+
+        if (isConnected())
+            return;
+
+        response = request("create-session");
+        token = response.getString("sessionId");
+        if (token == null)
+            throw new IOException("No SessionID from server. BAD.");
+
+        this.token = token;
+
+        hostname = response.getString("host");
+        if (hostname != null)
+            this.hostname = hostname;
+
         connected = true;
     }
 
