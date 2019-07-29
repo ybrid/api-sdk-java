@@ -23,13 +23,26 @@ public class ServerSession implements Connectable {
     private int port = 80;
     private boolean secure = false;
 
-    public ServerSession(String hostname, int port, boolean secure) {
+    private void assertValidHostname(String hostname) throws MalformedURLException {
+        if (!hostname.matches("^[a-zA-Z0-9.]+$"))
+            throw new MalformedURLException("Bad hostname");
+    }
+
+    private void assertValidPort(int port) throws MalformedURLException {
+        if (port < 0 || port > 65535)
+            throw new MalformedURLException("Bad port");
+    }
+
+    public ServerSession(String hostname, int port, boolean secure) throws MalformedURLException {
+        assertValidHostname(hostname);
+        assertValidPort(port);
         this.hostname = hostname;
         this.port = port;
         this.secure = secure;
     }
 
-    public ServerSession(String hostname) {
+    public ServerSession(String hostname) throws MalformedURLException {
+        assertValidHostname(hostname);
         this.hostname = hostname;
     }
 

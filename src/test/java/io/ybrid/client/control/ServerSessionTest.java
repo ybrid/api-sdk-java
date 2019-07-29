@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import java.net.MalformedURLException;
 
 public class ServerSessionTest extends TestCase {
-    public void testCreateSimplePositive() {
+    public void testCreateSimplePositive() throws MalformedURLException {
         String[] hostnames = {"localhost"};
 
         for (String hostname : hostnames) {
@@ -33,7 +33,7 @@ public class ServerSessionTest extends TestCase {
     }
 
     public void testCreateSimpleNegative() {
-        String[] hostnames = {null, ":"};
+        String[] hostnames = {null, ":", ""};
 
         for (String hostname : hostnames) {
             try {
