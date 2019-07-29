@@ -16,7 +16,6 @@
 
 package io.ybrid.client.control;
 
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
