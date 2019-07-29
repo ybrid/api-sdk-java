@@ -16,5 +16,48 @@
 
 package io.ybrid.client.control;
 
-public class ServerSession {
+import java.net.URI;
+import java.net.URISyntaxException;
+
+public class ServerSession implements Connectable {
+    private String hostname;
+    private int port = 80;
+    private boolean secure = false;
+
+    public ServerSession(String hostname, int port, boolean secure) {
+        this.hostname = hostname;
+        this.port = port;
+        this.secure = secure;
+    }
+
+    public ServerSession(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public boolean isSecure() {
+        return secure;
+    }
+
+    @Override
+    public void connect() {
+        /* NOOP */
+    }
+
+    @Override
+    public void disconnect() {
+        /* NOOP */
+    }
+
+    @Override
+    public boolean isConnected() {
+        return true;
+    }
 }
