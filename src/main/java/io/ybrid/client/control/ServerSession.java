@@ -16,6 +16,7 @@
 
 package io.ybrid.client.control;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -44,6 +45,14 @@ public class ServerSession implements Connectable {
 
     public boolean isSecure() {
         return secure;
+    }
+
+    String getProtocol() {
+        return isSecure() ? "https" : "http";
+    }
+
+    StreamSession getStreamSession(String mountpoint) throws MalformedURLException {
+        return new StreamSession(this, mountpoint);
     }
 
     @Override

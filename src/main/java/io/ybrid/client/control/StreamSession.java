@@ -16,5 +16,48 @@
 
 package io.ybrid.client.control;
 
-public class StreamSession {
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class StreamSession implements Connectable {
+    private boolean connected = false;
+    private ServerSession serverSession;
+    private String mountpoint;
+
+    private static void assertValidMountpoint(String mountpoint) throws MalformedURLException {
+        if (!mountpoint.startsWith("/"))
+            throw new MalformedURLException();
+    }
+
+    private void assertConnected() {
+        if (!isConnected())
+            throw new IllegalStateException("Not connected");
+    }
+
+    StreamSession(ServerSession serverSession, String mountpoint) throws MalformedURLException {
+        assertValidMountpoint(mountpoint);
+        this.serverSession = serverSession;
+        this.mountpoint = mountpoint;
+    }
+
+    public URL getStreamURL() throws MalformedURLException {
+        assertConnected();
+        return new URL(serverSession.getProtocol(), serverSession.getHostname(), serverSession.getPort(), mountpoint);
+    }
+
+    @Override
+    public void connect() {
+        /* TODO: Obtain a valid session. */
+        connected = true;
+    }
+
+    @Override
+    public void disconnect() {
+        connected = false;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return connected;
+    }
 }
