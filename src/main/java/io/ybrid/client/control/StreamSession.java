@@ -79,8 +79,13 @@ public class StreamSession implements Connectable {
         InputStream inputStream;
         String data;
 
-        if (parameters != null)
+        if (parameters != null) {
             mountpoint += "?" + parameters;
+            if (token != null)
+                mountpoint += "&token=" + token;
+        } else if (token != null) {
+            mountpoint += "?token=" + token;
+        }
 
         if (hostname == null)
             hostname = serverSession.getHostname();
@@ -97,6 +102,12 @@ public class StreamSession implements Connectable {
 
     private JSONObject request(String command) throws IOException {
         return request(command, null);
+    }
+
+    public void swap(SwapMode mode) throws IOException {
+        assertConnected();
+
+        request("swap", "mode=" + mode.getOnWire());
     }
 
     @Override
