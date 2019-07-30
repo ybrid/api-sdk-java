@@ -109,6 +109,11 @@ public class StreamSession implements Connectable {
         request("swap", "mode=" + mode.getOnWire());
     }
 
+    public JSONObject getMetadata() throws IOException {
+        assertConnected();
+        return request("show-meta");
+    }
+
     @Override
     public void connect() throws IOException {
         JSONObject response;
