@@ -64,16 +64,6 @@ public class StreamSession implements Connectable {
         return new DataInputStream(this);
     }
 
-    private static String slrup(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
-        }
-        return result.toString(StandardCharsets.UTF_8.name());
-    }
-
     private JSONObject request(String command, String parameters) throws IOException {
         String hostname = this.hostname;
         String path = mountpoint + "/ctrl/" + command;
@@ -96,7 +86,7 @@ public class StreamSession implements Connectable {
         url = new URL(serverSession.getProtocol(), hostname, serverSession.getPort(), path);
         connection = (HttpURLConnection) url.openConnection();
         inputStream = connection.getInputStream();
-        data = slrup(inputStream);
+        data = Utils.slurpToString(inputStream);
         inputStream.close();
         connection.disconnect();
 
