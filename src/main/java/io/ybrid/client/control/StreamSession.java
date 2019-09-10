@@ -60,6 +60,10 @@ public class StreamSession implements Connectable {
         return new URL(serverSession.getProtocol(), hostname, serverSession.getPort(), path);
     }
 
+    public DataInputStream getStreamInputStream() {
+        return new DataInputStream(this);
+    }
+
     private static String slrup(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
