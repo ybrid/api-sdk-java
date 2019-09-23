@@ -67,6 +67,8 @@ public class StreamSession implements Connectable {
         String path = mountpoint + "/ctrl/" + command;
         URL url;
 
+        serverSession.finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
+
         if (parameters != null) {
             path += "?" + parameters;
             if (token != null)
@@ -87,6 +89,7 @@ public class StreamSession implements Connectable {
         InputStream inputStream;
         String data;
 
+        serverSession.finer("Request: url = " + url);
         connection = (HttpURLConnection) url.openConnection();
         inputStream = connection.getInputStream();
         data = Utils.slurpToString(inputStream);
@@ -114,6 +117,10 @@ public class StreamSession implements Connectable {
     public JSONObject getMetadata(URL url) throws IOException {
         assertConnected();
         return request(url);
+    }
+
+    public ServerSession getServerSession() {
+        return serverSession;
     }
 
     @Override

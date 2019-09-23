@@ -49,7 +49,7 @@ public class DataInputStream extends InputStream {
             String contentType;
             byte[] data;
 
-            System.out.println("FetcherThread.fetch: fetching...");
+            parent.streamSession.getServerSession().finer("FetcherThread.fetch: fetching...");
 
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -73,7 +73,7 @@ public class DataInputStream extends InputStream {
                 parent.bufferQueue.push(data);
             }
 
-            System.out.println("FetcherThread.fetch: fetched " + data.length + " bytes");
+            parent.streamSession.getServerSession().finer("FetcherThread.fetch: fetched " + data.length + " bytes");
         }
 
         @Override

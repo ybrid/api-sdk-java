@@ -17,11 +17,13 @@
 package io.ybrid.client.control;
 
 import java.net.MalformedURLException;
+import java.util.logging.Logger;
 
 public class ServerSession implements Connectable {
     private String hostname;
     private int port = 80;
     private boolean secure = false;
+    private final Logger logger;
 
     private void assertValidHostname(String hostname) throws MalformedURLException {
         if (!hostname.matches("^[a-zA-Z0-9.]+$"))
@@ -33,7 +35,8 @@ public class ServerSession implements Connectable {
             throw new MalformedURLException("Bad port");
     }
 
-    public ServerSession(String hostname, int port, boolean secure) throws MalformedURLException {
+    public ServerSession(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
+        this.logger = logger;
         assertValidHostname(hostname);
         assertValidPort(port);
         this.hostname = hostname;
@@ -41,7 +44,8 @@ public class ServerSession implements Connectable {
         this.secure = secure;
     }
 
-    public ServerSession(String hostname) throws MalformedURLException {
+    public ServerSession(Logger logger, String hostname) throws MalformedURLException {
+        this.logger = logger;
         assertValidHostname(hostname);
         this.hostname = hostname;
     }
@@ -64,6 +68,15 @@ public class ServerSession implements Connectable {
 
     public StreamSession getStreamSession(String mountpoint) throws MalformedURLException {
         return new StreamSession(this, mountpoint);
+    }
+
+    Logger getLogger() {
+        return logger;
+    }
+
+    void finer(String msg) {
+        if (logger != null)
+            logger.finer(msg);
     }
 
     @Override

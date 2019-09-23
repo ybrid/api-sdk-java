@@ -20,14 +20,17 @@ import junit.framework.TestCase;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 public class StreamSessionTest extends TestCase {
-    public void testGetStreamURLPositive() throws MalformedURLException {
+    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+    public void testGetStreamURLPositive() throws IOException {
         String hostname = "localhost";
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            ServerSession serverSession = new ServerSession(hostname);
+            ServerSession serverSession = new ServerSession(LOGGER, hostname);
             StreamSession streamSession = serverSession.getStreamSession(mountpoint);
             URL url;
 
