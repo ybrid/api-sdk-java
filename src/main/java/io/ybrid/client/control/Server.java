@@ -66,7 +66,7 @@ public class Server implements Connectable {
         return isSecure() ? "https" : "http";
     }
 
-    public Session getStreamSession(String mountpoint) throws MalformedURLException {
+    public Session getSession(String mountpoint) throws MalformedURLException {
         return new Session(this, mountpoint);
     }
 
