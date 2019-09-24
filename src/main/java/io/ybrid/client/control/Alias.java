@@ -27,6 +27,8 @@ public class Alias {
 
     private void assertServer() throws MalformedURLException {
         boolean secure;
+        int port;
+
         if (server != null)
             return;
 
@@ -41,7 +43,11 @@ public class Alias {
                 throw new MalformedURLException("Invalid protocol");
         }
 
-        server = new Server(logger, url.getHost(), url.getPort(), secure);
+        port = url.getPort();
+        if (port < 0)
+            port = url.getDefaultPort();
+
+        server = new Server(logger, url.getHost(), port, secure);
     }
 
     public Alias(Logger logger, URL url, Server server) {
