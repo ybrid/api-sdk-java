@@ -30,8 +30,8 @@ public class SessionTest extends TestCase {
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            Server server = new Server(LOGGER, hostname);
-            Session session = server.getSession(mountpoint);
+            Alias alias = new Alias(LOGGER, new URL("http://" + hostname + mountpoint));
+            Session session = alias.getSession();
             URL url;
 
 /*

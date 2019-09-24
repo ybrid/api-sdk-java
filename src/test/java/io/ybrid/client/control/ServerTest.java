@@ -19,6 +19,7 @@ package io.ybrid.client.control;
 import junit.framework.TestCase;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 public class ServerTest extends TestCase {
@@ -53,8 +54,8 @@ public class ServerTest extends TestCase {
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            Server server = new Server(LOGGER, hostname);
-            Session session = server.getSession(mountpoint);
+            Alias alias = new Alias(LOGGER, new URL("http://" + hostname + mountpoint));
+            Session session = alias.getSession();
 
             assertNotNull(session);
         }
