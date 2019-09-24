@@ -41,7 +41,9 @@ public class Session implements Connectable {
             throw new IllegalStateException("Not connected");
     }
 
-    Session(Server server, String mountpoint) throws MalformedURLException {
+    Session(Server server, Alias alias) throws MalformedURLException {
+        String mountpoint = alias.getUrl().getPath();
+
         assertValidMountpoint(mountpoint);
         this.server = server;
         this.mountpoint = mountpoint;
