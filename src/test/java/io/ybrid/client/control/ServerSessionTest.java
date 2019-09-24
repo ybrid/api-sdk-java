@@ -54,9 +54,9 @@ public class ServerSessionTest extends TestCase {
 
         for (String mountpoint : mountpoints) {
             ServerSession serverSession = new ServerSession(LOGGER, hostname);
-            StreamSession streamSession = serverSession.getStreamSession(mountpoint);
+            Session session = serverSession.getStreamSession(mountpoint);
 
-            assertNotNull(streamSession);
+            assertNotNull(session);
         }
     }
 }

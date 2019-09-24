@@ -22,7 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
-public class StreamSessionTest extends TestCase {
+public class SessionTest extends TestCase {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public void testGetStreamURLPositive() throws IOException {
@@ -31,13 +31,13 @@ public class StreamSessionTest extends TestCase {
 
         for (String mountpoint : mountpoints) {
             ServerSession serverSession = new ServerSession(LOGGER, hostname);
-            StreamSession streamSession = serverSession.getStreamSession(mountpoint);
+            Session session = serverSession.getStreamSession(mountpoint);
             URL url;
 
 /*
-            streamSession.connect();
+            session.connect();
 
-            url = streamSession.getStreamURL();
+            url = session.getStreamURL();
 
             assertNotNull(url);
 */

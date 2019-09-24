@@ -24,7 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class StreamSession implements Connectable {
+public class Session implements Connectable {
     private boolean connected = false;
     private ServerSession serverSession;
     private String hostname;
@@ -41,7 +41,7 @@ public class StreamSession implements Connectable {
             throw new IllegalStateException("Not connected");
     }
 
-    StreamSession(ServerSession serverSession, String mountpoint) throws MalformedURLException {
+    Session(ServerSession serverSession, String mountpoint) throws MalformedURLException {
         assertValidMountpoint(mountpoint);
         this.serverSession = serverSession;
         this.mountpoint = mountpoint;

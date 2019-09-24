@@ -27,7 +27,7 @@ public class DataInputStream extends InputStream {
     private static final int SLEEP_TIME = 179; /* [ms] */
     private static final int SERVER_TIMEOUT = 6000; /* [ms] */
 
-    private final StreamSession streamSession;
+    private final Session session;
     private final LinkedList<byte[]> bufferQueue = new LinkedList<>();
     private String contentType = null;
     private InputStream current;
@@ -43,13 +43,13 @@ public class DataInputStream extends InputStream {
         }
 
         private void fetch() throws IOException {
-            URL url = parent.streamSession.getStreamURL();
+            URL url = parent.session.getStreamURL();
             URLConnection connection = url.openConnection();
             InputStream inputStream;
             String contentType;
             byte[] data;
 
-            parent.streamSession.getServerSession().finer("FetcherThread.fetch: fetching...");
+            parent.session.getServerSession().finer("FetcherThread.fetch: fetching...");
 
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -73,7 +73,7 @@ public class DataInputStream extends InputStream {
                 parent.bufferQueue.push(data);
             }
 
-            parent.streamSession.getServerSession().finer("FetcherThread.fetch: fetched " + data.length + " bytes");
+            parent.session.getServerSession().finer("FetcherThread.fetch: fetched " + data.length + " bytes");
         }
 
         @Override
@@ -106,8 +106,8 @@ public class DataInputStream extends InputStream {
         }
     }
 
-    DataInputStream(StreamSession streamSession) {
-        this.streamSession = streamSession;
+    DataInputStream(Session session) {
+        this.session = session;
         thread.start();
     }
 
