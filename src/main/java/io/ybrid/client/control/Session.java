@@ -26,7 +26,7 @@ import java.net.URL;
 
 public class Session implements Connectable {
     private boolean connected = false;
-    private ServerSession serverSession;
+    private Server server;
     private String hostname;
     private String mountpoint;
     private String token;
@@ -41,9 +41,9 @@ public class Session implements Connectable {
             throw new IllegalStateException("Not connected");
     }
 
-    Session(ServerSession serverSession, String mountpoint) throws MalformedURLException {
+    Session(Server server, String mountpoint) throws MalformedURLException {
         assertValidMountpoint(mountpoint);
-        this.serverSession = serverSession;
+        this.server = server;
         this.mountpoint = mountpoint;
     }
 
@@ -55,7 +55,7 @@ public class Session implements Connectable {
         if (token != null)
             path += "?sessionId=" + token;
 
-        return new URL(serverSession.getProtocol(), hostname, serverSession.getPort(), path);
+        return new URL(server.getProtocol(), hostname, server.getPort(), path);
     }
 
     public DataInputStream getStreamInputStream() {
@@ -67,7 +67,7 @@ public class Session implements Connectable {
         String path = mountpoint + "/ctrl/" + command;
         URL url;
 
-        serverSession.finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
+        server.finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
 
         if (parameters != null) {
             path += "?" + parameters;
@@ -78,9 +78,9 @@ public class Session implements Connectable {
         }
 
         if (hostname == null)
-            hostname = serverSession.getHostname();
+            hostname = server.getHostname();
 
-        url = new URL(serverSession.getProtocol(), hostname, serverSession.getPort(), path);
+        url = new URL(server.getProtocol(), hostname, server.getPort(), path);
         return request(url);
     }
 
@@ -89,7 +89,7 @@ public class Session implements Connectable {
         InputStream inputStream;
         String data;
 
-        serverSession.finer("Request: url = " + url);
+        server.finer("Request: url = " + url);
         connection = (HttpURLConnection) url.openConnection();
         inputStream = connection.getInputStream();
         data = Utils.slurpToString(inputStream);
@@ -119,8 +119,8 @@ public class Session implements Connectable {
         return request(url);
     }
 
-    public ServerSession getServerSession() {
-        return serverSession;
+    public Server getServer() {
+        return server;
     }
 
     @Override

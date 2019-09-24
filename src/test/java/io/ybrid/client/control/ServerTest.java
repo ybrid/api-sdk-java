@@ -21,17 +21,17 @@ import junit.framework.TestCase;
 import java.net.MalformedURLException;
 import java.util.logging.Logger;
 
-public class ServerSessionTest extends TestCase {
+public class ServerTest extends TestCase {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public void testCreateSimplePositive() throws MalformedURLException {
         String[] hostnames = {"localhost"};
 
         for (String hostname : hostnames) {
-            ServerSession serverSession = new ServerSession(LOGGER, hostname);
+            Server server = new Server(LOGGER, hostname);
 
-            assertNotNull(serverSession);
-            assertEquals(serverSession.getHostname(), hostname);
+            assertNotNull(server);
+            assertEquals(server.getHostname(), hostname);
         }
     }
 
@@ -40,7 +40,7 @@ public class ServerSessionTest extends TestCase {
 
         for (String hostname : hostnames) {
             try {
-                new ServerSession(LOGGER, hostname);
+                new Server(LOGGER, hostname);
                 fail("Object creation successful.");
             } catch (Exception e) {
                 /* NOOP */
@@ -53,8 +53,8 @@ public class ServerSessionTest extends TestCase {
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            ServerSession serverSession = new ServerSession(LOGGER, hostname);
-            Session session = serverSession.getStreamSession(mountpoint);
+            Server server = new Server(LOGGER, hostname);
+            Session session = server.getStreamSession(mountpoint);
 
             assertNotNull(session);
         }

@@ -19,7 +19,7 @@ package io.ybrid.client.control;
 import java.net.MalformedURLException;
 import java.util.logging.Logger;
 
-public class ServerSession implements Connectable {
+public class Server implements Connectable {
     private String hostname;
     private int port = 80;
     private boolean secure = false;
@@ -35,7 +35,7 @@ public class ServerSession implements Connectable {
             throw new MalformedURLException("Bad port");
     }
 
-    public ServerSession(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
+    public Server(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         assertValidPort(port);
@@ -44,7 +44,7 @@ public class ServerSession implements Connectable {
         this.secure = secure;
     }
 
-    public ServerSession(Logger logger, String hostname) throws MalformedURLException {
+    public Server(Logger logger, String hostname) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         this.hostname = hostname;
