@@ -30,6 +30,7 @@ public class Session implements Connectable {
     private String hostname;
     private String mountpoint;
     private String token;
+    private Service defaultService = new Service();
 
     private static void assertValidMountpoint(String mountpoint) throws MalformedURLException {
         if (!mountpoint.startsWith("/"))
@@ -123,6 +124,10 @@ public class Session implements Connectable {
 
     public Server getServer() {
         return server;
+    }
+
+    public Service getDefaultService() {
+        return defaultService;
     }
 
     @Override
