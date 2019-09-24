@@ -32,7 +32,7 @@ public class Companion {
     private URL onClick;
     private URL onView;
 
-    public Companion(JSONObject json) throws MalformedURLException {
+    Companion(JSONObject json) throws MalformedURLException {
         alternativeText = json.getString("altText");
         height = json.getInt("height");
         width = json.getInt("width");

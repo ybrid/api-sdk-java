@@ -39,7 +39,7 @@ public class Item {
     private long duration;
     private ArrayList<Companion> companions = new ArrayList<>();
 
-    public Item(JSONObject json) throws MalformedURLException {
+    Item(JSONObject json) throws MalformedURLException {
         identifier = json.getString("id");
         JSONArray array;
 

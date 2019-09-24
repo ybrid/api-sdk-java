@@ -22,7 +22,7 @@ public class SwapInfo {
     private boolean nextSwapReturnsToMain;
     private int swapsLeft;
 
-    public SwapInfo(JSONObject json) {
+    SwapInfo(JSONObject json) {
         nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
         swapsLeft = json.getInt("swapsLeft");
     }
