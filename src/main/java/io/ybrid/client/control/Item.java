@@ -91,4 +91,16 @@ public class Item {
     public List<Companion> getCompanions() {
         return Collections.unmodifiableList(companions);
     }
+
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "identifier='" + identifier + '\'' +
+                ", metadata=" + metadata +
+                ", type=" + type +
+                ", duration=" + duration +
+                ", companions=" + companions +
+                '}';
+    }
 }

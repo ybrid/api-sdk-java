@@ -38,4 +38,12 @@ public class SwapInfo {
     private boolean canSwap() {
         return swapsLeft != 0;
     }
+
+    @Override
+    public String toString() {
+        return "SwapInfo{" +
+                "nextSwapReturnsToMain=" + nextSwapReturnsToMain +
+                ", swapsLeft=" + swapsLeft +
+                '}';
+    }
 }

@@ -82,4 +82,13 @@ public class Service {
 
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "identifier='" + identifier + '\'' +
+                ", icon=" + icon +
+                ", station=" + station +
+                '}';
+    }
 }
