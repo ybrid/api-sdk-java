@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -68,32 +69,49 @@ public class Session implements Connectable {
     private JSONObject request(String command, String parameters) throws IOException {
         String hostname = this.hostname;
         String path = mountpoint + "/ctrl/" + command;
+        String body = null;
         URL url;
 
         server.finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
 
         if (parameters != null) {
-            path += "?" + parameters;
+            body = parameters;
             if (token != null)
-                path += "&sessionId=" + token;
+                body += "&sessionId=" + token;
         } else if (token != null) {
-            path += "?sessionId=" + token;
+            body = "sessionId=" + token;
         }
 
         if (hostname == null)
             hostname = server.getHostname();
 
+        if (body != null) {
+            path += "?" + body;
+            body = null;
+        }
+
         url = new URL(server.getProtocol(), hostname, server.getPort(), path);
-        return request(url);
+        return request(url, body);
     }
 
-    private JSONObject request(URL url) throws IOException {
+    private JSONObject request(URL url, String body) throws IOException {
         HttpURLConnection connection;
         InputStream inputStream;
+        OutputStream outputStream;
         String data;
 
         server.finer("Request: url = " + url);
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setDoInput(true);
+        connection.setDoOutput(body != null);
+
+        if (body != null) {
+            outputStream = connection.getOutputStream();
+            outputStream.write(body.getBytes());
+            outputStream.close();
+        }
+
         inputStream = connection.getInputStream();
         data = Utils.slurpToString(inputStream);
         inputStream.close();
@@ -119,7 +137,7 @@ public class Session implements Connectable {
 
     public JSONObject getMetadata(URL url) throws IOException {
         assertConnected();
-        return request(url);
+        return request(url, null);
     }
 
     public Server getServer() {
