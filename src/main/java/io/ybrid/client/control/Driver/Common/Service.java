@@ -47,4 +47,9 @@ abstract public class Service implements io.ybrid.client.control.Service {
     public URL getIcon() {
         return icon;
     }
+
+    @Override
+    public String getDisplayName() {
+        return identifier;
+    }
 }

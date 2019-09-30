@@ -58,7 +58,7 @@ public class Service extends io.ybrid.client.control.Driver.Common.Service {
         String value = station.get(STATION_NAME);
 
         if (value == null)
-            value = identifier;
+            value = super.getDisplayName();
 
         return value;
     }
