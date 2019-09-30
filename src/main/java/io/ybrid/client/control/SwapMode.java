@@ -25,7 +25,7 @@ public enum SwapMode {
         this.onWire = onWire;
     }
 
-    String getOnWire() {
+    public String getOnWire() {
         return onWire;
     }
 }

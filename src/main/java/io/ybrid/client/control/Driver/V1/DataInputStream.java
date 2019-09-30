@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package io.ybrid.client.control;
+package io.ybrid.client.control.Driver.V1;
+
+import io.ybrid.client.control.Session;
+import io.ybrid.client.control.StreamInputStream;
+import io.ybrid.client.control.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,7 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
 
-public class DataInputStream extends StreamInputStream {
+class DataInputStream extends StreamInputStream {
     private static final int SLEEP_TIME = 179; /* [ms] */
     private static final int SERVER_TIMEOUT = 6000; /* [ms] */
 
@@ -49,7 +53,7 @@ public class DataInputStream extends StreamInputStream {
             String contentType;
             byte[] data;
 
-            parent.session.getServer().finer("FetcherThread.fetch: fetching...");
+            parent.session.getServer().getLogger().finer("FetcherThread.fetch: fetching...");
 
             connection.setDoInput(true);
             connection.setDoOutput(false);
@@ -73,7 +77,7 @@ public class DataInputStream extends StreamInputStream {
                 parent.bufferQueue.push(data);
             }
 
-            parent.session.getServer().finer("FetcherThread.fetch: fetched " + data.length + " bytes");
+            parent.session.getServer().getLogger().finer("FetcherThread.fetch: fetched " + data.length + " bytes");
         }
 
         @Override
@@ -106,7 +110,7 @@ public class DataInputStream extends StreamInputStream {
         }
     }
 
-    DataInputStream(Session session) {
+    public DataInputStream(Session session) {
         this.session = session;
         thread.start();
     }

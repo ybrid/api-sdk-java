@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-class Utils {
+public class Utils {
     private static ByteArrayOutputStream slurp(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -32,12 +32,12 @@ class Utils {
         return result;
     }
 
-    static String slurpToString(InputStream inputStream) throws IOException {
+    public static String slurpToString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = slurp(inputStream);
         return result.toString(StandardCharsets.UTF_8.name());
     }
 
-    static byte[] slurpToByteArray(InputStream inputStream) throws IOException {
+    public static byte[] slurpToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = slurp(inputStream);
         return result.toByteArray();
     }

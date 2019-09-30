@@ -62,7 +62,7 @@ public class Server implements Connectable {
         return secure;
     }
 
-    String getProtocol() {
+    public String getProtocol() {
         return isSecure() ? "https" : "http";
     }
 
@@ -70,7 +70,7 @@ public class Server implements Connectable {
         return new Session(this, alias);
     }
 
-    Logger getLogger() {
+    public Logger getLogger() {
         return logger;
     }
 

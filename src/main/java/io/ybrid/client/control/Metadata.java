@@ -29,7 +29,7 @@ public class Metadata {
     private long timeToNextItem;
     private long requestTime;
 
-    Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
+    public Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
         this.service = service;
         this.requestTime = requestTime;
 
