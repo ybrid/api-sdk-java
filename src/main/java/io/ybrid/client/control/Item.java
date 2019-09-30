@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.util.*;
 
-public class Item {
+public class Item implements hasIdentifier {
     public static final String METADATA_TITLE = "title";
     public static final String METADATA_ARTIST = "artist";
     public static final String METADATA_DESCRIPTION = "description";
@@ -72,6 +72,7 @@ public class Item {
         return title;
     }
 
+    @Override
     public String getIdentifier() {
         return identifier;
     }

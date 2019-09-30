@@ -16,10 +16,6 @@
 
 package io.ybrid.client.control;
 
-import java.net.URL;
-
-public interface Service extends hasIdentifier {
-    String getDisplayName();
-    URL getIcon();
-    String getGenre();
+public interface hasIdentifier {
+    String getIdentifier();
 }
