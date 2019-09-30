@@ -41,7 +41,6 @@ public class Service extends io.ybrid.client.control.Driver.Common.Service {
         return Collections.unmodifiableMap(station);
     }
 
-    @Override
     public void updateStation(JSONObject json) {
         HashMap<String, String> station = new HashMap<>();
 

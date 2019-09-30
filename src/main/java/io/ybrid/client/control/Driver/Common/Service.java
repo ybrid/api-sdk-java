@@ -38,8 +38,6 @@ abstract public class Service implements io.ybrid.client.control.Service {
     protected Service() {
     }
 
-    public abstract void updateStation(JSONObject json);
-
     @Override
     public String getIdentifier() {
         return identifier;

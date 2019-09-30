@@ -16,74 +16,12 @@
 
 package io.ybrid.client.control;
 
-import io.ybrid.client.control.Driver.Common.Service;
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
-
-public class Metadata {
-    private int currentBitRate;
-    private Item currentItem;
-    private Item nextItem;
-    private Service service;
-    private SwapInfo swapInfo;
-    private long timeToNextItem;
-    private long requestTime;
-
-    public Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
-        this.service = service;
-        this.requestTime = requestTime;
-
-        currentBitRate = json.getInt("currentBitRate");
-        currentItem = new Item(json.getJSONObject("currentItem"));
-        nextItem = new Item(json.getJSONObject("nextItem"));
-        service.updateStation(json.getJSONObject("station"));
-        swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
-        timeToNextItem = json.getLong("timeToNextItemMillis");
-    }
-
-    public Metadata(Service service, JSONObject json) throws MalformedURLException {
-        this(service, json, System.currentTimeMillis());
-    }
-
-    public Item getCurrentItem() {
-        return currentItem;
-    }
-
-    public Item getNextItem() {
-        return nextItem;
-    }
-
-    public int getCurrentBitRate() {
-        return currentBitRate;
-    }
-
-    public Service getService() {
-        return service;
-    }
-
-    public SwapInfo getSwapInfo() {
-        return swapInfo;
-    }
-
-    public long getTimeToNextItem() {
-        return timeToNextItem - (System.currentTimeMillis() - requestTime);
-    }
-
-    public boolean isValid() {
-        return getTimeToNextItem() >= 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Metadata{" +
-                "currentBitRate=" + currentBitRate +
-                ", currentItem=" + currentItem +
-                ", nextItem=" + nextItem +
-                ", service=" + service +
-                ", swapInfo=" + swapInfo +
-                ", timeToNextItem=" + timeToNextItem +
-                ", requestTime=" + requestTime +
-                '}';
-    }
+public interface Metadata {
+    Item getCurrentItem();
+    Item getNextItem();
+    int getCurrentBitRate();
+    Service getService();
+    SwapInfo getSwapInfo();
+    long getTimeToNextItem();
+    boolean isValid();
 }
