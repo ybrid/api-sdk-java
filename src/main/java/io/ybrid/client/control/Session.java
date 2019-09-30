@@ -132,7 +132,7 @@ public class Session implements Connectable {
 
     public Metadata getMetadata() throws IOException {
         assertConnected();
-        return new Metadata(getDefaultService(), request("show-meta"), System.currentTimeMillis());
+        return new Metadata(getCurrentService(), request("show-meta"), System.currentTimeMillis());
     }
 
     public Server getServer() {
@@ -141,6 +141,10 @@ public class Session implements Connectable {
 
     public Service getDefaultService() {
         return defaultService;
+    }
+
+    public Service getCurrentService() {
+        return getDefaultService();
     }
 
     @Override
