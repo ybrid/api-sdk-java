@@ -130,14 +130,9 @@ public class Session implements Connectable {
         request("swap", "mode=" + mode.getOnWire());
     }
 
-    public JSONObject getMetadata() throws IOException {
+    public Metadata getMetadata() throws IOException {
         assertConnected();
-        return request("show-meta");
-    }
-
-    public JSONObject getMetadata(URL url) throws IOException {
-        assertConnected();
-        return request(url, null);
+        return new Metadata(getDefaultService(), request("show-meta"), System.currentTimeMillis());
     }
 
     public Server getServer() {
