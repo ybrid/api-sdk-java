@@ -17,17 +17,19 @@
 package io.ybrid.client.control;
 
 import io.ybrid.client.control.Driver.Common.Driver;
+import io.ybrid.client.control.Driver.FactorySelector;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Session implements Connectable {
-    private Driver driver = new io.ybrid.client.control.Driver.V1.Driver(this);
+    private Driver driver;
     private Server server;
     private Alias alias;
 
     Session(Server server, Alias alias) throws MalformedURLException {
+        this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
         this.server = server;
         this.alias = alias;
     }
