@@ -26,6 +26,11 @@ import java.net.URL;
 public class Driver extends io.ybrid.client.control.Driver.Common.Driver {
     public Driver(Session session) {
         super(session);
+
+        Service service = new Service();
+
+        this.currentService = service;
+        this.defaultService = service;
     }
 
     @Override

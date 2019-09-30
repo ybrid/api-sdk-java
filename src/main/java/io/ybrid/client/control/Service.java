@@ -43,7 +43,7 @@ public class Service {
             icon = new URL(value);
     }
 
-    Service() {
+    public Service() {
     }
 
     void updateStation(JSONObject json) {
