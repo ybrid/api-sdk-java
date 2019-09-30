@@ -18,7 +18,7 @@ package io.ybrid.client.control;
 
 import junit.framework.TestCase;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Logger;
 
