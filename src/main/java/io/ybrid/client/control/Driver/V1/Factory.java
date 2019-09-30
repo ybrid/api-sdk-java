@@ -16,12 +16,23 @@
 
 package io.ybrid.client.control.Driver.V1;
 
+import io.ybrid.client.control.*;
 import io.ybrid.client.control.Driver.Common.Driver;
-import io.ybrid.client.control.Session;
+import io.ybrid.client.control.Service;
+
+import java.util.ArrayList;
 
 public class Factory extends io.ybrid.client.control.Driver.Common.Factory {
     @Override
     public Driver getDriver(Session session) {
         return new io.ybrid.client.control.Driver.V1.Driver(session);
+    }
+
+    @Override
+    public Bouquet getBouquet(Server server, Alias alias) {
+        Service service = new io.ybrid.client.control.Driver.V1.Service();
+        ArrayList<Service> services = new ArrayList<>();
+        services.add(service);
+        return new Bouquet(service, services);
     }
 }

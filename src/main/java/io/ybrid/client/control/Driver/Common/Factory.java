@@ -16,8 +16,12 @@
 
 package io.ybrid.client.control.Driver.Common;
 
+import io.ybrid.client.control.Alias;
+import io.ybrid.client.control.Bouquet;
+import io.ybrid.client.control.Server;
 import io.ybrid.client.control.Session;
 
 abstract public class Factory {
     public abstract Driver getDriver(Session session);
+    public abstract Bouquet getBouquet(Server server, Alias alias);
 }

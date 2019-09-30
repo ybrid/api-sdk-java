@@ -24,13 +24,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Driver extends io.ybrid.client.control.Driver.Common.Driver {
+    private Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
     public Driver(Session session) {
         super(session);
 
-        Service service = new Service();
-
-        this.currentService = service;
-        this.defaultService = service;
+        this.currentService = bouquet.getDefaultService();
+        this.defaultService = bouquet.getDefaultService();
     }
 
     @Override
@@ -61,6 +60,11 @@ public class Driver extends io.ybrid.client.control.Driver.Common.Driver {
 
         url = new URL(server.getProtocol(), hostname, server.getPort(), path);
         return request(url, body);
+    }
+
+    @Override
+    public Bouquet getBouquet() {
+        return bouquet;
     }
 
     @Override

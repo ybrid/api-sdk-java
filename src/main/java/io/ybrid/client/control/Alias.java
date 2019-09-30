@@ -16,6 +16,8 @@
 
 package io.ybrid.client.control;
 
+import io.ybrid.client.control.Driver.FactorySelector;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
@@ -72,5 +74,13 @@ public class Alias {
 
     public Session getSession() throws MalformedURLException {
         return getServer().getSession(this);
+    }
+
+    public Bouquet getBouquet(Server server) {
+        return FactorySelector.getFactory(server, this).getBouquet(server, this);
+    }
+
+    public Bouquet getBouquet() {
+        return getBouquet(server);
     }
 }

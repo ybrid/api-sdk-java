@@ -16,8 +16,9 @@
 
 package io.ybrid.client.control.Driver.Common;
 
-import io.ybrid.client.control.*;
 import io.ybrid.client.control.Metadata;
+import io.ybrid.client.control.Service;
+import io.ybrid.client.control.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ public abstract class Driver implements Connectable {
     abstract public Metadata getMetadata() throws IOException;
     abstract public URL getStreamURL() throws MalformedURLException;
     abstract public StreamInputStream getInputStream();
+    abstract public Bouquet getBouquet();
     abstract protected JSONObject request(String command, String parameters) throws IOException;
 
     protected Driver(Session session) {
@@ -56,11 +58,11 @@ public abstract class Driver implements Connectable {
         return mountpoint;
     }
 
-    public io.ybrid.client.control.Service getDefaultService() {
+    public Service getDefaultService() {
         return defaultService;
     }
 
-    public io.ybrid.client.control.Service getCurrentService() {
+    public Service getCurrentService() {
         return currentService;
     }
 
