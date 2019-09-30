@@ -41,7 +41,7 @@ public class Metadata {
         timeToNextItem = json.getLong("timeToNextItemMillis");
     }
 
-    Metadata(Service service, JSONObject json) throws MalformedURLException {
+    public Metadata(Service service, JSONObject json) throws MalformedURLException {
         this(service, json, System.currentTimeMillis());
     }
 

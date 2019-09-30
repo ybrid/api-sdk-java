@@ -68,7 +68,7 @@ public class Driver extends io.ybrid.client.control.Driver.Common.Driver {
     @Override
     public Metadata getMetadata() throws IOException {
         assertConnected();
-        return new Metadata(getCurrentService(), request("show-meta"), System.currentTimeMillis());
+        return new Metadata(getCurrentService(), request("show-meta"));
     }
 
     @Override
