@@ -18,7 +18,6 @@ package io.ybrid.client.control.Driver.V1;
 
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,18 +29,14 @@ public class Service extends io.ybrid.client.control.Driver.Common.Service {
 
     private HashMap<String, String> station = new HashMap<>();
 
-    public Service(JSONObject json) throws MalformedURLException {
-        super(json);
-    }
-
-    public Service() {
+    Service() {
     }
 
     public Map<String, String> getStation() {
         return Collections.unmodifiableMap(station);
     }
 
-    public void updateStation(JSONObject json) {
+    void updateStation(JSONObject json) {
         HashMap<String, String> station = new HashMap<>();
 
         for (String key : STATION_METADATA_LIST) {
