@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package io.ybrid.client.control;
+package io.ybrid.client.control.Driver.V1;
 
-public interface SwapInfo {
-    boolean isNextSwapReturnToMain();
+import org.json.JSONObject;
 
-    int getSwapsLeft();
-
-    default boolean canSwap() {
-        return getSwapsLeft() != 0;
+class SwapInfo extends io.ybrid.client.control.Driver.Common.SwapInfo {
+    SwapInfo(JSONObject json) {
+        nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
+        swapsLeft = json.getInt("swapsLeft");
     }
 }

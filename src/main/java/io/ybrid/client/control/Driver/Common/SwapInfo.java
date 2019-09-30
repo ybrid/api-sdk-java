@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 
-package io.ybrid.client.control;
+package io.ybrid.client.control.Driver.Common;
 
-public interface SwapInfo {
-    boolean isNextSwapReturnToMain();
+abstract public class SwapInfo implements io.ybrid.client.control.SwapInfo {
+    protected boolean nextSwapReturnsToMain;
+    protected int swapsLeft;
 
-    int getSwapsLeft();
+    public boolean isNextSwapReturnToMain() {
+        return nextSwapReturnsToMain;
+    }
 
-    default boolean canSwap() {
-        return getSwapsLeft() != 0;
+    public int getSwapsLeft() {
+        return swapsLeft;
+    }
+
+    @Override
+    public String toString() {
+        return "SwapInfo{" +
+                "nextSwapReturnsToMain=" + nextSwapReturnsToMain +
+                ", swapsLeft=" + swapsLeft +
+                '}';
     }
 }
