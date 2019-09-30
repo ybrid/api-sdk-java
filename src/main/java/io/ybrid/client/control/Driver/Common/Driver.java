@@ -55,11 +55,11 @@ public abstract class Driver implements Connectable {
         return mountpoint;
     }
 
-    public Service getDefaultService() {
+    public io.ybrid.client.control.Service getDefaultService() {
         return defaultService;
     }
 
-    public Service getCurrentService() {
+    public io.ybrid.client.control.Service getCurrentService() {
         return currentService;
     }
 

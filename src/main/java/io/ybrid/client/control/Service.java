@@ -16,79 +16,11 @@
 
 package io.ybrid.client.control;
 
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-public class Service {
-    private static final String STATION_NAME = "name";
-    private static final String STATION_GENERE = "genre";
-    private static final String[] STATION_METADATA_LIST = {STATION_NAME, STATION_GENERE};
-
-    private String identifier;
-    private URL icon;
-    private HashMap<String, String> station = new HashMap<>();
-
-    Service(JSONObject json) throws MalformedURLException {
-        String value;
-
-        identifier = json.getString("id");
-
-        value = json.getString("iconURL");
-        if (value != null && !value.isEmpty())
-            icon = new URL(value);
-    }
-
-    public Service() {
-    }
-
-    void updateStation(JSONObject json) {
-        HashMap<String, String> station = new HashMap<>();
-
-        for (String key : STATION_METADATA_LIST) {
-            String value = json.getString(key);
-            if (value != null && !value.isEmpty())
-                station.put(key, value);
-        }
-
-        this.station = station;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public URL getIcon() {
-        return icon;
-    }
-
-    public Map<String, String> getStation() {
-        return Collections.unmodifiableMap(station);
-    }
-
-    public String getGenre() {
-        return station.get(STATION_GENERE);
-    }
-
-    public String getDisplayName() {
-        String value = station.get(STATION_NAME);
-
-        if (value == null)
-            value = identifier;
-
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "Service{" +
-                "identifier='" + identifier + '\'' +
-                ", icon=" + icon +
-                ", station=" + station +
-                '}';
-    }
+public interface Service {
+    String getIdentifier();
+    String getDisplayName();
+    URL getIcon();
+    String getGenre();
 }
