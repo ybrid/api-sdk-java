@@ -16,17 +16,6 @@
 
 package io.ybrid.client.control;
 
-import java.io.IOException;
-import java.net.URL;
-
-public interface Companion {
-    void onClick() throws IOException;
-    void onView() throws IOException;
-    String getAlternativeText();
-    int getHeight();
-    int getWidth();
-    int getSequenceNumber();
-    URL getStaticResource();
-    URL getOnClick();
-    URL getOnView();
+public enum ItemType {
+    ADVERTISEMENT, COMEDY, JINGLE, MUSIC, NEWS, VOICE;
 }

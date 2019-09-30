@@ -16,7 +16,6 @@
 
 package io.ybrid.client.control.Driver.Common;
 
-import io.ybrid.client.control.Item;
 import io.ybrid.client.control.SwapInfo;
 
 abstract public class Metadata implements io.ybrid.client.control.Metadata {

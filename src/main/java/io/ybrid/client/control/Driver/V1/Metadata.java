@@ -16,7 +16,6 @@
 
 package io.ybrid.client.control.Driver.V1;
 
-import io.ybrid.client.control.Item;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;

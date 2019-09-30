@@ -16,6 +16,8 @@
 
 package io.ybrid.client.control;
 
+import io.ybrid.client.control.Driver.Common.Item;
+
 public interface Metadata {
     Item getCurrentItem();
     Item getNextItem();

@@ -16,92 +16,15 @@
 
 package io.ybrid.client.control;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import io.ybrid.client.control.Driver.Common.Companion;
 
-import java.net.MalformedURLException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-public class Item implements hasIdentifier {
-    public static final String METADATA_TITLE = "title";
-    public static final String METADATA_ARTIST = "artist";
-    public static final String METADATA_DESCRIPTION = "description";
-
-    private static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
-
-    public enum Type {
-        ADVERTISEMENT, COMEDY, JINGLE, MUSIC, NEWS, VOICE;
-    }
-
-    private String identifier;
-    private HashMap<String, String> metadata = new HashMap<>();
-    private Type type;
-    private long duration;
-    private ArrayList<Companion> companions = new ArrayList<>();
-
-    public Item(JSONObject json) throws MalformedURLException {
-        identifier = json.getString("id");
-        JSONArray array;
-
-        for (String key : metadataList) {
-            String value = json.getString(key);
-            if (value != null && !value.isEmpty())
-                metadata.put(key, value);
-        }
-
-        type = Type.valueOf(json.getString("type"));
-
-        duration = json.getLong("durationMillis");
-
-        array = json.getJSONArray("companions");
-        if (array != null) {
-            for (int i = 0; i < array.length(); i++) {
-                companions.add(new Companion(array.getJSONObject(i)));
-            }
-        }
-    }
-
-    public String getDisplayName() {
-        String artist = metadata.get(METADATA_ARTIST);
-        String title = metadata.get(METADATA_TITLE);
-
-        if (artist != null && title != null) {
-            return artist + " - " + title;
-        }
-
-        return title;
-    }
-
-    @Override
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Map<String, String> getMetadata() {
-        return Collections.unmodifiableMap(metadata);
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public List<Companion> getCompanions() {
-        return Collections.unmodifiableList(companions);
-    }
-
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "identifier='" + identifier + '\'' +
-                ", metadata=" + metadata +
-                ", type=" + type +
-                ", duration=" + duration +
-                ", companions=" + companions +
-                '}';
-    }
+public interface Item extends hasIdentifier {
+    String getDisplayName();
+    Map<String, String> getMetadata();
+    ItemType getType();
+    long getDuration();
+    List<Companion> getCompanions();
 }
