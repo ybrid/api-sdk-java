@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
 
-public class DataInputStream extends InputStream {
+public class DataInputStream extends StreamInputStream {
     private static final int SLEEP_TIME = 179; /* [ms] */
     private static final int SERVER_TIMEOUT = 6000; /* [ms] */
 

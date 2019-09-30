@@ -62,7 +62,7 @@ public class Session implements Connectable {
         return new URL(server.getProtocol(), hostname, server.getPort(), path);
     }
 
-    public DataInputStream getStreamInputStream() {
+    public StreamInputStream getStreamInputStream() {
         return new DataInputStream(this);
     }
 
