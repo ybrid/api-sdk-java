@@ -73,11 +73,6 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public Service getDefaultService() {
-        return driver.getDefaultService();
-    }
-
-    @Override
     public Service getCurrentService() {
         return driver.getCurrentService();
     }

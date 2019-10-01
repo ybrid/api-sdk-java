@@ -27,6 +27,5 @@ public interface SessionClient {
     Metadata getMetadata() throws IOException;
     URL getStreamURL() throws MalformedURLException;
     StreamInputStream getInputStream();
-    Service getDefaultService();
     Service getCurrentService();
 }

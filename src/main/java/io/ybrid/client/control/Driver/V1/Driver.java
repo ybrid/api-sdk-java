@@ -29,7 +29,6 @@ public class Driver extends io.ybrid.client.control.Driver.Common.Driver {
         super(session);
 
         this.currentService = bouquet.getDefaultService();
-        this.defaultService = bouquet.getDefaultService();
     }
 
     @Override

@@ -33,7 +33,6 @@ public abstract class Driver implements Connectable {
     protected boolean connected = false;
     protected String hostname;
     protected String token;
-    protected Service defaultService;
     protected Service currentService;
 
     abstract public void swapItem(SwapMode mode) throws IOException;
@@ -56,10 +55,6 @@ public abstract class Driver implements Connectable {
         String mountpoint = session.getAlias().getUrl().getPath();
         assertValidMountpoint(mountpoint);
         return mountpoint;
-    }
-
-    public Service getDefaultService() {
-        return defaultService;
     }
 
     public Service getCurrentService() {
