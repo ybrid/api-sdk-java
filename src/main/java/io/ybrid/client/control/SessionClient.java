@@ -17,15 +17,11 @@
 package io.ybrid.client.control;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public interface SessionClient {
     Bouquet getBouquet();
     void swapItem(SwapMode mode) throws IOException;
     void swapService(Service service);
     Metadata getMetadata() throws IOException;
-    URL getStreamURL() throws MalformedURLException;
-    StreamInputStream getInputStream();
     Service getCurrentService();
 }

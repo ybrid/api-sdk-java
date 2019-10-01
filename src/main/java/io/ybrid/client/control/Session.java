@@ -62,12 +62,10 @@ public class Session implements Connectable, SessionClient {
         return driver.getMetadata();
     }
 
-    @Override
     public URL getStreamURL() throws MalformedURLException {
         return driver.getStreamURL();
     }
 
-    @Override
     public StreamInputStream getInputStream() {
         return driver.getInputStream();
     }
