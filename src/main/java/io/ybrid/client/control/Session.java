@@ -46,6 +46,10 @@ public class Session implements Connectable {
         driver.swap(mode);
     }
 
+    public void swapService(Service service) {
+        driver.swapService(service);
+    }
+
     public Metadata getMetadata() throws IOException {
         return driver.getMetadata();
     }

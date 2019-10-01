@@ -66,6 +66,13 @@ public abstract class Driver implements Connectable {
         return currentService;
     }
 
+    public void swapService(Service service) {
+        if (service.equals(getCurrentService()))
+            return;
+
+        throw new UnsupportedOperationException("Can not swap to given Service");
+    }
+
     protected void assertConnected() {
         if (!isConnected())
             throw new IllegalStateException("Not connected");
