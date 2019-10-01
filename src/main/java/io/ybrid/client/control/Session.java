@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class Session implements Connectable {
+public class Session implements Connectable, SessionClient {
     private Driver driver;
     private Server server;
     private Alias alias;
@@ -42,34 +42,42 @@ public class Session implements Connectable {
         return server;
     }
 
+    @Override
     public Bouquet getBouquet() {
         return driver.getBouquet();
     }
 
+    @Override
     public void swapItem(SwapMode mode) throws IOException {
         driver.swapItem(mode);
     }
 
+    @Override
     public void swapService(Service service) {
         driver.swapService(service);
     }
 
+    @Override
     public Metadata getMetadata() throws IOException {
         return driver.getMetadata();
     }
 
+    @Override
     public URL getStreamURL() throws MalformedURLException {
         return driver.getStreamURL();
     }
 
+    @Override
     public StreamInputStream getInputStream() {
         return driver.getInputStream();
     }
 
+    @Override
     public Service getDefaultService() {
         return driver.getDefaultService();
     }
 
+    @Override
     public Service getCurrentService() {
         return driver.getCurrentService();
     }
