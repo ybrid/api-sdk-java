@@ -36,7 +36,7 @@ public abstract class Driver implements Connectable {
     protected Service defaultService;
     protected Service currentService;
 
-    abstract public void swap(SwapMode mode) throws IOException;
+    abstract public void swapItem(SwapMode mode) throws IOException;
     abstract public Metadata getMetadata() throws IOException;
     abstract public URL getStreamURL() throws MalformedURLException;
     abstract public StreamInputStream getInputStream();

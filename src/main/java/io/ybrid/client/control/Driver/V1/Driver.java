@@ -68,7 +68,7 @@ public class Driver extends io.ybrid.client.control.Driver.Common.Driver {
     }
 
     @Override
-    public void swap(SwapMode mode) throws IOException {
+    public void swapItem(SwapMode mode) throws IOException {
         assertConnected();
 
         request("swap", "mode=" + mode.getOnWire());

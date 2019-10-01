@@ -42,8 +42,8 @@ public class Session implements Connectable {
         return server;
     }
 
-    public void swap(SwapMode mode) throws IOException {
-        driver.swap(mode);
+    public void swapItem(SwapMode mode) throws IOException {
+        driver.swapItem(mode);
     }
 
     public void swapService(Service service) {
