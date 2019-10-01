@@ -42,6 +42,10 @@ public class Session implements Connectable {
         return server;
     }
 
+    public Bouquet getBouquet() {
+        return driver.getBouquet();
+    }
+
     public void swapItem(SwapMode mode) throws IOException {
         driver.swapItem(mode);
     }
