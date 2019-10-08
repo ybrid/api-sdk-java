@@ -27,8 +27,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 
-public abstract class Driver implements Connectable {
+public abstract class Driver implements Connectable, SessionClient {
     protected Session session;
     protected boolean connected = false;
     protected String hostname;
@@ -110,5 +111,26 @@ public abstract class Driver implements Connectable {
     @Override
     public boolean isConnected() {
         return connected;
+    }
+
+
+    public void windToLive() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void WindTo(Instant timestamp) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void Wind(long duration) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void skipForwards(ItemType itemType) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void skipBackwards(ItemType itemType) throws IOException {
+        throw new UnsupportedOperationException();
     }
 }

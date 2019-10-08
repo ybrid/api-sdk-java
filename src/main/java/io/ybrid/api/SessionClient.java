@@ -17,9 +17,15 @@
 package io.ybrid.api;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public interface SessionClient {
     Bouquet getBouquet();
+    void windToLive() throws IOException;
+    void WindTo(Instant timestamp) throws IOException;
+    void Wind(long duration) throws IOException;
+    void skipForwards(ItemType itemType) throws IOException;
+    void skipBackwards(ItemType itemType) throws IOException;
     void swapItem(SwapMode mode) throws IOException;
     void swapService(Service service);
     Metadata getMetadata() throws IOException;

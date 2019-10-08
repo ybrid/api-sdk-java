@@ -22,6 +22,7 @@ import io.ybrid.api.driver.common.Driver;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 
 public class Session implements Connectable, SessionClient {
     private Driver driver;
@@ -45,6 +46,31 @@ public class Session implements Connectable, SessionClient {
     @Override
     public Bouquet getBouquet() {
         return driver.getBouquet();
+    }
+
+    @Override
+    public void windToLive() throws IOException {
+        driver.windToLive();
+    }
+
+    @Override
+    public void WindTo(Instant timestamp) throws IOException {
+        driver.WindTo(timestamp);
+    }
+
+    @Override
+    public void Wind(long duration) throws IOException {
+        driver.Wind(duration);
+    }
+
+    @Override
+    public void skipForwards(ItemType itemType) throws IOException {
+        driver.skipForwards(itemType);
+    }
+
+    @Override
+    public void skipBackwards(ItemType itemType) throws IOException {
+        driver.skipBackwards(itemType);
     }
 
     @Override
