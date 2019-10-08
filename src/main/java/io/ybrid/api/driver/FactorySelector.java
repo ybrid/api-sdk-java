@@ -17,9 +17,9 @@
 package io.ybrid.api.driver;
 
 
-import io.ybrid.api.driver.common.Factory;
 import io.ybrid.api.Alias;
 import io.ybrid.api.Server;
+import io.ybrid.api.driver.common.Factory;
 
 public class FactorySelector {
     public static Factory getFactory(Server server, Alias alias) {

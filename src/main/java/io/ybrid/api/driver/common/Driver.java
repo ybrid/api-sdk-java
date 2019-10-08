@@ -16,10 +16,9 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.*;
 import io.ybrid.api.Metadata;
 import io.ybrid.api.Service;
-import io.ybrid.client.control.*;
+import io.ybrid.api.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
