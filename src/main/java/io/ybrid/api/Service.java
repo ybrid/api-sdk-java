@@ -18,8 +18,7 @@ package io.ybrid.api;
 
 import java.net.URL;
 
-public interface Service extends hasIdentifier {
-    String getDisplayName();
+public interface Service extends hasIdentifier, hasDisplayName {
     URL getIcon();
     String getGenre();
 }

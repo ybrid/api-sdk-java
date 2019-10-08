@@ -16,14 +16,6 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.driver.common.Companion;
-
-import java.util.List;
-import java.util.Map;
-
-public interface Item extends hasIdentifier, hasDisplayName {
-    Map<String, String> getMetadata();
-    ItemType getType();
-    long getDuration();
-    List<Companion> getCompanions();
+public interface hasDisplayName {
+    String getDisplayName();
 }
