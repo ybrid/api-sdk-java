@@ -17,5 +17,5 @@
 package io.ybrid.api;
 
 public enum ItemType {
-    ADVERTISEMENT, COMEDY, JINGLE, MUSIC, NEWS, VOICE;
+    ADVERTISEMENT, COMEDY, JINGLE, MUSIC, NEWS, TRAFFIC, VOICE, WEATHER;
 }
