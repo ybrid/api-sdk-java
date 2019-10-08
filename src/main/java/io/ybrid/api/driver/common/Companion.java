@@ -29,19 +29,11 @@ public class Companion implements io.ybrid.api.Companion {
     protected URL onClick;
     protected URL onView;
 
-    private void ping(URL url) throws IOException {
-        URLConnection connection = url.openConnection();
+    public void onView() throws IOException {
+        URLConnection connection = onView.openConnection();
         connection.setDoInput(false);
         connection.setDoOutput(false);
         connection.connect();
-    }
-
-    public void onClick() throws IOException {
-        ping(onClick);
-    }
-
-    public void onView() throws IOException {
-        ping(onView);
     }
 
     public String getAlternativeText() {

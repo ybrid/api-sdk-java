@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 
 public interface Companion {
-    void onClick() throws IOException;
     void onView() throws IOException;
     String getAlternativeText();
     int getHeight();
