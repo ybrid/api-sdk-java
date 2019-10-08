@@ -18,7 +18,19 @@ package io.ybrid.api;
 
 import java.net.URL;
 
+/**
+ * This interface is implemented by objects representing a service or "program".
+ */
 public interface Service extends hasIdentifier, hasDisplayName {
+    /**
+     * Get an icon that can be displayed by the user interface next to the display of the service.
+     * @return Returns an URL to a icon for the service or null.
+     */
     URL getIcon();
+
+    /**
+     * This returns the genre of the service as a string that can be presented to the user.
+     * @return Returns the genre of the service.
+     */
     String getGenre();
 }

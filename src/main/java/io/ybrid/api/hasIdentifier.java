@@ -16,6 +16,13 @@
 
 package io.ybrid.api;
 
+/**
+ * This interface is implemented by objects that do have a identifier.
+ */
 public interface hasIdentifier {
+    /**
+     * This returns a identifier for the object.
+     * @return the identifier of the object.
+     */
     String getIdentifier();
 }

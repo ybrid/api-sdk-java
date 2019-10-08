@@ -16,6 +16,14 @@
 
 package io.ybrid.api;
 
+/**
+ * This interface is implemented by objects that can return a name that is meaningful to the user.
+ */
 public interface hasDisplayName {
+    /**
+     * Get a name for the object that is meaningful to the user.
+     *
+     * @return the name to display.
+     */
     String getDisplayName();
 }

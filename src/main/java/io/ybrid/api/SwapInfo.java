@@ -16,11 +16,28 @@
 
 package io.ybrid.api;
 
+/**
+ * This interface is implemented by objects returning a swap state.
+ */
 public interface SwapInfo {
+    /**
+     * This returns the state of the next swap.
+     * @return Returns whether the next swap will return to the main program.
+     */
     boolean isNextSwapReturnToMain();
 
+    /**
+     * Returns the number of swaps the client is expected to be allowed before the server refuses them.
+     * @return Returns the number of swaps the user can do.
+     */
     int getSwapsLeft();
 
+    /**
+     * Returns whether the object expects the next swap to be successful.
+     *
+     * This can be used to update the user interface to provide a swap button only when expected to work.
+     * @return Whether the next swap is expected to be successful.
+     */
     default boolean canSwap() {
         return getSwapsLeft() != 0;
     }

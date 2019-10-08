@@ -16,8 +16,18 @@
 
 package io.ybrid.api;
 
+/**
+ * This enum is used to identify the mode of a swap.
+ */
 public enum SwapMode {
-    END2END("end2end"), FADE2END("fade2end");
+    /**
+     * Beginning of alternative content will be skipped to fit to the left main items duration.
+     */
+    END2END("end2end"),
+    /**
+     * Alternative content starts from the beginning and will become faded out at the end.
+     */
+    FADE2END("fade2end");
 
     private final String onWire;
 

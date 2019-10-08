@@ -19,11 +19,32 @@ package io.ybrid.api;
 import java.io.Closeable;
 import java.io.IOException;
 
+/**
+ * Interface that is implemented by objects that can be connected to a remote resource.
+ */
 public interface Connectable extends Closeable {
+    /**
+     * Connect to the remote resource.
+     * @throws IOException Thrown when a connection can not be established.
+     */
     void connect() throws IOException;
+
+    /**
+     * Disconnects from a the remote resource.
+     */
     void disconnect();
+
+    /**
+     * Returns whether the object is connected.
+     * @return Whether the object is connected.
+     */
     boolean isConnected();
 
+    /**
+     * Closes resources open by this object.
+     * By default disconnect from the remote resource.
+     * @throws IOException Thrown in case of I/O-Errors.
+     */
     @Override
     default void close() throws IOException {
         disconnect();

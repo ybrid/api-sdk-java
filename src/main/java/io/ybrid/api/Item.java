@@ -21,9 +21,33 @@ import io.ybrid.api.driver.common.Companion;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This interface is implemented by objects representing an Item. A item roughly corresponds to a track.
+ */
 public interface Item extends hasIdentifier, hasDisplayName {
+    /**
+     * This allows access to the items Metadata.
+     * @return Returns the map of metadata.
+     */
     Map<String, String> getMetadata();
+
+    /**
+     * Returns the type of the item.
+     * The item type can be used by players to switch between audio profiles.
+     * This can be useful to for example provide different settings for traffic announcements.
+     * @return Returns the type of the item.
+     */
     ItemType getType();
+
+    /**
+     * Return the total playback time of the item.
+     * @return Returns the playback time in [ms].
+     */
     long getDuration();
+
+    /**
+     * Returns the list of Companions as to be displayed while this item is played.
+     * @return Returns the list of Companions.
+     */
     List<Companion> getCompanions();
 }

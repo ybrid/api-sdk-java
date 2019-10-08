@@ -16,6 +16,40 @@
 
 package io.ybrid.api;
 
+/**
+ * This enum is used to represent the type of {@link Item Items}.
+ */
 public enum ItemType {
-    ADVERTISEMENT, COMEDY, JINGLE, MUSIC, NEWS, TRAFFIC, VOICE, WEATHER;
+    /**
+     * Advertisement.
+     */
+    ADVERTISEMENT,
+    /**
+     * Comedy.
+     */
+    COMEDY,
+    /**
+     * Jingle.
+     */
+    JINGLE,
+    /**
+     * Music.
+     */
+    MUSIC,
+    /**
+     * General news.
+     */
+    NEWS,
+    /**
+     * Traffic annoucement.
+     */
+    TRAFFIC,
+    /**
+     * General spoken content and moderation.
+     */
+    VOICE,
+    /**
+     * Weather forecast.
+     */
+    WEATHER;
 }
