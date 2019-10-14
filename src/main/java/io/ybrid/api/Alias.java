@@ -102,6 +102,9 @@ public class Alias {
 
     /**
      * Create a {@link Session} using this Alias.
+     *
+     * This may will connect the used {@link Server} if needed.
+     *
      * @return Returns a newly created and unconnected {@link Session}.
      * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */

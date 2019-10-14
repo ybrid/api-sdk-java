@@ -118,11 +118,14 @@ public class Server implements Connectable {
     /**
      * Create a new unconnected {@link Session} for the given {@link Alias}.
      *
+     * This may will connect the used {@link Server} if needed.
+     *
      * @param alias The {@link Alias} to connect to.
      * @return Returns the newly created {@link Session}.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
      */
     public Session createSession(Alias alias) throws MalformedURLException {
+        connect();
         return new Session(this, alias);
     }
 
