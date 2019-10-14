@@ -29,6 +29,7 @@ public class Companion implements io.ybrid.api.Companion {
     protected URL onClick;
     protected URL onView;
 
+    @Override
     public void onView() throws IOException {
         URLConnection connection = onView.openConnection();
         connection.setDoInput(false);
@@ -36,30 +37,37 @@ public class Companion implements io.ybrid.api.Companion {
         connection.connect();
     }
 
+    @Override
     public String getAlternativeText() {
         return alternativeText;
     }
 
+    @Override
     public int getHeight() {
         return height;
     }
 
+    @Override
     public int getWidth() {
         return width;
     }
 
+    @Override
     public int getSequenceNumber() {
         return sequenceNumber;
     }
 
+    @Override
     public URL getStaticResource() {
         return staticResource;
     }
 
+    @Override
     public URL getOnClick() {
         return onClick;
     }
 
+    @Override
     public URL getOnView() {
         return onView;
     }

@@ -58,6 +58,7 @@ public abstract class Driver implements Connectable, SessionClient {
         return mountpoint;
     }
 
+    @Override
     public Service getCurrentService() {
         return currentService;
     }
@@ -114,22 +115,27 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
 
+    @Override
     public void windToLive() throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void WindTo(Instant timestamp) throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void Wind(long duration) throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void skipForwards(ItemType itemType) throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void skipBackwards(ItemType itemType) throws IOException {
         throw new UnsupportedOperationException();
     }
