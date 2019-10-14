@@ -19,6 +19,15 @@ package io.ybrid.api;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This class is an abstract parent for classes that implement {@link InputStream}
+ * with the extension of support for query for the Content-Type.
+ */
 abstract public class StreamInputStream extends InputStream {
+    /**
+     * Get the current Content-Type for the stream,
+     * @return Returns the Content-type of the stream as {@link String}.
+     * @throws IOException Thrown on any I/O-Error.
+     */
     public abstract String getContentType() throws IOException;
 }
