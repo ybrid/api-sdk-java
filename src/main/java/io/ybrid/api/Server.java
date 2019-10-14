@@ -19,6 +19,11 @@ package io.ybrid.api;
 import java.net.MalformedURLException;
 import java.util.logging.Logger;
 
+/**
+ * This class represents the connection to a specific ybrid server.
+ *
+ * Objects of this class can be reused for several sessions.
+ */
 public class Server implements Connectable {
     private String hostname;
     private int port = 80;
@@ -35,6 +40,15 @@ public class Server implements Connectable {
             throw new MalformedURLException("Bad port");
     }
 
+    /**
+     * Creates a new Server object.
+     *
+     * @param logger The {@link Logger} to use.
+     * @param hostname The name of the host used to access the server.
+     * @param port The port to access the server.
+     * @param secure Whether to use a secure connection to the server.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     */
     public Server(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
@@ -44,32 +58,66 @@ public class Server implements Connectable {
         this.secure = secure;
     }
 
+    /**
+     * Creates a new Server object.
+     *
+     * @param logger The {@link Logger} to use.
+     * @param hostname The name of the host used to access the server.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     */
     public Server(Logger logger, String hostname) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         this.hostname = hostname;
     }
 
+    /**
+     * Get the name of the host used to contact the server.
+     * @return Returns the hostname.
+     */
     public String getHostname() {
         return hostname;
     }
 
+    /**
+     * Get the port used to contact the server.
+     * @return Returns the port number.
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * Get whether the connection should be established securely.
+     * @return Whether contacting the server securely.
+     */
     public boolean isSecure() {
         return secure;
     }
 
+    /**
+     * Gets the transport protocol used.
+     * @return Returns the name of the protocol.
+     */
     public String getProtocol() {
         return isSecure() ? "https" : "http";
     }
 
+    /**
+     * Create a new unconnected {@link Session} for the given {@link Alias}.
+     *
+     * @param alias The {@link Alias} to connect to.
+     * @return Returns the newly created {@link Session}.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     */
     public Session getSession(Alias alias) throws MalformedURLException {
         return new Session(this, alias);
     }
 
+    /**
+     * Get the {@link Logger} used by this Server object.
+     * @return Returns the logger.
+     */
     public Logger getLogger() {
         return logger;
     }
