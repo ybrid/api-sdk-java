@@ -18,10 +18,19 @@ package io.ybrid.api;
 
 import java.util.Collection;
 
+/**
+ * This class represents a Bouquet. A Bouquet is a collection of {@link Service Services} provided
+ * to the user by the server.
+ */
 public class Bouquet {
     private Service defaultService;
     private Collection<Service> services;
 
+    /**
+     * Creates a new Bouquet object.
+     * @param defaultService The default {@link Service} of the Bouquet. Must be part of {@code services}.
+     * @param services The collection of all {@link Service Services} in this Bouquet.
+     */
     public Bouquet(Service defaultService, Collection<Service> services) {
         if (!services.contains(defaultService))
             throw new IllegalArgumentException("Default Service not part of Services");
@@ -30,10 +39,18 @@ public class Bouquet {
         this.services = services;
     }
 
+    /**
+     * Gets the default {@link Service} from this Bouquet.
+     * @return Returns the default {@link Service}.
+     */
     public Service getDefaultService() {
         return defaultService;
     }
 
+    /**
+     * Returns the collection of {@link Service Services} known in this Bouquet.
+     * @return Returns the collection of {@link Service Services}.
+     */
     public Collection<Service> getServices() {
         return services;
     }

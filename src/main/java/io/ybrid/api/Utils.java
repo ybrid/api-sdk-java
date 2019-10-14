@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * This is a utility class used internally by the ybrid client.
+ * It should not be used outside the ybrid ecosystem.
+ */
 public class Utils {
     private static ByteArrayOutputStream slurp(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -32,11 +36,27 @@ public class Utils {
         return result;
     }
 
+    /**
+     * Slurps a {@link InputStream} into a {@link String}.
+     * The encoding is expected to be UTF-8.
+     *
+     * @param inputStream The input stream to slurp.
+     * @return The content of the input stream as {@link String}.
+     * @throws IOException Thrown on I/O-Error on the {@code inputStream}.
+     */
     public static String slurpToString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = slurp(inputStream);
         return result.toString(StandardCharsets.UTF_8.name());
     }
 
+    /**
+     * Slurps a {@link InputStream} into {@code byte[]}.
+     * The encoding is expected to be UTF-8.
+     *
+     * @param inputStream The input stream to slurp.
+     * @return The content of the input stream as {@code byte[]}.
+     * @throws IOException Thrown on I/O-Error on the {@code inputStream}.
+     */
     public static byte[] slurpToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = slurp(inputStream);
         return result.toByteArray();
