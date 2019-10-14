@@ -24,6 +24,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
 
+/**
+ * This class implements an actual session with a ybrid server.
+ *
+ * The session can be used to request an audio stream from the server.
+ * It is also used to control the stream.
+ */
 public class Session implements Connectable, SessionClient {
     private Driver driver;
     private Server server;
@@ -35,10 +41,18 @@ public class Session implements Connectable, SessionClient {
         this.alias = alias;
     }
 
+    /**
+     * Gets the {@link Alias} used for this session.
+     * @return Returns the {@link Alias}.
+     */
     public Alias getAlias() {
         return alias;
     }
 
+    /**
+     * Gets the {@link Server} object used to communicate with the server.
+     * @return Returns the {@link Server} object.
+     */
     public Server getServer() {
         return server;
     }
@@ -88,10 +102,20 @@ public class Session implements Connectable, SessionClient {
         return driver.getMetadata();
     }
 
+    /**
+     * gets the {@link URL} of the audio stream.
+     * @return The {@link URL} of the stream.
+     * @throws MalformedURLException
+     */
     public URL getStreamURL() throws MalformedURLException {
         return driver.getStreamURL();
     }
 
+    /**
+     * Get a {@link StreamInputStream} for the audio stream.
+     * @return Returns the {@link StreamInputStream}.
+     */
+    @Deprecated
     public StreamInputStream getInputStream() {
         return driver.getInputStream();
     }
