@@ -25,9 +25,18 @@ import java.util.logging.Logger;
  * Objects of this class can be reused for several sessions.
  */
 public class Server implements Connectable {
+    /**
+     * The default port used for ybrid servers.
+     */
+    public static final int DEFAULT_PORT = 80;
+    /**
+     * The default security setting for ybrid servers.
+     */
+    public static final boolean DEFAULT_SECURE = false;
+
     private String hostname;
-    private int port = 80;
-    private boolean secure = false;
+    private int port = DEFAULT_PORT;
+    private boolean secure = DEFAULT_SECURE;
     private final Logger logger;
 
     private void assertValidHostname(String hostname) throws MalformedURLException {
@@ -60,6 +69,9 @@ public class Server implements Connectable {
 
     /**
      * Creates a new Server object.
+     *
+     * This is like {@link #Server(Logger, String, int, boolean)} With {@code port} set to {@link #DEFAULT_PORT},
+     * and {@code secure} set to {@link #DEFAULT_SECURE}.
      *
      * @param logger The {@link Logger} to use.
      * @param hostname The name of the host used to access the server.
