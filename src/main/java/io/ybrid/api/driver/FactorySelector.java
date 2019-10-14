@@ -21,7 +21,19 @@ import io.ybrid.api.Alias;
 import io.ybrid.api.Server;
 import io.ybrid.api.driver.common.Factory;
 
+/**
+ * This class selects a {@link Factory} based on a given {@link Server} and {@link Alias}.
+ *
+ * This should not be used directly.
+ */
 public class FactorySelector {
+    /**
+     * Gets a {@link Factory} based on the parameters.
+     *
+     * @param server The {@link Server} to use.
+     * @param alias The {@link Alias} to use.
+     * @return The instance of the {@link Factory} to use.
+     */
     public static Factory getFactory(Server server, Alias alias) {
         return new io.ybrid.api.driver.v1.Factory();
     }
