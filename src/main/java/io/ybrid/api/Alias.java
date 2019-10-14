@@ -121,8 +121,9 @@ public class Alias {
     /**
      * Get the current {@link Bouquet} from the default {@link Server}.
      * @return Returns the current {@link Bouquet}.
+     * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Bouquet getBouquet() {
-        return getBouquet(server);
+    public Bouquet getBouquet() throws MalformedURLException {
+        return getBouquet(getServer());
     }
 }
