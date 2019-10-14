@@ -114,6 +114,7 @@ public class Alias {
      * @param server The {@link Server} to use.
      * @return Returns the current {@link Bouquet}.
      */
+    @Deprecated
     public Bouquet getBouquet(Server server) {
         return FactorySelector.getFactory(server, this).getBouquet(server, this);
     }
