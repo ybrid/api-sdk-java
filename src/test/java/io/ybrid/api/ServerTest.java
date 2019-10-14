@@ -55,7 +55,7 @@ public class ServerTest extends TestCase {
 
         for (String mountpoint : mountpoints) {
             Alias alias = new Alias(LOGGER, new URL("http://" + hostname + mountpoint));
-            Session session = alias.getSession();
+            Session session = alias.createSession();
 
             assertNotNull(session);
         }

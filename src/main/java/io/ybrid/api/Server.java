@@ -110,7 +110,7 @@ public class Server implements Connectable {
      * @return Returns the newly created {@link Session}.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
      */
-    public Session getSession(Alias alias) throws MalformedURLException {
+    public Session createSession(Alias alias) throws MalformedURLException {
         return new Session(this, alias);
     }
 

@@ -105,8 +105,8 @@ public class Alias {
      * @return Returns a newly created and unconnected {@link Session}.
      * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Session getSession() throws MalformedURLException {
-        return getServer().getSession(this);
+    public Session createSession() throws MalformedURLException {
+        return getServer().createSession(this);
     }
 
     /**
