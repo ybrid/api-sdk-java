@@ -16,8 +16,6 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.driver.common.Item;
-
 /**
  * This Interface is implemented by Metadata objects.
  *
@@ -30,7 +28,7 @@ public interface Metadata {
      *
      * @return Retruns the current item.
      */
-    io.ybrid.api.driver.common.Item getCurrentItem();
+    Item getCurrentItem();
 
     /**
      * Get the Item that is expected to be played next.
