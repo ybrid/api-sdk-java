@@ -105,7 +105,7 @@ public class Session implements Connectable, SessionClient {
     /**
      * gets the {@link URL} of the audio stream.
      * @return The {@link URL} of the stream.
-     * @throws MalformedURLException
+     * @throws MalformedURLException Thrown in case the stream can not be represented by an URL.
      */
     public URL getStreamURL() throws MalformedURLException {
         return driver.getStreamURL();
