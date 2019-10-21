@@ -111,15 +111,6 @@ public class Session implements Connectable, SessionClient {
         return driver.getStreamURL();
     }
 
-    /**
-     * Get a {@link StreamInputStream} for the audio stream.
-     * @return Returns the {@link StreamInputStream}.
-     */
-    @Deprecated
-    public StreamInputStream getInputStream() {
-        return driver.getInputStream();
-    }
-
     @Override
     public Service getCurrentService() {
         return driver.getCurrentService();

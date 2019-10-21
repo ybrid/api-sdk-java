@@ -39,7 +39,6 @@ public abstract class Driver implements Connectable, SessionClient {
     abstract public void swapItem(SwapMode mode) throws IOException;
     abstract public Metadata getMetadata() throws IOException;
     abstract public URL getStreamURL() throws MalformedURLException;
-    abstract public StreamInputStream getInputStream();
     abstract public Bouquet getBouquet();
     abstract protected JSONObject request(String command, String parameters) throws IOException;
 

@@ -93,11 +93,6 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public StreamInputStream getInputStream() {
-        return new DataInputStream(session);
-    }
-
-    @Override
     public void connect() throws IOException {
         JSONObject response;
         String hostname;
