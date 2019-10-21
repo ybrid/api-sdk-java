@@ -33,5 +33,42 @@ Then you also need to add the following dependency:
         </dependency>
 ```
 
+## Getting started
+As this package provides low level access only only the Alias and Session classes are used directly by an application.
+Every other access is normally done using the Player package.
+
+A simple example of using the Alias and Session classes as often seen in applications is shown below:
+
+```java
+import io.ybrid.api.*;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Logger;
+
+class Client {
+    void run() throws IOException {
+        /* URL to the Bouquet to connect to */
+        URL url = new URL("https://stagecast.ybrid.io/adaptive-demo");
+
+        /* Create an Alias object from the URL.*/
+        Alias alias = new Alias(LOGGER, url);
+
+        /* create an unconnected session */
+        Session session = alias.createSession();
+
+        /* Connect the session to the server. */
+        session.connect();
+
+        /* Run a player using this session. */
+        runPlayer(session);
+
+        /* After the player finished close the session. */
+        session.close();
+    }
+
+    /* ... */
+}
+```
+
 ## Copyright
 Copyright (c) 2019 nacamar GmbH, Germany. See [Apache License 2.0](LICENSE) for details.
