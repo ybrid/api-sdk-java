@@ -83,6 +83,7 @@ public abstract class Driver implements Connectable, SessionClient {
 
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", "application/json");
         connection.setDoInput(true);
         connection.setDoOutput(body != null);
 
