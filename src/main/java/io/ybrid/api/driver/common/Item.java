@@ -66,10 +66,9 @@ abstract public class Item implements io.ybrid.api.Item {
     }
 
     @Override
-    public List<Companion> getCompanions() {
+    public List<io.ybrid.api.Companion> getCompanions() {
         return Collections.unmodifiableList(companions);
     }
-
 
     @Override
     public String toString() {
