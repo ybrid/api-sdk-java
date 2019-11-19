@@ -46,8 +46,8 @@ public class Server implements Connectable {
     private final Logger logger;
 
     private void assertValidHostname(String hostname) throws MalformedURLException {
-        if (!hostname.matches("^[a-zA-Z0-9.]+$"))
-            throw new MalformedURLException("Bad hostname");
+        if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
+            throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
     }
 
     private void assertValidPort(int port) throws MalformedURLException {
