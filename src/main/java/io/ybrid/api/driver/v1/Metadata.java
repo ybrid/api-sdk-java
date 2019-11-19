@@ -43,4 +43,10 @@ class Metadata extends io.ybrid.api.driver.common.Metadata {
         this(service, json, System.currentTimeMillis());
     }
 
+    @Override
+    public boolean isValid() {
+        if (timeToNextItem == -1)
+            return true;
+        return super.isValid();
+    }
 }
