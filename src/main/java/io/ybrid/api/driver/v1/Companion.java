@@ -28,13 +28,34 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 class Companion extends io.ybrid.api.driver.common.Companion {
+    private static String getString(JSONObject json, String key) {
+        String ret;
+
+        if (json.isNull(key))
+            return null;
+
+        ret = json.getString(key);
+        if (ret.isEmpty())
+            return null;
+
+        return ret;
+    }
+
+    private static URL getURL(JSONObject json, String key) throws MalformedURLException {
+        String string = getString(json, key);
+        if (string == null)
+            return null;
+
+        return new URL(string);
+    }
+
     Companion(JSONObject json) throws MalformedURLException {
-        alternativeText = json.getString("altText");
+        alternativeText = getString(json, "altText");
         height = json.getInt("height");
         width = json.getInt("width");
         sequenceNumber = json.getInt("sequenceNumber");
-        staticResource = new URL(json.getString("staticResourceURL"));
-        onClick = new URL(json.getString("onClickThroughURL"));
-        onView = new URL(json.getString("onCreativeViewURL"));
+        staticResource = getURL(json, "staticResourceURL");
+        onClick = getURL(json, "onClickThroughURL");
+        onView = getURL(json, "onCreativeViewURL");
     }
 }
