@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-class Companion extends io.ybrid.api.driver.common.Companion {
+final class Companion extends io.ybrid.api.driver.common.Companion {
     private static String getString(JSONObject json, String key) {
         String ret;
 

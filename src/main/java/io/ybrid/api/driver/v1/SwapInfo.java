@@ -24,7 +24,7 @@ package io.ybrid.api.driver.v1;
 
 import org.json.JSONObject;
 
-class SwapInfo extends io.ybrid.api.driver.common.SwapInfo {
+final class SwapInfo extends io.ybrid.api.driver.common.SwapInfo {
     SwapInfo(JSONObject json) {
         nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
         swapsLeft = json.getInt("swapsLeft");

@@ -31,7 +31,7 @@ import java.util.ArrayList;
 /**
  * This implements the {@link io.ybrid.api.driver.common.Factory} for version 1 API.
  */
-public class Factory extends io.ybrid.api.driver.common.Factory {
+public final class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
     public Driver getDriver(Session session) {
         return new io.ybrid.api.driver.v1.Driver(session);

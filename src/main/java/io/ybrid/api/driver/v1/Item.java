@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
-class Item extends io.ybrid.api.driver.common.Item {
+final class Item extends io.ybrid.api.driver.common.Item {
     Item(JSONObject json) throws MalformedURLException {
         identifier = json.getString("id");
         JSONArray array;

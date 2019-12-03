@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
-class Metadata extends io.ybrid.api.driver.common.Metadata {
+final class Metadata extends io.ybrid.api.driver.common.Metadata {
     private Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
         this.service = service;
         this.requestTime = requestTime;

@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class Driver extends io.ybrid.api.driver.common.Driver {
+public final class Driver extends io.ybrid.api.driver.common.Driver {
     private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
     public Driver(Session session) {
         super(session);

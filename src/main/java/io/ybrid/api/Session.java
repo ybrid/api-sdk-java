@@ -38,8 +38,8 @@ import java.time.Instant;
  */
 public class Session implements Connectable, SessionClient {
     private final Driver driver;
-    private final Server server;
-    private final Alias alias;
+    private Server server;
+    private Alias alias;
 
     Session(Server server, Alias alias) throws MalformedURLException {
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);

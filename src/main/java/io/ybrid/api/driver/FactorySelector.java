@@ -32,7 +32,7 @@ import io.ybrid.api.driver.common.Factory;
  *
  * This should not be used directly.
  */
-public class FactorySelector {
+public final class FactorySelector {
     /**
      * Gets a {@link Factory} based on the parameters.
      *
