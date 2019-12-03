@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class Alias {
     private final Logger logger;
-    private URL url;
+    private final URL url;
     private Server server;
 
     private void assertServer() throws MalformedURLException {

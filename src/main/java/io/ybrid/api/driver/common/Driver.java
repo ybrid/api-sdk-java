@@ -36,7 +36,7 @@ import java.net.URL;
 import java.time.Instant;
 
 public abstract class Driver implements Connectable, SessionClient {
-    protected Session session;
+    protected final Session session;
     protected boolean connected = false;
     protected String hostname;
     protected String token;

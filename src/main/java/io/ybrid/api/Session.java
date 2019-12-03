@@ -37,9 +37,9 @@ import java.time.Instant;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
-    private Driver driver;
-    private Server server;
-    private Alias alias;
+    private final Driver driver;
+    private final Server server;
+    private final Alias alias;
 
     Session(Server server, Alias alias) throws MalformedURLException {
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
