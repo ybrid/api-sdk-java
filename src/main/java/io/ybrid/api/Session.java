@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - YBRID®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import java.net.URL;
 import java.time.Instant;
 
 /**
- * This class implements an actual session with a ybrid server.
+ * This class implements an actual session with a Ybrid server.
  *
  * The session can be used to request an audio stream from the server.
  * It is also used to control the stream.

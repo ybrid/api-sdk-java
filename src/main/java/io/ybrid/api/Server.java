@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - YBRID®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,17 +26,17 @@ import java.net.MalformedURLException;
 import java.util.logging.Logger;
 
 /**
- * This class represents the connection to a specific ybrid server.
+ * This class represents the connection to a specific Ybrid server.
  *
  * Objects of this class can be reused for several sessions.
  */
 public class Server implements Connectable {
     /**
-     * The default port used for ybrid servers.
+     * The default port used for Ybrid servers.
      */
     public static final int DEFAULT_PORT = 80;
     /**
-     * The default security setting for ybrid servers.
+     * The default security setting for Ybrid servers.
      */
     public static final boolean DEFAULT_SECURE = false;
 
