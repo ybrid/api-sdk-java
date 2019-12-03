@@ -32,7 +32,7 @@ public interface Metadata {
      * Returns the currently playing Item.
      * The result can be used to access metadata for the item for a display of what is currently played.
      *
-     * @return Retruns the current item.
+     * @return Returns the current item.
      */
     Item getCurrentItem();
 

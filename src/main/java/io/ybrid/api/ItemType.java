@@ -47,7 +47,7 @@ public enum ItemType {
      */
     NEWS,
     /**
-     * Traffic annoucement.
+     * Traffic announcement.
      */
     TRAFFIC,
     /**

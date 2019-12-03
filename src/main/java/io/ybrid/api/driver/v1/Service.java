@@ -30,8 +30,8 @@ import java.util.Map;
 
 public class Service extends io.ybrid.api.driver.common.Service {
     private static final String STATION_NAME = "name";
-    private static final String STATION_GENERE = "genre";
-    private static final String[] STATION_METADATA_LIST = {STATION_NAME, STATION_GENERE};
+    private static final String STATION_GENRE = "genre";
+    private static final String[] STATION_METADATA_LIST = {STATION_NAME, STATION_GENRE};
 
     private HashMap<String, String> station = new HashMap<>();
 
@@ -56,7 +56,7 @@ public class Service extends io.ybrid.api.driver.common.Service {
 
     @Override
     public String getGenre() {
-        return station.get(STATION_GENERE);
+        return station.get(STATION_GENRE);
     }
 
     @Override
