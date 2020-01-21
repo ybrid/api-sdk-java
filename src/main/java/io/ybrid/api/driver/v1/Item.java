@@ -30,8 +30,10 @@ import java.net.MalformedURLException;
 
 final class Item extends io.ybrid.api.driver.common.Item {
     Item(JSONObject json) throws MalformedURLException {
-        identifier = json.getString("id");
         JSONArray array;
+        String type;
+
+        identifier = json.getString("id");
 
         for (String key : metadataList) {
             String value = json.getString(key);
@@ -39,7 +41,12 @@ final class Item extends io.ybrid.api.driver.common.Item {
                 metadata.put(key, value);
         }
 
-        type = ItemType.valueOf(json.getString("type"));
+        type = json.getString("type");
+        if (type == null || type.equals("") || type.equals("unrecognized")) {
+            this.type = null;
+        } else {
+            this.type = ItemType.valueOf(json.getString("type"));
+        }
 
         duration = json.getLong("durationMillis");
 
