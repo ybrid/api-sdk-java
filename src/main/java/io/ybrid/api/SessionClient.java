@@ -30,6 +30,13 @@ import java.time.Instant;
  */
 public interface SessionClient {
     /**
+     * Get the current set of {@link Capability Capabilities} supported.
+     * This can be used to display different options to the user.
+     * @return Returns the set of current {@link Capability Capabilities}.
+     */
+    CapabilitySet getCapabilities();
+
+    /**
      * Get the current Bouquet of active Services.
      * The Bouquet may be displayed to the user to select the Service to listen to.
      * @return Returns the current Bouquet.
