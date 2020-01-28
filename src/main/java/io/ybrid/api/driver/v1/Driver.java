@@ -31,11 +31,14 @@ import java.net.URL;
 import java.util.logging.Level;
 
 public final class Driver extends io.ybrid.api.driver.common.Driver {
+    private static final Capability[] initialCapabilities = {Capability.PLAYBACK_URL};
     private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
     public Driver(Session session) {
         super(session);
 
         this.currentService = bouquet.getDefaultService();
+
+        capabilities.add(initialCapabilities);
     }
 
     @Override
@@ -82,8 +85,19 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public Metadata getMetadata() throws IOException {
+        Metadata ret;
+
         assertConnected();
-        return new Metadata((Service) getCurrentService(), request("show-meta"));
+
+        ret = new Metadata((Service) getCurrentService(), request("show-meta"));
+
+        if (ret.getSwapInfo().canSwap()) {
+            capabilities.add(Capability.SWAP_ITEM);
+        } else {
+            capabilities.remove(Capability.SWAP_ITEM);
+        }
+
+        return ret;
     }
 
     @Override

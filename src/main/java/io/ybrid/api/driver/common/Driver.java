@@ -25,6 +25,7 @@ package io.ybrid.api.driver.common;
 import io.ybrid.api.Metadata;
 import io.ybrid.api.Service;
 import io.ybrid.api.*;
+import io.ybrid.api.driver.CapabilitySet;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ import java.util.logging.Logger;
 
 public abstract class Driver implements Connectable, SessionClient {
     protected final Session session;
+    protected final CapabilitySet capabilities = new CapabilitySet();
     protected boolean connected = false;
     protected String hostname;
     protected String token;
@@ -63,6 +65,11 @@ public abstract class Driver implements Connectable, SessionClient {
         String mountpoint = session.getAlias().getUrl().getPath();
         assertValidMountpoint(mountpoint);
         return mountpoint;
+    }
+
+    @Override
+    public io.ybrid.api.CapabilitySet getCapabilities() {
+        return capabilities;
     }
 
     @Override

@@ -57,12 +57,16 @@ public class CapabilitySet implements io.ybrid.api.CapabilitySet {
         return set.containsAll(c);
     }
 
-    void add(Capability o) {
+    public void add(Capability o) {
         set.add(o);
     }
 
-    void add(Capability[] o) {
+    public void add(Capability[] o) {
         set.addAll(Arrays.asList(o));
+    }
+
+    public void remove(Capability o) {
+        set.remove(o);
     }
 
     @Override
