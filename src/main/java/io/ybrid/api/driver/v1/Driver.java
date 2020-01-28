@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
 
 public final class Driver extends io.ybrid.api.driver.common.Driver {
     private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
@@ -115,8 +116,19 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         this.token = token;
 
         hostname = response.getString("host");
-        if (hostname != null)
-            this.hostname = hostname;
+
+        if (hostname != null) {
+            if (hostname.equals("localhost") || hostname.equals("localhost.localdomain")) {
+                session.getServer().getLogger().log(Level.SEVERE, "Invalid hostname from server: " + hostname);
+                hostname = null;
+            }
+        }
+
+        /* We did not get anything useful from the server */
+        if (hostname == null)
+            hostname = session.getServer().getHostname();
+
+        this.hostname = hostname;
 
         connected = true;
     }
