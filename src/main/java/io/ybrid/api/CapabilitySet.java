@@ -66,7 +66,7 @@ public interface CapabilitySet extends Iterable<Capability> {
      */
     default CapabilitySet makePlayerSet() {
         return new CapabilitySet() {
-            private CapabilitySet parent = CapabilitySet.this;
+            private final CapabilitySet parent = CapabilitySet.this;
 
             @Override
             public Iterator<Capability> iterator() {
