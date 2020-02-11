@@ -57,6 +57,11 @@ public class CapabilitySet implements io.ybrid.api.CapabilitySet {
         return set.containsAll(c);
     }
 
+    @Override
+    public EnumSet<Capability> toSet() {
+        return set.clone();
+    }
+
     public void add(Capability o) {
         set.add(o);
     }
@@ -67,64 +72,5 @@ public class CapabilitySet implements io.ybrid.api.CapabilitySet {
 
     public void remove(Capability o) {
         set.remove(o);
-    }
-
-    @Override
-    public io.ybrid.api.CapabilitySet makePlayerSet() {
-        return new io.ybrid.api.CapabilitySet() {
-            private CapabilitySet parent = CapabilitySet.this;
-
-            @Override
-            public Iterator<Capability> iterator() {
-                if (contains(Capability.PLAYBACK)) {
-                    EnumSet<Capability> n = parent.set.clone();
-                    n.add(Capability.PLAYBACK);
-                    return Collections.unmodifiableSet(n).iterator();
-                } else {
-                    return parent.iterator();
-                }
-            }
-
-            @Override
-            public int size() {
-                int size = parent.size();
-
-                if (contains(Capability.PLAYBACK_URL))
-                    size++;
-
-                return size;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return parent.isEmpty();
-            }
-
-            @Override
-            public boolean contains(Capability o) {
-                if (o == Capability.PLAYBACK && contains(Capability.PLAYBACK_URL))
-                    return true;
-                return parent.contains(o);
-            }
-
-            @Override
-            public boolean containsAll(Collection<Capability> c) {
-                if (!c.contains(Capability.PLAYBACK)) {
-                    return parent.containsAll(c);
-                }
-
-                for (Capability cap : c) {
-                    if (!contains(cap))
-                        return false;
-                }
-
-                return true;
-            }
-
-            @Override
-            public io.ybrid.api.CapabilitySet makePlayerSet() {
-                return parent.makePlayerSet();
-            }
-        };
     }
 }

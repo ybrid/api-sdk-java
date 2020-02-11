@@ -23,6 +23,9 @@
 package io.ybrid.api;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Iterator;
 
 /**
  * The CapabilitySet contains a set of {@link Capability Capabilities} supported by a {@link SessionClient}.
@@ -61,5 +64,118 @@ public interface CapabilitySet extends Iterable<Capability> {
      * {@link Capability#PLAYBACK_URL} is present in the parent set.
      * @return the new set.
      */
-    CapabilitySet makePlayerSet();
+    default CapabilitySet makePlayerSet() {
+        return new CapabilitySet() {
+            private CapabilitySet parent = CapabilitySet.this;
+
+            @Override
+            public Iterator<Capability> iterator() {
+                if (contains(Capability.PLAYBACK)) {
+                    EnumSet<Capability> n = parent.toSet();
+                    n.add(Capability.PLAYBACK);
+                    return Collections.unmodifiableSet(n).iterator();
+                } else {
+                    return parent.iterator();
+                }
+            }
+
+            @Override
+            public int size() {
+                int size = parent.size();
+
+                if (contains(Capability.PLAYBACK_URL))
+                    size++;
+
+                return size;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return parent.isEmpty();
+            }
+
+            @Override
+            public boolean contains(Capability o) {
+                if (o == Capability.PLAYBACK && contains(Capability.PLAYBACK_URL))
+                    return true;
+                return parent.contains(o);
+            }
+
+            @Override
+            public boolean containsAll(Collection<Capability> c) {
+                if (!c.contains(Capability.PLAYBACK)) {
+                    return parent.containsAll(c);
+                }
+
+                for (Capability cap : c) {
+                    if (!contains(cap))
+                        return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            public CapabilitySet makePlayerSet() {
+                return parent.makePlayerSet();
+            }
+
+            @Override
+            public EnumSet<Capability> toSet() {
+                return parent.toSet();
+            }
+        };
+    }
+
+    /**
+     * This builds a {@link EnumSet} that corresponds to the current state of the set.
+     * The returned {@link EnumSet} is a copy and can be copied by the caller at will.
+     * It will not be updated by changes of the object it was obtained.
+     *
+     * @return Returns a {@link EnumSet} representing the current state.
+     */
+    EnumSet<Capability> toSet();
+
+    /**
+     * This builds a new {@code CapabilitySet} using given {@code inputSet}.
+     * A copy of the set is made so modifications to it will not propagate.
+     *
+     * @param inputSet The source {@link EnumSet} to use.
+     * @return A new {@code CapabilitySet} build from the {@code inputSet}.
+     */
+    static CapabilitySet fromSet(EnumSet<Capability> inputSet) {
+        final EnumSet<Capability> set = inputSet.clone();
+
+        return new CapabilitySet() {
+            @Override
+            public int size() {
+                return set.size();
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return set.isEmpty();
+            }
+
+            @Override
+            public boolean contains(Capability o) {
+                return set.contains(o);
+            }
+
+            @Override
+            public boolean containsAll(Collection<Capability> c) {
+                return set.containsAll(c);
+            }
+
+            @Override
+            public EnumSet<Capability> toSet() {
+                return set.clone();
+            }
+
+            @Override
+            public Iterator<Capability> iterator() {
+                return Collections.unmodifiableSet(set).iterator();
+            }
+        };
+    }
 }
