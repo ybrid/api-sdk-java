@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 public abstract class Driver implements Connectable, SessionClient {
     protected final Session session;
     protected final CapabilitySet capabilities = new CapabilitySet();
+    protected boolean haveCapabilitiesChanged = true;
     protected boolean connected = false;
     protected String hostname;
     protected String token;
@@ -69,7 +70,13 @@ public abstract class Driver implements Connectable, SessionClient {
 
     @Override
     public io.ybrid.api.CapabilitySet getCapabilities() {
+        haveCapabilitiesChanged = false;
         return capabilities;
+    }
+
+    @Override
+    public boolean haveCapabilitiesChanged() {
+        return haveCapabilitiesChanged;
     }
 
     @Override

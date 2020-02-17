@@ -32,9 +32,17 @@ public interface SessionClient {
     /**
      * Get the current set of {@link Capability Capabilities} supported.
      * This can be used to display different options to the user.
+     *
+     * Calling this resets the flag returned by {@link #haveCapabilitiesChanged()}
      * @return Returns the set of current {@link Capability Capabilities}.
      */
     CapabilitySet getCapabilities();
+
+    /**
+     * Checks whether the {@link CapabilitySet} has changed since last call to {@link #getCapabilities()}.
+     * @return Whether {@link #getCapabilities()} needs to be called again.
+     */
+    boolean haveCapabilitiesChanged();
 
     /**
      * Get the current Bouquet of active Services.

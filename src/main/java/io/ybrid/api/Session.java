@@ -69,6 +69,11 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
+    public boolean haveCapabilitiesChanged() {
+        return driver.haveCapabilitiesChanged();
+    }
+
+    @Override
     public Bouquet getBouquet() {
         return driver.getBouquet();
     }

@@ -73,4 +73,12 @@ public class CapabilitySet implements io.ybrid.api.CapabilitySet {
     public void remove(Capability o) {
         set.remove(o);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CapabilitySet that = (CapabilitySet) o;
+        return set.equals(that.set);
+    }
 }

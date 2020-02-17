@@ -96,6 +96,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         } else {
             capabilities.remove(Capability.SWAP_ITEM);
         }
+        haveCapabilitiesChanged = true;
 
         return ret;
     }
