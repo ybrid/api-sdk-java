@@ -34,6 +34,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Driver implements Connectable, SessionClient {
     protected final Session session;
@@ -81,10 +83,12 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     protected JSONObject request(URL url, String body) throws IOException {
+        final Logger logger = session.getServer().getLogger();
         HttpURLConnection connection;
         InputStream inputStream;
         OutputStream outputStream;
         String data;
+        final JSONObject jsonObject;
 
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -103,7 +107,10 @@ public abstract class Driver implements Connectable, SessionClient {
         inputStream.close();
         connection.disconnect();
 
-        return new JSONObject(data);
+        jsonObject = new JSONObject(data);
+        if (logger.isLoggable(Level.FINE))
+            logger.fine("request: url=" + url + ", jsonObject=" + jsonObject);
+        return jsonObject;
     }
 
     protected JSONObject request(String command) throws IOException {
