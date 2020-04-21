@@ -24,8 +24,18 @@ package io.ybrid.api.driver;
 
 
 import io.ybrid.api.Alias;
+import io.ybrid.api.ApiVersion;
 import io.ybrid.api.Server;
+import io.ybrid.api.Utils;
 import io.ybrid.api.driver.common.Factory;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.EnumSet;
 
 /**
  * This class selects a {@link Factory} based on a given {@link Server} and {@link Alias}.
@@ -35,12 +45,59 @@ import io.ybrid.api.driver.common.Factory;
 public final class FactorySelector {
     /**
      * Gets a {@link Factory} based on the parameters.
+     * This method may access the network.
      *
      * @param server The {@link Server} to use.
      * @param alias The {@link Alias} to use.
      * @return The instance of the {@link Factory} to use.
      */
-    public static Factory getFactory(Server server, Alias alias) {
-        return new io.ybrid.api.driver.v1.Factory();
+    public static Factory getFactory(Server server, Alias alias) throws MalformedURLException {
+        EnumSet<ApiVersion> set = getSupportedVersions(server, alias);
+
+        if (set.contains(ApiVersion.V1))
+            return new io.ybrid.api.driver.v1.Factory();
+
+        throw new UnsupportedOperationException("Server and client do not share a common supported version.");
+    }
+
+    private static EnumSet<ApiVersion> getSupportedVersions(Server server, Alias alias) throws MalformedURLException {
+        EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
+        String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
+
+        if (server == null)
+            server = alias.getServer();
+
+        try {
+            JSONObject response;
+            JSONArray supportedVersions;
+            URL url;
+            HttpURLConnection connection;
+
+            url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
+            connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(false);
+            connection.setDoInput(true);
+
+            connection.connect();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                response = Utils.slurpToJSONObject(connection.getInputStream());
+            } else {
+                response = Utils.slurpToJSONObject(connection.getErrorStream());
+            }
+
+            supportedVersions = response.getJSONObject("__responseHeader").getJSONArray("supportedVersions");
+            for (int i = 0; i < supportedVersions.length(); i++) {
+                ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
+                break;
+            }
+        } catch (IOException ignored) {
+            // Best guess:
+            ret.clear();
+            ret.add(ApiVersion.V1);
+        }
+        return ret;
     }
 }
