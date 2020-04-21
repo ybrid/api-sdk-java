@@ -87,7 +87,6 @@ public abstract class Driver implements Connectable, SessionClient {
         HttpURLConnection connection;
         InputStream inputStream;
         OutputStream outputStream;
-        String data;
         final JSONObject jsonObject;
 
         connection = (HttpURLConnection) url.openConnection();
@@ -103,11 +102,10 @@ public abstract class Driver implements Connectable, SessionClient {
         }
 
         inputStream = connection.getInputStream();
-        data = Utils.slurpToString(inputStream);
+        jsonObject = Utils.slurpToJSONObject(inputStream);
         inputStream.close();
         connection.disconnect();
 
-        jsonObject = new JSONObject(data);
         if (logger.isLoggable(Level.FINE))
             logger.fine("request: url=" + url + ", jsonObject=" + jsonObject);
         return jsonObject;

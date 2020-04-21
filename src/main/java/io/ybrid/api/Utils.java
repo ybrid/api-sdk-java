@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,5 +68,9 @@ public class Utils {
     public static byte[] slurpToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = slurp(inputStream);
         return result.toByteArray();
+    }
+
+    public static JSONObject slurpToJSONObject(InputStream inputStream) throws IOException {
+        return new JSONObject(slurpToString(inputStream));
     }
 }
