@@ -34,4 +34,22 @@ public enum ApiVersion {
      * Beta of version 2 of the Ybrid® API.
      */
     V2_BETA;
+
+    /** Returns the enum constant of this type with the specified on-wire representation.
+     *
+     * This is like {@link #valueOf(String)} except that it uses the on-wire representation
+     * as input.
+     * @param input The on-wire representation to convert.
+     * @return The corresponding enum value.
+     */
+    public static ApiVersion fromWire(String input) {
+        switch (input) {
+            case "v1":
+                return V1;
+            case "v2":
+                return V2_BETA;
+            default:
+                throw new IllegalArgumentException("No enum constant for string \"" + input +"\"");
+        }
+    }
 }
