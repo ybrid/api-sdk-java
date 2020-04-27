@@ -51,7 +51,7 @@ public class Response {
     }
 
     protected JSONObject getRawMetadata() {
-        if (!responseObject.has("meŧadata"))
+        if (!responseObject.has("metadata"))
             return null;
         return responseObject.getJSONObject("metadata");
     }

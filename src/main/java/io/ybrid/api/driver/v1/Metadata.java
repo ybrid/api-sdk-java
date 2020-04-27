@@ -32,11 +32,23 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
         this.service = service;
         this.requestTime = requestTime;
 
-        currentBitRate = json.getInt("currentBitRate");
+        if (json.has("currentBitRate")) {
+            currentBitRate = json.getInt("currentBitRate");
+        } else {
+            currentBitRate = -1;
+        }
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
-        swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
-        timeToNextItem = json.getLong("timeToNextItemMillis");
+        if (json.has("swapInfo")) {
+            swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
+        } else {
+            swapInfo = null;
+        }
+        if (json.has("timeToNextItemMillis")) {
+            timeToNextItem = json.getLong("timeToNextItemMillis");
+        } else {
+            timeToNextItem = -1;
+        }
 
         if (service instanceof io.ybrid.api.driver.v1.Service)
             ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));
