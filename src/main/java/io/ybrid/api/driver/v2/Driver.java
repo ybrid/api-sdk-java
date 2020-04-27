@@ -22,10 +22,7 @@
 
 package io.ybrid.api.driver.v2;
 
-import io.ybrid.api.Bouquet;
-import io.ybrid.api.Metadata;
-import io.ybrid.api.Session;
-import io.ybrid.api.SwapMode;
+import io.ybrid.api.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -106,6 +103,9 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void disconnect() {
+        capabilities.remove(Capability.PLAYBACK_URL);
+        haveCapabilitiesChanged = true;
+
         try {
             v2request(COMMAND_SESSION_CLOSE);
         } catch (IOException e) {
@@ -127,6 +127,9 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         token = response.getToken();
 
         connected = true;
+
+        capabilities.add(Capability.PLAYBACK_URL);
+        haveCapabilitiesChanged = true;
     }
 
     @Override
