@@ -24,6 +24,7 @@ package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.Bouquet;
 import io.ybrid.api.Metadata;
+import io.ybrid.api.driver.v1.SwapInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,10 +34,16 @@ import java.util.*;
 
 public class State {
     private final Map<String, Service> services = new HashMap<>();
+    private final EnumSet<SubObject> changed = EnumSet.noneOf(SubObject.class);
     private Service defaultService;
     private Service currentService;
     private Metadata currentMetadata;
+    private SwapInfo swapInfo;
     private URL baseUrl;
+
+    public enum SubObject {
+        SWAP_INFO;
+    }
 
     public State(URL baseUrl) {
         this.baseUrl = baseUrl;
@@ -46,8 +53,25 @@ public class State {
         return baseUrl;
     }
 
+    public boolean hasChanged(SubObject subObject) {
+        return changed.contains(subObject);
+    }
+
+    private void clearChanged(SubObject subObject) {
+        changed.remove(subObject);
+    }
+
+    private void setChanged(SubObject subObject) {
+        changed.add(subObject);
+    }
+
     public Metadata getMetadata() {
         return currentMetadata;
+    }
+
+    public SwapInfo getSwapInfo() {
+        clearChanged(SubObject.SWAP_INFO);
+        return swapInfo;
     }
 
     private void updateMetadata(JSONObject raw) {
@@ -111,10 +135,22 @@ public class State {
         }
     }
 
+    private void updateSwapInfo(JSONObject raw) {
+        SwapInfo newSwapInfo;
+        if (raw == null)
+            return;
+
+        newSwapInfo = new SwapInfo(raw);
+        if (!Objects.equals(swapInfo, newSwapInfo))
+            setChanged(SubObject.SWAP_INFO);
+        swapInfo = newSwapInfo;
+    }
+
     void accept(Response response) {
         updateBouquet(response.getRawBouquet());
         updateMetadata(response.getRawMetadata()); // This must be after updateBouquet() has been called.
         updatePlayout(response.getRawPlayout());
+        updateSwapInfo(response.getRawSwapInfo());
         // TODO
     }
 }

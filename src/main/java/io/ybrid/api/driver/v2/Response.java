@@ -61,4 +61,10 @@ public class Response {
             return null;
         return responseObject.getJSONObject("playout");
     }
+
+    protected JSONObject getRawSwapInfo() {
+        if (!responseObject.has("swapInfo"))
+            return null;
+        return responseObject.getJSONObject("swapInfo");
+    }
 }

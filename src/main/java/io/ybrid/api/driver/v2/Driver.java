@@ -60,6 +60,18 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         return getUrl("?session-id=" + token);
     }
 
+    private void handleUpdates() {
+        if (state.hasChanged(State.SubObject.SWAP_INFO)) {
+            SwapInfo swapInfo = state.getSwapInfo();
+            if (swapInfo.canSwap()) {
+                capabilities.add(Capability.SWAP_ITEM);
+            } else {
+                capabilities.remove(Capability.SWAP_ITEM);
+            }
+            haveCapabilitiesChanged = true;
+        }
+    }
+
     @Override
     protected JSONObject request(String command, String parameters) throws IOException {
         String body = null;
@@ -94,6 +106,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
         Response response = new Response(request(command, renderedParameters));
         state.accept(response);
+        handleUpdates();
         return response;
     }
 

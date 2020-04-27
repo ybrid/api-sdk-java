@@ -22,6 +22,8 @@
 
 package io.ybrid.api.driver.common;
 
+import java.util.Objects;
+
 abstract public class SwapInfo implements io.ybrid.api.SwapInfo {
     protected boolean nextSwapReturnsToMain;
     protected int swapsLeft;
@@ -40,5 +42,19 @@ abstract public class SwapInfo implements io.ybrid.api.SwapInfo {
                 "nextSwapReturnsToMain=" + nextSwapReturnsToMain +
                 ", swapsLeft=" + swapsLeft +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SwapInfo swapInfo = (SwapInfo) o;
+        return nextSwapReturnsToMain == swapInfo.nextSwapReturnsToMain &&
+                swapsLeft == swapInfo.swapsLeft;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nextSwapReturnsToMain, swapsLeft);
     }
 }
