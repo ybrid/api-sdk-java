@@ -75,7 +75,9 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
             body = "session-id=" + token;
         }
 
-        return request(getUrl("/ctrl/v2/" + command), body);
+        if (body == null)
+            body = "";
+        return request(getUrl("/ctrl/v2/" + command + "?" + body), null);
     }
 
     protected Response v2request(String command, Map<String, String> parameters) throws IOException {
