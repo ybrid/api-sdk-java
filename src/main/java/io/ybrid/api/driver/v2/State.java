@@ -101,9 +101,20 @@ public class State {
         }
     }
 
+    private void updatePlayout(JSONObject raw) {
+        if (raw == null)
+            return;
+
+        try {
+            baseUrl = new URL(raw.getString("baseURL"));
+        } catch (MalformedURLException ignored) {
+        }
+    }
+
     void accept(Response response) {
         updateBouquet(response.getRawBouquet());
         updateMetadata(response.getRawMetadata()); // This must be after updateBouquet() has been called.
+        updatePlayout(response.getRawPlayout());
         // TODO
     }
 }

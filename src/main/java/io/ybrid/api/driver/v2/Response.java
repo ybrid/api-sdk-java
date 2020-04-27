@@ -55,4 +55,10 @@ public class Response {
             return null;
         return responseObject.getJSONObject("metadata");
     }
+
+    protected JSONObject getRawPlayout() {
+        if (!responseObject.has("playout"))
+            return null;
+        return responseObject.getJSONObject("playout");
+    }
 }
