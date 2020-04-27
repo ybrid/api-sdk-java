@@ -22,11 +22,12 @@
 
 package io.ybrid.api.driver.v1;
 
+import io.ybrid.api.driver.common.Service;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
-final class Metadata extends io.ybrid.api.driver.common.Metadata {
+public final class Metadata extends io.ybrid.api.driver.common.Metadata {
     private Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
         this.service = service;
         this.requestTime = requestTime;
@@ -34,12 +35,14 @@ final class Metadata extends io.ybrid.api.driver.common.Metadata {
         currentBitRate = json.getInt("currentBitRate");
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
-        service.updateStation(json.getJSONObject("station"));
         swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
         timeToNextItem = json.getLong("timeToNextItemMillis");
+
+        if (service instanceof io.ybrid.api.driver.v1.Service)
+            ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));
     }
 
-    Metadata(Service service, JSONObject json) throws MalformedURLException {
+    public Metadata(Service service, JSONObject json) throws MalformedURLException {
         this(service, json, System.currentTimeMillis());
     }
 

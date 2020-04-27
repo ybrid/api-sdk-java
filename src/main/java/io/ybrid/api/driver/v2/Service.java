@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,19 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api.driver.v2;
 
-import io.ybrid.api.Alias;
-import io.ybrid.api.Bouquet;
-import io.ybrid.api.Server;
-import io.ybrid.api.Session;
+import org.json.JSONObject;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 
-/**
- * This implements a Factory for drivers. This should not be used directly.
- */
-abstract public class Factory {
-    /**
-     * Gets a driver instance.
-     * @param session The {@link Session} to return a driver for.
-     * @return Returns the new instance of the driver.
-     */
-    public abstract Driver getDriver(Session session);
+public class Service extends io.ybrid.api.driver.common.Service {
+    public Service(JSONObject json) throws MalformedURLException {
+        super(json);
+    }
 
-    /**
-     * Get the current {@link Bouquet} from the server.
-     * @param server The {@link Server} to use.
-     * @param alias The {@link Alias} to use.
-     * @return Returns the {@link Bouquet} as returned by the server.
-     */
-    public abstract Bouquet getBouquet(Server server, Alias alias) throws IOException;
+    @Override
+    public String getGenre() {
+        return null;
+    }
 }

@@ -31,11 +31,12 @@ import io.ybrid.api.driver.common.Factory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.EnumSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class selects a {@link Factory} based on a given {@link Server} and {@link Alias}.
@@ -53,6 +54,21 @@ public final class FactorySelector {
      */
     public static Factory getFactory(Server server, Alias alias) throws MalformedURLException {
         EnumSet<ApiVersion> set = getSupportedVersions(server, alias);
+        final Logger logger;
+
+        if (server == null)
+            server = alias.getServer();
+
+        logger = server.getLogger();
+
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info("Supported versions for " + alias.getUrl().toString() +
+                    " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
+                    " = " + set);
+        }
+
+        if (set.contains(ApiVersion.V2_BETA))
+            return new io.ybrid.api.driver.v2.Factory();
 
         if (set.contains(ApiVersion.V1))
             return new io.ybrid.api.driver.v1.Factory();
@@ -91,9 +107,8 @@ public final class FactorySelector {
             supportedVersions = response.getJSONObject("__responseHeader").getJSONArray("supportedVersions");
             for (int i = 0; i < supportedVersions.length(); i++) {
                 ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
-                break;
             }
-        } catch (IOException ignored) {
+        } catch (Exception e) {
             // Best guess:
             ret.clear();
             ret.add(ApiVersion.V1);

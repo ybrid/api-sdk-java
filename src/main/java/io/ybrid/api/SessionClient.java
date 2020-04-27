@@ -49,7 +49,7 @@ public interface SessionClient {
      * The Bouquet may be displayed to the user to select the Service to listen to.
      * @return Returns the current Bouquet.
      */
-    Bouquet getBouquet();
+    Bouquet getBouquet() throws IOException;
 
     /**
      * This call requests the session to be brought back to the live portion of the current service.

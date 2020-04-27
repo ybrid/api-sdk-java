@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,30 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.Alias;
 import io.ybrid.api.Bouquet;
 import io.ybrid.api.Server;
 import io.ybrid.api.Session;
+import io.ybrid.api.driver.common.Driver;
 
 import java.io.IOException;
 
-/**
- * This implements a Factory for drivers. This should not be used directly.
- */
-abstract public class Factory {
-    /**
-     * Gets a driver instance.
-     * @param session The {@link Session} to return a driver for.
-     * @return Returns the new instance of the driver.
-     */
-    public abstract Driver getDriver(Session session);
+public class Factory extends io.ybrid.api.driver.common.Factory {
+    @Override
+    public Driver getDriver(Session session) {
+        return new io.ybrid.api.driver.v2.Driver(session);
+    }
 
-    /**
-     * Get the current {@link Bouquet} from the server.
-     * @param server The {@link Server} to use.
-     * @param alias The {@link Alias} to use.
-     * @return Returns the {@link Bouquet} as returned by the server.
-     */
-    public abstract Bouquet getBouquet(Server server, Alias alias) throws IOException;
+    @Override
+    public Bouquet getBouquet(Server server, Alias alias) throws IOException {
+        Driver driver;
+        if (server == null) {
+            driver = getDriver(alias.createSession());
+        } else {
+            driver = getDriver(server.createSession(alias));
+        }
+        return driver.getBouquet();
+    }
 }

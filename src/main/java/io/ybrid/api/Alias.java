@@ -24,6 +24,7 @@ package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
@@ -123,7 +124,7 @@ public class Alias {
      * @return Returns the current {@link Bouquet}.
      * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Bouquet getBouquet() throws MalformedURLException {
+    public Bouquet getBouquet() throws IOException {
         return FactorySelector.getFactory(getServer(), this).getBouquet(getServer(), this);
     }
 }

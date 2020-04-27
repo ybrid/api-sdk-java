@@ -42,9 +42,9 @@ public class Session implements Connectable, SessionClient {
     private final Alias alias;
 
     Session(Server server, Alias alias) throws MalformedURLException {
-        this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
         this.server = server;
         this.alias = alias;
+        this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
     }
 
     /**
@@ -74,7 +74,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public Bouquet getBouquet() {
+    public Bouquet getBouquet() throws IOException {
         return driver.getBouquet();
     }
 
