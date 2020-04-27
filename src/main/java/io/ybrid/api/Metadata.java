@@ -47,6 +47,7 @@ public interface Metadata {
      * The exact bitrate can only be obtained from the audio decoder.
      * @return Returns the current bitrate in [Bit/s].
      */
+    @Deprecated
     int getCurrentBitRate();
 
     /**
@@ -59,6 +60,7 @@ public interface Metadata {
      * Returns the information on the current swap state.
      * @return Returns the current SwapInfo.
      */
+    @Deprecated
     SwapInfo getSwapInfo();
 
     /**
@@ -67,6 +69,7 @@ public interface Metadata {
      * may return a negative number if the start of the next Item is in the past.
      * @return Returns the time to the next item in [ms].
      */
+    @Deprecated
     long getTimeToNextItem();
 
     /**
