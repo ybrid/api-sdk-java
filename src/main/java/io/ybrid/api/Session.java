@@ -118,6 +118,11 @@ public class Session implements Connectable, SessionClient {
         return driver.getMetadata();
     }
 
+    @Override
+    public PlayoutInfo getPlayoutInfo() throws IOException {
+        return driver.getPlayoutInfo();
+    }
+
     /**
      * gets the {@link URL} of the audio stream.
      * @return The {@link URL} of the stream.

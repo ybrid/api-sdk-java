@@ -158,6 +158,12 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
+    public PlayoutInfo getPlayoutInfo() throws IOException {
+        v2request(COMMAND_SESSION_INFO);
+        return new io.ybrid.api.driver.common.PlayoutInfo(state.getSwapInfo(), null);
+    }
+
+    @Override
     public void swapItem(SwapMode mode) throws IOException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("mode", mode.getOnWire());

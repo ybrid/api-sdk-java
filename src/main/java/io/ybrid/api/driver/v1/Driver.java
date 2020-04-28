@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.logging.Level;
 
 public final class Driver extends io.ybrid.api.driver.common.Driver {
@@ -99,6 +100,12 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         haveCapabilitiesChanged = true;
 
         return ret;
+    }
+
+    @Override
+    public PlayoutInfo getPlayoutInfo() throws IOException {
+        Metadata metadata = getMetadata();
+        return new io.ybrid.api.driver.common.PlayoutInfo(metadata.getSwapInfo(), Duration.ofMillis(metadata.getTimeToNextItem()));
     }
 
     @Override

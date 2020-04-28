@@ -112,4 +112,11 @@ public interface SessionClient {
      * @return This returns the current Service.
      */
     Service getCurrentService();
+
+    /**
+     * Get the current {@link PlayoutInfo} for the session.
+     * @return Returns the current {@link PlayoutInfo}.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    PlayoutInfo getPlayoutInfo() throws IOException;
 }

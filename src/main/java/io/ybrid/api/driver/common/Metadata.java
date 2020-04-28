@@ -44,6 +44,7 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
+    @Deprecated
     public int getCurrentBitRate() {
         return currentBitRate;
     }
@@ -54,11 +55,13 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
+    @Deprecated
     public SwapInfo getSwapInfo() {
         return swapInfo;
     }
 
     @Override
+    @Deprecated
     public long getTimeToNextItem() {
         return timeToNextItem - (System.currentTimeMillis() - requestTime);
     }
