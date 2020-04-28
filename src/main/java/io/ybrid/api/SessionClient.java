@@ -127,5 +127,5 @@ public interface SessionClient {
      * Swap to a different Service.
      * @param service The new service to listen to.
      */
-    void swapService(Service service);
+    void swapService(Service service) throws IOException;
 }

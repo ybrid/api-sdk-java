@@ -84,7 +84,7 @@ public abstract class Driver implements Connectable, SessionClient {
         return currentService;
     }
 
-    public void swapService(Service service) {
+    public void swapService(Service service) throws IOException {
         if (service.equals(getCurrentService()))
             return;
 

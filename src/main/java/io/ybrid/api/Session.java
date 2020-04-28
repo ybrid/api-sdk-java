@@ -109,7 +109,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void swapService(Service service) {
+    public void swapService(Service service) throws IOException {
         driver.swapService(service);
     }
 
