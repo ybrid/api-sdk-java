@@ -85,8 +85,8 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void WindTo(Instant timestamp) throws IOException {
-        driver.WindTo(timestamp);
+    public void windTo(Instant timestamp) throws IOException {
+        driver.windTo(timestamp);
     }
 
     @Override

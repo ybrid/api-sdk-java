@@ -147,7 +147,7 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public void WindTo(Instant timestamp) throws IOException {
+    public void windTo(Instant timestamp) throws IOException {
         throw new UnsupportedOperationException();
     }
 

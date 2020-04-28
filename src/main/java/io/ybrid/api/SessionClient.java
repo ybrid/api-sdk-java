@@ -80,10 +80,22 @@ public interface SessionClient {
 
     /**
      * This call requests the session to be brought to the given time within the current service.
+     *
+     * @param timestamp The timestamp to jump to.
+     * @throws IOException Thrown on any I/O-Error.
+     * @deprecated Use {@link #windTo(Instant)} instead.
+     */
+    @Deprecated
+    default void WindTo(Instant timestamp) throws IOException {
+        windTo(timestamp);
+    }
+
+    /**
+     * This call requests the session to be brought to the given time within the current service.
      * @param timestamp The timestamp to jump to.
      * @throws IOException Thrown on any I/O-Error.
      */
-    void WindTo(Instant timestamp) throws IOException;
+    void windTo(Instant timestamp) throws IOException;
 
     /**
      * This call allows to move in the stream by a relative time.
