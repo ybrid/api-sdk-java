@@ -61,7 +61,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     private void handleUpdates() {
-        if (state.hasChanged(State.SubObject.SWAP_INFO)) {
+        if (state.hasChanged(SubInfo.SWAP_INFO)) {
             SwapInfo swapInfo = state.getSwapInfo();
             if (swapInfo.canSwap()) {
                 capabilities.add(Capability.SWAP_ITEM);

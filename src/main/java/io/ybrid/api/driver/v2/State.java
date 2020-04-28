@@ -23,7 +23,9 @@
 package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.Bouquet;
+import io.ybrid.api.KnowsSubInfoState;
 import io.ybrid.api.Metadata;
+import io.ybrid.api.SubInfo;
 import io.ybrid.api.driver.v1.SwapInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,18 +34,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-public class State {
+public class State implements KnowsSubInfoState {
     private final Map<String, Service> services = new HashMap<>();
-    private final EnumSet<SubObject> changed = EnumSet.noneOf(SubObject.class);
+    private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private Service defaultService;
     private Service currentService;
     private Metadata currentMetadata;
     private SwapInfo swapInfo;
     private URL baseUrl;
-
-    public enum SubObject {
-        SWAP_INFO;
-    }
 
     public State(URL baseUrl) {
         this.baseUrl = baseUrl;
@@ -53,16 +51,17 @@ public class State {
         return baseUrl;
     }
 
-    public boolean hasChanged(SubObject subObject) {
-        return changed.contains(subObject);
+    @Override
+    public boolean hasChanged(SubInfo what) {
+        return changed.contains(what);
     }
 
-    private void clearChanged(SubObject subObject) {
-        changed.remove(subObject);
+    private void clearChanged(SubInfo what) {
+        changed.remove(what);
     }
 
-    private void setChanged(SubObject subObject) {
-        changed.add(subObject);
+    private void setChanged(SubInfo what) {
+        changed.add(what);
     }
 
     public Metadata getMetadata() {
@@ -70,7 +69,7 @@ public class State {
     }
 
     public SwapInfo getSwapInfo() {
-        clearChanged(SubObject.SWAP_INFO);
+        clearChanged(SubInfo.SWAP_INFO);
         return swapInfo;
     }
 
@@ -142,7 +141,7 @@ public class State {
 
         newSwapInfo = new SwapInfo(raw);
         if (!Objects.equals(swapInfo, newSwapInfo))
-            setChanged(SubObject.SWAP_INFO);
+            setChanged(SubInfo.SWAP_INFO);
         swapInfo = newSwapInfo;
     }
 
