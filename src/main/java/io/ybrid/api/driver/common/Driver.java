@@ -34,6 +34,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -151,7 +152,7 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public void Wind(long duration) throws IOException {
+    public void wind(Duration duration) throws IOException {
         throw new UnsupportedOperationException();
     }
 

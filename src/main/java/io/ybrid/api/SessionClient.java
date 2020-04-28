@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -88,10 +89,24 @@ public interface SessionClient {
      * This call allows to move in the stream by a relative time.
      * The time can be positive to move into the future or negative to move into the past
      * relative to the current position.
+     *
      * @param duration The duration to wind in [ms].
      * @throws IOException Thrown on any I/O-Error.
+     * @deprecated Use {@link #wind(Duration)} instead.
      */
-    void Wind(long duration) throws IOException;
+    @Deprecated
+    default void Wind(long duration) throws IOException {
+        wind(Duration.ofMillis(duration));
+    }
+
+    /**
+     * This call allows to move in the stream by a relative time.
+     * The time can be positive to move into the future or negative to move into the past
+     * relative to the current position.
+     * @param duration The duration to wind.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    void wind(Duration duration) throws IOException;
 
     /**
      * Skip to the next Item of the given type.

@@ -28,6 +28,7 @@ import io.ybrid.api.driver.common.Driver;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -89,8 +90,8 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void Wind(long duration) throws IOException {
-        driver.Wind(duration);
+    public void wind(Duration duration) throws IOException {
+        driver.wind(duration);
     }
 
     @Override
