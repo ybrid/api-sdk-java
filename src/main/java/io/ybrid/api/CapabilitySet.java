@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -69,6 +71,7 @@ public interface CapabilitySet extends Iterable<Capability> {
             private final CapabilitySet parent = CapabilitySet.this;
 
             @Override
+            @NotNull
             public Iterator<Capability> iterator() {
                 if (contains(Capability.PLAYBACK)) {
                     EnumSet<Capability> n = parent.toSet();
@@ -173,6 +176,7 @@ public interface CapabilitySet extends Iterable<Capability> {
             }
 
             @Override
+            @NotNull
             public Iterator<Capability> iterator() {
                 return Collections.unmodifiableSet(set).iterator();
             }

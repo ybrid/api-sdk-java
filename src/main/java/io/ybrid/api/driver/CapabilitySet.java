@@ -23,6 +23,7 @@
 package io.ybrid.api.driver;
 
 import io.ybrid.api.Capability;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -33,6 +34,7 @@ public class CapabilitySet implements io.ybrid.api.CapabilitySet {
     private final EnumSet<Capability> set = EnumSet.noneOf(Capability.class);
 
     @Override
+    @NotNull
     public Iterator<Capability> iterator() {
         return Collections.unmodifiableSet(set).iterator();
     }
