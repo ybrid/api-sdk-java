@@ -48,8 +48,10 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     private static final String COMMAND_PLAYOUT_SKIP_FORWARDS = "playout/skip/forwards";
     private static final String COMMAND_PLAYOUT_SKIP_BACKWARDS = "playout/skip/backwards";
 
+    private static final long MINIMUM_BETWEEN_SESSION_INFO = 300; // [ms]
 
     private final State state;
+    private long timestampLastSessionInfoRequest = 0;
 
     public Driver(Session session) {
         super(session);
@@ -124,6 +126,16 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         return v2request(command, null);
     }
 
+    protected void requestSessionInfo() throws IOException {
+        final long now = System.currentTimeMillis();
+
+        if (now < (timestampLastSessionInfoRequest + MINIMUM_BETWEEN_SESSION_INFO))
+            return;
+
+        v2request(COMMAND_SESSION_INFO);
+        timestampLastSessionInfoRequest = now;
+    }
+
     @Override
     public void disconnect() {
         capabilities.remove(Capability.PLAYBACK_URL);
@@ -157,19 +169,19 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public Metadata getMetadata() throws IOException {
-        v2request(COMMAND_SESSION_INFO);
+        requestSessionInfo();
         return state.getMetadata();
     }
 
     @Override
     public Bouquet getBouquet() throws IOException {
-        v2request(COMMAND_SESSION_INFO);
+        requestSessionInfo();
         return state.getBouquet();
     }
 
     @Override
     public PlayoutInfo getPlayoutInfo() throws IOException {
-        v2request(COMMAND_SESSION_INFO);
+        requestSessionInfo();
         return new io.ybrid.api.driver.common.PlayoutInfo(state.getSwapInfo(), null);
     }
 
