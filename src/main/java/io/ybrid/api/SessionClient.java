@@ -52,6 +52,26 @@ public interface SessionClient {
     Bouquet getBouquet() throws IOException;
 
     /**
+     * Get the current Metadata for the session.
+     * @return Returns the current Metadata.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    Metadata getMetadata() throws IOException;
+
+    /**
+     * Returns the current Service the session is connected to.
+     * @return This returns the current Service.
+     */
+    Service getCurrentService();
+
+    /**
+     * Get the current {@link PlayoutInfo} for the session.
+     * @return Returns the current {@link PlayoutInfo}.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    PlayoutInfo getPlayoutInfo() throws IOException;
+
+    /**
      * This call requests the session to be brought back to the live portion of the current service.
      * @throws IOException Thrown on any I/O-Error.
      */
@@ -99,24 +119,4 @@ public interface SessionClient {
      * @param service The new service to listen to.
      */
     void swapService(Service service);
-
-    /**
-     * Get the current Metadata for the session.
-     * @return Returns the current Metadata.
-     * @throws IOException Thrown on any I/O-Error.
-     */
-    Metadata getMetadata() throws IOException;
-
-    /**
-     * Returns the current Service the session is connected to.
-     * @return This returns the current Service.
-     */
-    Service getCurrentService();
-
-    /**
-     * Get the current {@link PlayoutInfo} for the session.
-     * @return Returns the current {@link PlayoutInfo}.
-     * @throws IOException Thrown on any I/O-Error.
-     */
-    PlayoutInfo getPlayoutInfo() throws IOException;
 }
