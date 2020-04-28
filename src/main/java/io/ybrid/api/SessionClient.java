@@ -115,6 +115,15 @@ public interface SessionClient {
     void swapItem(SwapMode mode) throws IOException;
 
     /**
+     * This call requests the session to be brought back to the main service of this bouquet.
+     *
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    default void swapToMain() throws IOException {
+        swapService(getBouquet().getDefaultService());
+    }
+
+    /**
      * Swap to a different Service.
      * @param service The new service to listen to.
      */
