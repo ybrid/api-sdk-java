@@ -33,6 +33,7 @@ public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
     protected SwapInfo swapInfo;
     @Nullable
     protected Duration timeToNextItem;
+    private final long buildTimestamp = System.currentTimeMillis();
 
     public PlayoutInfo(@NotNull SwapInfo swapInfo, @Nullable Duration timeToNextItem) {
         this.swapInfo = swapInfo;
@@ -48,6 +49,8 @@ public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
     @Nullable
     @Override
     public Duration getTimeToNextItem() {
-        return timeToNextItem;
+        if (timeToNextItem == null)
+            return null;
+        return timeToNextItem.plusMillis(buildTimestamp).minusMillis(System.currentTimeMillis());
     }
 }
