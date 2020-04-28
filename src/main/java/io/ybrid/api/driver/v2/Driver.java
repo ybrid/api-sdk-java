@@ -23,6 +23,7 @@
 package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.*;
+import io.ybrid.api.Service;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +41,13 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     private static final String COMMAND_SESSION_CLOSE = "session/close";
     private static final String COMMAND_SESSION_INFO = "session/info";
     private static final String COMMAND_PLAYOUT_SWAP_ITEM = "playout/swap/item";
+    private static final String COMMAND_PLAYOUT_BACK_TO_MAIN = "playout/back-to-main";
+    private static final String COMMAND_PLAYOUT_SWAP_SERVICE = "playout/swap/service";
+    private static final String COMMAND_PLAYOUT_WIND = "playout/wind";
+    private static final String COMMAND_PLAYOUT_WIND_BACK_TO_LIVE = "playout/wind/back-to-live";
+    private static final String COMMAND_PLAYOUT_SKIP_FORWARDS = "playout/skip/forwards";
+    private static final String COMMAND_PLAYOUT_SKIP_BACKWARDS = "playout/skip/backwards";
+
 
     private final State state;
 
@@ -168,5 +178,54 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("mode", mode.getOnWire());
         v2request(COMMAND_PLAYOUT_SWAP_ITEM, parameters);
+    }
+
+    @Override
+    public void swapService(Service service) throws IOException {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("service-id", service.getIdentifier());
+        v2request(COMMAND_PLAYOUT_SWAP_SERVICE, parameters);
+    }
+
+    @Override
+    public void windToLive() throws IOException {
+        v2request(COMMAND_PLAYOUT_WIND_BACK_TO_LIVE);
+    }
+
+    @Override
+    public void windTo(Instant timestamp) throws IOException {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("ts", String.valueOf(timestamp.toEpochMilli()));
+        v2request(COMMAND_PLAYOUT_WIND, parameters);
+    }
+
+    @Override
+    public void wind(Duration duration) throws IOException {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("duration", String.valueOf(duration.toMillis()));
+        v2request(COMMAND_PLAYOUT_WIND, parameters);
+    }
+
+    @Override
+    public void skipForwards(ItemType itemType) throws IOException {
+        HashMap<String, String> parameters = new HashMap<>();
+        if (itemType != null) {
+            parameters.put("item-type", itemType.name());
+        }
+        v2request(COMMAND_PLAYOUT_SKIP_FORWARDS, parameters);
+    }
+
+    @Override
+    public void skipBackwards(ItemType itemType) throws IOException {
+        HashMap<String, String> parameters = new HashMap<>();
+        if (itemType != null) {
+            parameters.put("item-type", itemType.name());
+        }
+        v2request(COMMAND_PLAYOUT_SKIP_BACKWARDS, parameters);
+    }
+
+    @Override
+    public void swapToMain() throws IOException {
+        v2request(COMMAND_PLAYOUT_BACK_TO_MAIN);
     }
 }
