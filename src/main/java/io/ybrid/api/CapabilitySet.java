@@ -55,7 +55,7 @@ public interface CapabilitySet extends Iterable<Capability> {
     /**
      * Checks whether all of a {@link Collection} of {@link Capability Capabilities} are present in the set.
      * @param c the {@link Collection} to check.
-     * @return wheather all of the {@link Capability Capabilities} are present.
+     * @return whether all of the {@link Capability Capabilities} are present.
      */
     boolean containsAll(Collection<Capability> c);
 
