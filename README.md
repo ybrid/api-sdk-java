@@ -34,7 +34,7 @@ Then you also need to add the following dependency:
 ```
 
 ## Getting started
-As this package provides low level access only only the Alias and Session classes are used directly by an application.
+As this package provides low level access applications only use the Alias and Session classes directly.
 Every other access is normally done using the Player package.
 
 A simple example of using the Alias and Session classes as often seen in applications is shown below:
