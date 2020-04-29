@@ -27,17 +27,21 @@ import org.jetbrains.annotations.Nullable;
 import io.ybrid.api.SwapInfo;
 
 import java.time.Duration;
+import java.time.Instant;
 
 public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
     @NotNull
     protected SwapInfo swapInfo;
     @Nullable
     protected Duration timeToNextItem;
-    private final long buildTimestamp = System.currentTimeMillis();
+    @Nullable
+    protected Duration behindLive;
+    private final Instant buildTimestamp = Instant.now();
 
-    public PlayoutInfo(@NotNull SwapInfo swapInfo, @Nullable Duration timeToNextItem) {
+    public PlayoutInfo(@NotNull SwapInfo swapInfo, @Nullable Duration timeToNextItem, @Nullable Duration behindLive) {
         this.swapInfo = swapInfo;
         this.timeToNextItem = timeToNextItem;
+        this.behindLive = behindLive;
     }
 
     @NotNull
@@ -51,6 +55,6 @@ public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
     public Duration getTimeToNextItem() {
         if (timeToNextItem == null)
             return null;
-        return timeToNextItem.plusMillis(buildTimestamp).minusMillis(System.currentTimeMillis());
+        return timeToNextItem.minus(Duration.between(buildTimestamp, Instant.now()));
     }
 }
