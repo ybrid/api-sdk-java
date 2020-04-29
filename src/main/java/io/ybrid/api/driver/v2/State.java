@@ -27,16 +27,19 @@ import io.ybrid.api.KnowsSubInfoState;
 import io.ybrid.api.Metadata;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.driver.v1.SwapInfo;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.*;
 
 public class State implements KnowsSubInfoState {
     private final Map<String, Service> services = new HashMap<>();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
+    private final EnumMap<SubInfo, Instant> lastUpdated = new EnumMap<>(SubInfo.class);
     private Service defaultService;
     private Service currentService;
     private Metadata currentMetadata;
@@ -56,15 +59,22 @@ public class State implements KnowsSubInfoState {
         return changed.contains(what);
     }
 
+    @Nullable
+    public Instant getLastUpdated(SubInfo what) {
+        return lastUpdated.get(what);
+    }
+
     private void clearChanged(SubInfo what) {
         changed.remove(what);
     }
 
     private void setChanged(SubInfo what) {
         changed.add(what);
+        lastUpdated.put(what, Instant.now());
     }
 
     public Metadata getMetadata() {
+        clearChanged(SubInfo.METADATA);
         return currentMetadata;
     }
 
@@ -81,9 +91,12 @@ public class State implements KnowsSubInfoState {
             currentMetadata = new io.ybrid.api.driver.v1.Metadata(currentService, raw);
         } catch (MalformedURLException ignored) {
         }
+
+        setChanged(SubInfo.METADATA);
     }
 
     public Bouquet getBouquet() {
+        clearChanged(SubInfo.BOUQUET);
         return new Bouquet(defaultService, new ArrayList<>(services.values()));
     }
 
@@ -122,6 +135,8 @@ public class State implements KnowsSubInfoState {
         } else {
             currentService = services.get(active);
         }
+
+        setChanged(SubInfo.BOUQUET);
     }
 
     private void updatePlayout(JSONObject raw) {
@@ -142,6 +157,7 @@ public class State implements KnowsSubInfoState {
         newSwapInfo = new SwapInfo(raw);
         if (!Objects.equals(swapInfo, newSwapInfo))
             setChanged(SubInfo.SWAP_INFO);
+        lastUpdated.put(SubInfo.SWAP_INFO, Instant.now());
         swapInfo = newSwapInfo;
     }
 

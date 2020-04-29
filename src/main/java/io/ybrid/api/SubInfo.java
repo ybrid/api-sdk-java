@@ -29,5 +29,7 @@ public enum SubInfo {
     /**
      * References {@link SwapInfo}.
      */
-    SWAP_INFO;
+    SWAP_INFO,
+    METADATA,
+    BOUQUET;
 }
