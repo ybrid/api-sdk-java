@@ -81,6 +81,16 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
             }
             haveCapabilitiesChanged = true;
         }
+
+        if (state.hasChanged(SubInfo.BOUQUET)) {
+            Bouquet bouquet = state.getBouquet();
+            if (bouquet.getServices().size() > 1) {
+                capabilities.add(Capability.SWAP_SERVICE);
+            } else {
+                capabilities.remove(Capability.SWAP_SERVICE);
+            }
+            haveCapabilitiesChanged = true;
+        }
     }
 
     @Override
