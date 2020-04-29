@@ -29,7 +29,7 @@ public enum SubInfo {
     /**
      * References {@link SwapInfo}.
      */
-    SWAP_INFO,
     METADATA,
-    BOUQUET;
+    BOUQUET,
+    PLAYOUT;
 }

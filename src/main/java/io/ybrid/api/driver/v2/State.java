@@ -22,10 +22,7 @@
 
 package io.ybrid.api.driver.v2;
 
-import io.ybrid.api.Bouquet;
-import io.ybrid.api.KnowsSubInfoState;
-import io.ybrid.api.Metadata;
-import io.ybrid.api.SubInfo;
+import io.ybrid.api.*;
 import io.ybrid.api.driver.v1.SwapInfo;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -33,6 +30,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -44,6 +42,7 @@ public class State implements KnowsSubInfoState {
     private Service currentService;
     private Metadata currentMetadata;
     private SwapInfo swapInfo;
+    private Duration behindLive;
     private URL baseUrl;
 
     public State(URL baseUrl) {
@@ -78,14 +77,14 @@ public class State implements KnowsSubInfoState {
         return currentMetadata;
     }
 
-    public SwapInfo getSwapInfo() {
-        clearChanged(SubInfo.SWAP_INFO);
-        return swapInfo;
-    }
-
     public Bouquet getBouquet() {
         clearChanged(SubInfo.BOUQUET);
         return new Bouquet(defaultService, new ArrayList<>(services.values()));
+    }
+
+    public PlayoutInfo getPlayoutInfo() {
+        clearChanged(SubInfo.PLAYOUT);
+        return new io.ybrid.api.driver.common.PlayoutInfo(swapInfo, null, behindLive);
     }
 
     private void updateMetadata(JSONObject raw) {
@@ -145,6 +144,8 @@ public class State implements KnowsSubInfoState {
 
         try {
             baseUrl = new URL(raw.getString("baseURL"));
+            behindLive = Duration.ofMillis(raw.getLong("offsetToLive"));
+            setChanged(SubInfo.PLAYOUT);
         } catch (MalformedURLException ignored) {
         }
     }
@@ -155,10 +156,8 @@ public class State implements KnowsSubInfoState {
             return;
 
         newSwapInfo = new SwapInfo(raw);
-        if (!Objects.equals(swapInfo, newSwapInfo))
-            setChanged(SubInfo.SWAP_INFO);
-        lastUpdated.put(SubInfo.SWAP_INFO, Instant.now());
         swapInfo = newSwapInfo;
+        setChanged(SubInfo.PLAYOUT);
     }
 
     void accept(Response response) {

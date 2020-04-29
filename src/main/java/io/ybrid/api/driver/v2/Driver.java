@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Driver extends io.ybrid.api.driver.common.Driver {
     private static final String COMMAND_SESSION_CREATE = "session/create";
@@ -72,22 +73,30 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     private void handleUpdates() {
-        if (state.hasChanged(SubInfo.SWAP_INFO)) {
-            SwapInfo swapInfo = state.getSwapInfo();
-            if (swapInfo.canSwap()) {
-                capabilities.add(Capability.SWAP_ITEM);
-            } else {
-                capabilities.remove(Capability.SWAP_ITEM);
-            }
-            haveCapabilitiesChanged = true;
-        }
-
         if (state.hasChanged(SubInfo.BOUQUET)) {
             Bouquet bouquet = state.getBouquet();
             if (bouquet.getServices().size() > 1) {
                 capabilities.add(Capability.SWAP_SERVICE);
             } else {
                 capabilities.remove(Capability.SWAP_SERVICE);
+            }
+            haveCapabilitiesChanged = true;
+        }
+
+        if (state.hasChanged(SubInfo.PLAYOUT)) {
+            PlayoutInfo playoutInfo = state.getPlayoutInfo();
+            if (playoutInfo.getSwapInfo().canSwap()) {
+                capabilities.add(Capability.SWAP_ITEM);
+            } else {
+                capabilities.remove(Capability.SWAP_ITEM);
+            }
+
+            if (!Objects.requireNonNull(playoutInfo.getBehindLive()).isZero()) {
+                capabilities.add(Capability.WIND_TO_LIVE);
+                capabilities.add(Capability.SKIP_FORWARDS);
+            } else {
+                capabilities.remove(Capability.WIND_TO_LIVE);
+                capabilities.remove(Capability.SKIP_FORWARDS);
             }
             haveCapabilitiesChanged = true;
         }
@@ -189,8 +198,8 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public PlayoutInfo getPlayoutInfo() throws IOException {
-        requestSessionInfo(SubInfo.SWAP_INFO);
-        return new io.ybrid.api.driver.common.PlayoutInfo(state.getSwapInfo(), null);
+        requestSessionInfo(SubInfo.PLAYOUT);
+        return state.getPlayoutInfo();
     }
 
     @Override
