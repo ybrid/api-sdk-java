@@ -144,6 +144,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void disconnect() {
+        capabilities.remove(Capability.SKIP_BACKWARDS);
         capabilities.remove(Capability.PLAYBACK_URL);
         haveCapabilitiesChanged = true;
 
@@ -170,6 +171,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         connected = true;
 
         capabilities.add(Capability.PLAYBACK_URL);
+        capabilities.add(Capability.SKIP_BACKWARDS);
         haveCapabilitiesChanged = true;
     }
 
