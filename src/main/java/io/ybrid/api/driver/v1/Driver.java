@@ -105,7 +105,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public PlayoutInfo getPlayoutInfo() throws IOException {
         Metadata metadata = getMetadata();
-        return new io.ybrid.api.driver.common.PlayoutInfo(metadata.getSwapInfo(), Duration.ofMillis(metadata.getTimeToNextItem()));
+        return new io.ybrid.api.driver.common.PlayoutInfo(metadata.getSwapInfo(), Duration.ofMillis(metadata.getTimeToNextItem()), null);
     }
 
     @Override

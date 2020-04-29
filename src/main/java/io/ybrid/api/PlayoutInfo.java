@@ -43,4 +43,15 @@ public interface PlayoutInfo {
      */
     @Nullable
     Duration getTimeToNextItem();
+
+    /**
+     * This returns time the the server side clock for the current client is behind
+     * live playback. This is zero for live playback, positive for delayed playback,
+     * and can be negative if the current client is ahead of live playback.
+     * @return Returns the time playback is behind live or null if unknown.
+     */
+    @Nullable
+    default Duration getBehindLive() {
+        return null;
+    }
 }

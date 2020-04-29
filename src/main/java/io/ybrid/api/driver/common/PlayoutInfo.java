@@ -57,4 +57,10 @@ public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
             return null;
         return timeToNextItem.minus(Duration.between(buildTimestamp, Instant.now()));
     }
+
+    @Nullable
+    @Override
+    public Duration getBehindLive() {
+        return behindLive;
+    }
 }
