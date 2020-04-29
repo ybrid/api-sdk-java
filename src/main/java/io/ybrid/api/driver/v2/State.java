@@ -83,6 +83,11 @@ public class State implements KnowsSubInfoState {
         return swapInfo;
     }
 
+    public Bouquet getBouquet() {
+        clearChanged(SubInfo.BOUQUET);
+        return new Bouquet(defaultService, new ArrayList<>(services.values()));
+    }
+
     private void updateMetadata(JSONObject raw) {
         if (raw == null)
             return;
@@ -93,11 +98,6 @@ public class State implements KnowsSubInfoState {
         }
 
         setChanged(SubInfo.METADATA);
-    }
-
-    public Bouquet getBouquet() {
-        clearChanged(SubInfo.BOUQUET);
-        return new Bouquet(defaultService, new ArrayList<>(services.values()));
     }
 
     private void updateBouquet(JSONObject raw) {
