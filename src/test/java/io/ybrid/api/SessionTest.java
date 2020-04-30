@@ -26,6 +26,8 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 public class SessionTest extends TestCase {
@@ -47,6 +49,38 @@ public class SessionTest extends TestCase {
 
             url = session.getStreamURL();
             assertNotNull(url);
+
+            session.close();
+        }
+    }
+
+    public void testSessionInfo() throws IOException, InterruptedException {
+        for (URL aliasUrl : NetworkHelper.getAliases()) {
+            Session session = new Alias(LOGGER, aliasUrl).createSession();
+            Metadata oldMetadata = null;
+            Metadata newMetadata;
+
+            assertNotNull(session);
+
+            session.connect();
+
+            assertEquals(200, NetworkHelper.pingURL(session.getStreamURL()));
+
+            for (int i = 0; i < 10; i++) {
+                Instant start;
+                Instant end;
+
+                start = Instant.now();
+                newMetadata = session.getMetadata();
+                end = Instant.now();
+
+                assertNotNull(newMetadata);
+
+                System.out.println("i = " + i + ", end - start = " + Duration.between(start, end).toMillis() + "ms, (oldMetadata == newMetadata) = " + (oldMetadata == newMetadata));
+
+                oldMetadata = newMetadata;
+                Thread.sleep(100);
+            }
 
             session.close();
         }
