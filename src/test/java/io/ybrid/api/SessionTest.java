@@ -32,21 +32,23 @@ public class SessionTest extends TestCase {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public void testGetStreamURLPositive() throws IOException {
-        String hostname = "localhost";
-        String[] mountpoints = {"/test", "/a/b"};
-
-        for (String mountpoint : mountpoints) {
-            Alias alias = new Alias(LOGGER, new URL("http://" + hostname + mountpoint));
-            Session session = alias.createSession();
+        for (URL aliasUrl : NetworkHelper.getAliases()) {
+            Alias alias;
+            Session session;
             URL url;
 
-/*
+            alias = new Alias(LOGGER, aliasUrl);
+            assertNotNull(alias);
+
+            session = alias.createSession();
+            assertNotNull(session);
+
             session.connect();
 
             url = session.getStreamURL();
-
             assertNotNull(url);
-*/
+
+            session.close();
         }
     }
 }
