@@ -70,6 +70,14 @@ public class Utils {
         return result.toByteArray();
     }
 
+    /**
+     * Slurps a {@link InputStream} into {@link JSONObject}.
+     * The encoding is expected to be UTF-8.
+     *
+     * @param inputStream The input stream to slurp.
+     * @return The content of the input stream as {@link JSONObject}.
+     * @throws IOException Thrown on I/O-Error on the {@code inputStream}.
+     */
     public static JSONObject slurpToJSONObject(InputStream inputStream) throws IOException {
         return new JSONObject(slurpToString(inputStream));
     }
