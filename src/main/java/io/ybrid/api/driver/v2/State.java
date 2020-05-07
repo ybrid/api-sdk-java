@@ -121,11 +121,28 @@ public class State implements KnowsSubInfoState {
             }
         }
 
-        primary = raw.getString("primaryServiceId");
-        if (primary == null) {
-            defaultService = null;
+        /*
+         * Check if the server provided a primary service.
+         * There is a bug in V2_BETA servers where they do not not
+         * provide the info on swaps. We try to work around this.
+         */
+        if (raw.has("primaryServiceId")) {
+            primary = raw.getString("primaryServiceId");
+            if (primary == null) {
+                defaultService = null;
+            } else {
+                defaultService = services.get(primary);
+            }
         } else {
-            defaultService = services.get(primary);
+            // No default service provided. Try to reuse the old one.
+
+            if (defaultService == null)
+                throw new IllegalStateException("Server did not provide any default service");
+
+            defaultService = services.get(defaultService.getIdentifier());
+
+            if (defaultService == null)
+                throw new IllegalStateException("Server did not provide any default service and old default service is gone");
         }
 
         active = raw.getString("activeServiceId");
