@@ -22,10 +22,11 @@
 
 package io.ybrid.api.driver.v1;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 public final class SwapInfo extends io.ybrid.api.driver.common.SwapInfo {
-    public SwapInfo(JSONObject json) {
+    public SwapInfo(@NotNull JSONObject json) {
         nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
         swapsLeft = json.getInt("swapsLeft");
     }

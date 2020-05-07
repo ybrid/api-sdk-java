@@ -25,6 +25,7 @@ package io.ybrid.api.driver.v1;
 import io.ybrid.api.Service;
 import io.ybrid.api.*;
 import io.ybrid.api.driver.common.Driver;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -33,15 +34,17 @@ import java.util.ArrayList;
  */
 public final class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
-    public Driver getDriver(Session session) {
+    public @NotNull Driver getDriver(@NotNull Session session) {
         return new io.ybrid.api.driver.v1.Driver(session);
     }
 
     @Override
-    public Bouquet getBouquet(Server server, Alias alias) {
-        Service service = new io.ybrid.api.driver.v1.Service();
-        ArrayList<Service> services = new ArrayList<>();
+    public @NotNull Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) {
+        final Service service = new io.ybrid.api.driver.v1.Service();
+        final ArrayList<Service> services = new ArrayList<>();
+
         services.add(service);
+
         return new Bouquet(service, services);
     }
 }

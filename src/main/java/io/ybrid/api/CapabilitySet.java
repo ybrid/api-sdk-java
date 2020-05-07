@@ -50,14 +50,14 @@ public interface CapabilitySet extends Iterable<Capability> {
      * @param o the {@link Capability} toi check.
      * @return whether the {@link Capability} is present.
      */
-    boolean contains(Capability o);
+    boolean contains(@NotNull Capability o);
 
     /**
      * Checks whether all of a {@link Collection} of {@link Capability Capabilities} are present in the set.
      * @param c the {@link Collection} to check.
      * @return whether all of the {@link Capability Capabilities} are present.
      */
-    boolean containsAll(Collection<Capability> c);
+    boolean containsAll(@NotNull Collection<Capability> c);
 
     /**
      * This is a helper method that will create a new set suitable for player implementations.
@@ -98,14 +98,14 @@ public interface CapabilitySet extends Iterable<Capability> {
             }
 
             @Override
-            public boolean contains(Capability o) {
+            public boolean contains(@NotNull Capability o) {
                 if (o == Capability.PLAYBACK && contains(Capability.PLAYBACK_URL))
                     return true;
                 return parent.contains(o);
             }
 
             @Override
-            public boolean containsAll(Collection<Capability> c) {
+            public boolean containsAll(@NotNull Collection<Capability> c) {
                 if (!c.contains(Capability.PLAYBACK)) {
                     return parent.containsAll(c);
                 }
@@ -161,12 +161,12 @@ public interface CapabilitySet extends Iterable<Capability> {
             }
 
             @Override
-            public boolean contains(Capability o) {
+            public boolean contains(@NotNull Capability o) {
                 return set.contains(o);
             }
 
             @Override
-            public boolean containsAll(Collection<Capability> c) {
+            public boolean containsAll(@NotNull Collection<Capability> c) {
                 return set.containsAll(c);
             }
 

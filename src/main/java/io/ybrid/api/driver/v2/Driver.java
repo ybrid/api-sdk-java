@@ -24,6 +24,8 @@ package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.*;
 import io.ybrid.api.Service;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -37,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Driver extends io.ybrid.api.driver.common.Driver {
+final class Driver extends io.ybrid.api.driver.common.Driver {
     private static final String COMMAND_SESSION_CREATE = "session/create";
     private static final String COMMAND_SESSION_CLOSE = "session/close";
     private static final String COMMAND_SESSION_INFO = "session/info";
@@ -53,12 +55,12 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     private final State state;
 
-    public Driver(Session session) {
+    public Driver(@NotNull Session session) {
         super(session);
         state = new State(session.getAlias().getUrl());
     }
 
-    private URL getUrl(String suffix) throws MalformedURLException {
+    private URL getUrl(@Nullable String suffix) throws MalformedURLException {
         URL baseUrl = state.getBaseUrl();
         if (suffix == null || suffix.isEmpty())
             return baseUrl;
@@ -103,7 +105,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    protected JSONObject request(String command, String parameters) throws IOException {
+    protected JSONObject request(@NotNull String command, String parameters) throws IOException {
         String body = null;
 
         if (parameters != null) {
@@ -119,7 +121,8 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         return request(getUrl("/ctrl/v2/" + command + "?" + body), null);
     }
 
-    protected Response v2request(String command, Map<String, String> parameters) throws IOException {
+    @NotNull
+    protected Response v2request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
         String renderedParameters = null;
 
         if (parameters != null) {
@@ -140,12 +143,17 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         return response;
     }
 
-    protected Response v2request(String command) throws IOException {
+    @NotNull
+    protected Response v2request(@NotNull String command) throws IOException {
         return v2request(command, null);
     }
 
     protected void requestSessionInfo(SubInfo what) throws IOException {
-        Instant lastUpdate = state.getLastUpdated(what);
+        Instant lastUpdate;
+
+        assertConnected();
+
+        lastUpdate = state.getLastUpdated(what);
         if (lastUpdate != null && lastUpdate.plus(MINIMUM_BETWEEN_SESSION_INFO).isAfter(Instant.now()))
             return;
         v2request(COMMAND_SESSION_INFO);
@@ -173,8 +181,6 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
             return;
 
         response = v2request(COMMAND_SESSION_CREATE);
-        if (response == null)
-            throw new IOException("No Session from server. BAD.");
         token = response.getToken();
 
         connected = true;
@@ -185,19 +191,19 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public Metadata getMetadata() throws IOException {
+    public @NotNull Metadata getMetadata() throws IOException {
         requestSessionInfo(SubInfo.METADATA);
         return state.getMetadata();
     }
 
     @Override
-    public Bouquet getBouquet() throws IOException {
+    public @NotNull Bouquet getBouquet() throws IOException {
         requestSessionInfo(SubInfo.BOUQUET);
         return state.getBouquet();
     }
 
     @Override
-    public PlayoutInfo getPlayoutInfo() throws IOException {
+    public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
         requestSessionInfo(SubInfo.PLAYOUT);
         return state.getPlayoutInfo();
     }
@@ -210,7 +216,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void swapService(Service service) throws IOException {
+    public void swapService(@NotNull Service service) throws IOException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("service-id", service.getIdentifier());
         v2request(COMMAND_PLAYOUT_SWAP_SERVICE, parameters);
@@ -222,14 +228,14 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void windTo(Instant timestamp) throws IOException {
+    public void windTo(@NotNull Instant timestamp) throws IOException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("ts", String.valueOf(timestamp.toEpochMilli()));
         v2request(COMMAND_PLAYOUT_WIND, parameters);
     }
 
     @Override
-    public void wind(Duration duration) throws IOException {
+    public void wind(@NotNull Duration duration) throws IOException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("duration", String.valueOf(duration.toMillis()));
         v2request(COMMAND_PLAYOUT_WIND, parameters);

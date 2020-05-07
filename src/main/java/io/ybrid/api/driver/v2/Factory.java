@@ -27,23 +27,18 @@ import io.ybrid.api.Bouquet;
 import io.ybrid.api.Server;
 import io.ybrid.api.Session;
 import io.ybrid.api.driver.common.Driver;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class Factory extends io.ybrid.api.driver.common.Factory {
+public final class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
-    public Driver getDriver(Session session) {
+    public @NotNull Driver getDriver(@NotNull Session session) {
         return new io.ybrid.api.driver.v2.Driver(session);
     }
 
     @Override
-    public Bouquet getBouquet(Server server, Alias alias) throws IOException {
-        Driver driver;
-        if (server == null) {
-            driver = getDriver(alias.createSession());
-        } else {
-            driver = getDriver(server.createSession(alias));
-        }
-        return driver.getBouquet();
+    public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
+        return getDriver(server.createSession(alias)).getBouquet();
     }
 }

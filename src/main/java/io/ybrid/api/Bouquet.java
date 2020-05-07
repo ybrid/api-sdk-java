@@ -29,8 +29,8 @@ import java.util.Collection;
  * to the user by the server.
  */
 public class Bouquet {
-    private Service defaultService;
-    private Collection<Service> services;
+    private final Service defaultService;
+    private final Collection<Service> services;
 
     /**
      * Creates a new Bouquet object.

@@ -24,6 +24,7 @@ package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -65,7 +66,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public CapabilitySet getCapabilities() {
+    public @NotNull CapabilitySet getCapabilities() {
         return driver.getCapabilities();
     }
 
@@ -75,7 +76,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public Bouquet getBouquet() throws IOException {
+    public @NotNull Bouquet getBouquet() throws IOException {
         return driver.getBouquet();
     }
 
@@ -85,12 +86,12 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void windTo(Instant timestamp) throws IOException {
+    public void windTo(@NotNull Instant timestamp) throws IOException {
         driver.windTo(timestamp);
     }
 
     @Override
-    public void wind(Duration duration) throws IOException {
+    public void wind(@NotNull Duration duration) throws IOException {
         driver.wind(duration);
     }
 
@@ -110,17 +111,17 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void swapService(Service service) throws IOException {
+    public void swapService(@NotNull Service service) throws IOException {
         driver.swapService(service);
     }
 
     @Override
-    public Metadata getMetadata() throws IOException {
+    public @NotNull Metadata getMetadata() throws IOException {
         return driver.getMetadata();
     }
 
     @Override
-    public PlayoutInfo getPlayoutInfo() throws IOException {
+    public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
         return driver.getPlayoutInfo();
     }
 
@@ -134,7 +135,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public Service getCurrentService() {
+    public @NotNull Service getCurrentService() {
         return driver.getCurrentService();
     }
 

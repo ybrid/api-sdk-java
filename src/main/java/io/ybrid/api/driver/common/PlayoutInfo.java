@@ -31,11 +31,11 @@ import java.time.Instant;
 
 public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
     @NotNull
-    protected SwapInfo swapInfo;
+    protected final SwapInfo swapInfo;
     @Nullable
-    protected Duration timeToNextItem;
+    protected final Duration timeToNextItem;
     @Nullable
-    protected Duration behindLive;
+    protected final Duration behindLive;
     private final Instant buildTimestamp = Instant.now();
 
     public PlayoutInfo(@NotNull SwapInfo swapInfo, @Nullable Duration timeToNextItem, @Nullable Duration behindLive) {

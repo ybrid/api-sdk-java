@@ -23,13 +23,14 @@
 package io.ybrid.api.driver.v1;
 
 import io.ybrid.api.ItemType;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
 final class Item extends io.ybrid.api.driver.common.Item {
-    Item(JSONObject json) throws MalformedURLException {
+    Item(@NotNull JSONObject json) throws MalformedURLException {
         JSONArray array;
         String type;
 

@@ -22,6 +22,7 @@
 
 package io.ybrid.api.driver.v1;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.Collections;
@@ -38,11 +39,12 @@ public final class Service extends io.ybrid.api.driver.common.Service {
     Service() {
     }
 
+    @NotNull
     public Map<String, String> getStation() {
         return Collections.unmodifiableMap(station);
     }
 
-    void updateStation(JSONObject json) {
+    void updateStation(@NotNull JSONObject json) {
         HashMap<String, String> station = new HashMap<>();
 
         for (String key : STATION_METADATA_LIST) {
@@ -60,7 +62,7 @@ public final class Service extends io.ybrid.api.driver.common.Service {
     }
 
     @Override
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         String value = station.get(STATION_NAME);
 
         if (value == null)

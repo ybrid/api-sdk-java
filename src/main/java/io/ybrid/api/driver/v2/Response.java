@@ -22,16 +22,16 @@
 
 package io.ybrid.api.driver.v2;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-public class Response {
+final class Response {
     private final JSONObject root;
     private final JSONObject responseHeader;
     private final JSONObject responseObject;
 
-    public Response(JSONObject root) {
-        if (root == null)
-            throw new NullPointerException();
+    public Response(@NotNull JSONObject root) {
         this.root = root;
         this.responseHeader = root.getJSONObject("__responseHeader");
         this.responseObject = root.getJSONObject("__responseObject");
@@ -44,24 +44,28 @@ public class Response {
         return sessionId;
     }
 
+    @Nullable
     protected JSONObject getRawBouquet() {
         if (!responseObject.has("bouquet"))
             return null;
         return responseObject.getJSONObject("bouquet");
     }
 
+    @Nullable
     protected JSONObject getRawMetadata() {
         if (!responseObject.has("metadata"))
             return null;
         return responseObject.getJSONObject("metadata");
     }
 
+    @Nullable
     protected JSONObject getRawPlayout() {
         if (!responseObject.has("playout"))
             return null;
         return responseObject.getJSONObject("playout");
     }
 
+    @Nullable
     protected JSONObject getRawSwapInfo() {
         if (!responseObject.has("swapInfo"))
             return null;

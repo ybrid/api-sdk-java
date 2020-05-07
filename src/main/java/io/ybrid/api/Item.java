@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,7 @@ public interface Item extends hasIdentifier, hasDisplayName {
      * This allows access to the items Metadata.
      * @return Returns the map of metadata.
      */
+    @NotNull
     Map<String, String> getMetadata();
 
     /**
@@ -53,5 +56,6 @@ public interface Item extends hasIdentifier, hasDisplayName {
      * Returns the list of Companions as to be displayed while this item is played.
      * @return Returns the list of Companions.
      */
+    @NotNull
     List<Companion> getCompanions();
 }

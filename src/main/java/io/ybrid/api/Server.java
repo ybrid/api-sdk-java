@@ -40,7 +40,7 @@ public class Server implements Connectable {
      */
     public static final boolean DEFAULT_SECURE = false;
 
-    private String hostname;
+    private final String hostname;
     private int port = DEFAULT_PORT;
     private boolean secure = DEFAULT_SECURE;
     private final Logger logger;

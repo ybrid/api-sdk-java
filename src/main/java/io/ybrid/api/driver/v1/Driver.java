@@ -23,6 +23,7 @@
 package io.ybrid.api.driver.v1;
 
 import io.ybrid.api.*;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    protected JSONObject request(String command, String parameters) throws IOException {
+    protected JSONObject request(@NotNull String command, String parameters) throws IOException {
         Server server = session.getServer();
         String hostname = this.hostname;
         String path = getMountpoint() + "/ctrl/" + command;
@@ -73,7 +74,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public Bouquet getBouquet() {
+    public @NotNull Bouquet getBouquet() {
         return bouquet;
     }
 
@@ -85,7 +86,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public Metadata getMetadata() throws IOException {
+    public io.ybrid.api.@NotNull Metadata getMetadata() throws IOException {
         Metadata ret;
 
         assertConnected();
@@ -103,8 +104,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public PlayoutInfo getPlayoutInfo() throws IOException {
-        Metadata metadata = getMetadata();
+    public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
+        Metadata metadata = (Metadata) getMetadata();
         return new io.ybrid.api.driver.common.PlayoutInfo(metadata.getSwapInfo(), Duration.ofMillis(metadata.getTimeToNextItem()), null);
     }
 

@@ -22,13 +22,14 @@
 
 package io.ybrid.api.driver.v1;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 final class Companion extends io.ybrid.api.driver.common.Companion {
-    private static String getString(JSONObject json, String key) {
+    private static String getString(@NotNull JSONObject json, @NotNull String key) {
         String ret;
 
         if (json.isNull(key))
@@ -41,7 +42,7 @@ final class Companion extends io.ybrid.api.driver.common.Companion {
         return ret;
     }
 
-    private static URL getURL(JSONObject json, String key) throws MalformedURLException {
+    private static URL getURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
         String string = getString(json, key);
         if (string == null)
             return null;
@@ -49,7 +50,7 @@ final class Companion extends io.ybrid.api.driver.common.Companion {
         return new URL(string);
     }
 
-    Companion(JSONObject json) throws MalformedURLException {
+    Companion(@NotNull JSONObject json) throws MalformedURLException {
         alternativeText = getString(json, "altText");
         height = json.getInt("height");
         width = json.getInt("width");

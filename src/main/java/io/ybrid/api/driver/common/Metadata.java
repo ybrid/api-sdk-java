@@ -23,6 +23,7 @@
 package io.ybrid.api.driver.common;
 
 import io.ybrid.api.SwapInfo;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class Metadata implements io.ybrid.api.Metadata {
     protected int currentBitRate;
@@ -50,7 +51,7 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
-    public Service getService() {
+    public io.ybrid.api.@NotNull Service getService() {
         return service;
     }
 

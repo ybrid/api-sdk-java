@@ -23,12 +23,13 @@
 package io.ybrid.api.driver.v1;
 
 import io.ybrid.api.driver.common.Service;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
 public final class Metadata extends io.ybrid.api.driver.common.Metadata {
-    private Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
+    private Metadata(@NotNull Service service, @NotNull JSONObject json, long requestTime) throws MalformedURLException {
         this.service = service;
         this.requestTime = requestTime;
 
@@ -54,7 +55,7 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
             ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));
     }
 
-    public Metadata(Service service, JSONObject json) throws MalformedURLException {
+    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
         this(service, json, System.currentTimeMillis());
     }
 

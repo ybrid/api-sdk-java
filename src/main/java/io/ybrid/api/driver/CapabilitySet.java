@@ -50,12 +50,12 @@ public class CapabilitySet implements io.ybrid.api.CapabilitySet {
     }
 
     @Override
-    public boolean contains(Capability o) {
+    public boolean contains(@NotNull Capability o) {
         return set.contains(o);
     }
 
     @Override
-    public boolean containsAll(Collection<Capability> c) {
+    public boolean containsAll(@NotNull Collection<Capability> c) {
         return set.containsAll(c);
     }
 

@@ -22,6 +22,9 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * This Interface is implemented by Metadata objects.
  *
@@ -40,6 +43,7 @@ public interface Metadata {
      * Get the Item that is expected to be played next.
      * @return Returns the next item or null.
      */
+    @Nullable
     Item getNextItem();
 
     /**
@@ -55,6 +59,7 @@ public interface Metadata {
      * Returns the current service the listener is attached to.
      * @return Returns the current service.
      */
+    @NotNull
     Service getService();
 
     /**

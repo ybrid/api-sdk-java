@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -37,6 +39,7 @@ public interface SessionClient {
      * Calling this resets the flag returned by {@link #haveCapabilitiesChanged()}
      * @return Returns the set of current {@link Capability Capabilities}.
      */
+    @NotNull
     CapabilitySet getCapabilities();
 
     /**
@@ -50,6 +53,7 @@ public interface SessionClient {
      * The Bouquet may be displayed to the user to select the Service to listen to.
      * @return Returns the current Bouquet.
      */
+    @NotNull
     Bouquet getBouquet() throws IOException;
 
     /**
@@ -57,12 +61,14 @@ public interface SessionClient {
      * @return Returns the current Metadata.
      * @throws IOException Thrown on any I/O-Error.
      */
+    @NotNull
     Metadata getMetadata() throws IOException;
 
     /**
      * Returns the current Service the session is connected to.
      * @return This returns the current Service.
      */
+    @NotNull
     Service getCurrentService();
 
     /**
@@ -70,6 +76,7 @@ public interface SessionClient {
      * @return Returns the current {@link PlayoutInfo}.
      * @throws IOException Thrown on any I/O-Error.
      */
+    @NotNull
     PlayoutInfo getPlayoutInfo() throws IOException;
 
     /**
@@ -86,7 +93,7 @@ public interface SessionClient {
      * @deprecated Use {@link #windTo(Instant)} instead.
      */
     @Deprecated
-    default void WindTo(Instant timestamp) throws IOException {
+    default void WindTo(@NotNull Instant timestamp) throws IOException {
         windTo(timestamp);
     }
 
@@ -95,7 +102,7 @@ public interface SessionClient {
      * @param timestamp The timestamp to jump to.
      * @throws IOException Thrown on any I/O-Error.
      */
-    void windTo(Instant timestamp) throws IOException;
+    void windTo(@NotNull Instant timestamp) throws IOException;
 
     /**
      * This call allows to move in the stream by a relative time.
@@ -118,7 +125,7 @@ public interface SessionClient {
      * @param duration The duration to wind.
      * @throws IOException Thrown on any I/O-Error.
      */
-    void wind(Duration duration) throws IOException;
+    void wind(@NotNull Duration duration) throws IOException;
 
     /**
      * Skip to the next Item of the given type.
@@ -154,5 +161,5 @@ public interface SessionClient {
      * Swap to a different Service.
      * @param service The new service to listen to.
      */
-    void swapService(Service service) throws IOException;
+    void swapService(@NotNull Service service) throws IOException;
 }

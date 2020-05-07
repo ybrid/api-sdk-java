@@ -26,6 +26,8 @@ import io.ybrid.api.Metadata;
 import io.ybrid.api.Service;
 import io.ybrid.api.*;
 import io.ybrid.api.driver.CapabilitySet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -49,16 +51,16 @@ public abstract class Driver implements Connectable, SessionClient {
     protected Service currentService;
 
     abstract public void swapItem(SwapMode mode) throws IOException;
-    abstract public Metadata getMetadata() throws IOException;
+    abstract public @NotNull Metadata getMetadata() throws IOException;
     abstract public URL getStreamURL() throws MalformedURLException;
-    abstract public Bouquet getBouquet() throws IOException;
-    abstract protected JSONObject request(String command, String parameters) throws IOException;
+    abstract public @NotNull Bouquet getBouquet() throws IOException;
+    abstract protected JSONObject request(@NotNull String command, @Nullable String parameters) throws IOException;
 
     protected Driver(Session session) {
         this.session = session;
     }
 
-    protected static void assertValidMountpoint(String mountpoint) throws MalformedURLException {
+    protected static void assertValidMountpoint(@NotNull String mountpoint) throws MalformedURLException {
         if (!mountpoint.startsWith("/"))
             throw new MalformedURLException();
     }
@@ -70,7 +72,7 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public io.ybrid.api.CapabilitySet getCapabilities() {
+    public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
         haveCapabilitiesChanged = false;
         return capabilities;
     }
@@ -81,11 +83,13 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public Service getCurrentService() {
+    public @NotNull Service getCurrentService() {
+        assertConnected();
+
         return currentService;
     }
 
-    public void swapService(Service service) throws IOException {
+    public void swapService(@NotNull Service service) throws IOException {
         if (service.equals(getCurrentService()))
             return;
 
@@ -147,12 +151,12 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public void windTo(Instant timestamp) throws IOException {
+    public void windTo(@NotNull Instant timestamp) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void wind(Duration duration) throws IOException {
+    public void wind(@NotNull Duration duration) throws IOException {
         throw new UnsupportedOperationException();
     }
 

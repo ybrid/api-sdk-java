@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Classes implementing this interface can be asked for the status of sub information.
  */
@@ -33,5 +35,5 @@ public interface KnowsSubInfoState {
      * @param what The information to check
      * @return Whether the corresponding getter needs to be called again.
      */
-    boolean hasChanged(SubInfo what);
+    boolean hasChanged(@NotNull SubInfo what);
 }

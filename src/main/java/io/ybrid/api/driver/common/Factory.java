@@ -26,6 +26,7 @@ import io.ybrid.api.Alias;
 import io.ybrid.api.Bouquet;
 import io.ybrid.api.Server;
 import io.ybrid.api.Session;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -38,7 +39,8 @@ abstract public class Factory {
      * @param session The {@link Session} to return a driver for.
      * @return Returns the new instance of the driver.
      */
-    public abstract Driver getDriver(Session session);
+    @NotNull
+    public abstract Driver getDriver(@NotNull Session session);
 
     /**
      * Get the current {@link Bouquet} from the server.
@@ -46,5 +48,5 @@ abstract public class Factory {
      * @param alias The {@link Alias} to use.
      * @return Returns the {@link Bouquet} as returned by the server.
      */
-    public abstract Bouquet getBouquet(Server server, Alias alias) throws IOException;
+    public abstract Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException;
 }

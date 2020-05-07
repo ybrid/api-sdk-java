@@ -22,12 +22,13 @@
 
 package io.ybrid.api.driver.v2;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 
-public class Service extends io.ybrid.api.driver.common.Service {
-    public Service(JSONObject json) throws MalformedURLException {
+final class Service extends io.ybrid.api.driver.common.Service {
+    public Service(@NotNull JSONObject json) throws MalformedURLException {
         super(json);
     }
 

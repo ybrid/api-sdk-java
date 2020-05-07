@@ -44,7 +44,7 @@ public class NetworkHelper {
      * @return The URL as {@link URL}.
      */
     @Contract("_ -> new")
-    private static @NotNull URL newURL(String url) {
+    private static @NotNull URL newURL(@NotNull String url) {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {

@@ -24,6 +24,7 @@ package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.*;
 import io.ybrid.api.driver.v1.SwapInfo;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,7 +35,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class State implements KnowsSubInfoState {
+final class State implements KnowsSubInfoState {
     private final Map<String, Service> services = new HashMap<>();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final EnumMap<SubInfo, Instant> lastUpdated = new EnumMap<>(SubInfo.class);
@@ -45,7 +46,7 @@ public class State implements KnowsSubInfoState {
     private Duration behindLive;
     private URL baseUrl;
 
-    public State(URL baseUrl) {
+    public State(@NotNull URL baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -54,20 +55,20 @@ public class State implements KnowsSubInfoState {
     }
 
     @Override
-    public boolean hasChanged(SubInfo what) {
+    public boolean hasChanged(@NotNull SubInfo what) {
         return changed.contains(what);
     }
 
     @Nullable
-    public Instant getLastUpdated(SubInfo what) {
+    public Instant getLastUpdated(@NotNull SubInfo what) {
         return lastUpdated.get(what);
     }
 
-    private void clearChanged(SubInfo what) {
+    private void clearChanged(@NotNull SubInfo what) {
         changed.remove(what);
     }
 
-    private void setChanged(SubInfo what) {
+    private void setChanged(@NotNull SubInfo what) {
         changed.add(what);
         lastUpdated.put(what, Instant.now());
     }
@@ -87,7 +88,7 @@ public class State implements KnowsSubInfoState {
         return new io.ybrid.api.driver.common.PlayoutInfo(swapInfo, null, behindLive);
     }
 
-    private void updateMetadata(JSONObject raw) {
+    private void updateMetadata(@Nullable JSONObject raw) {
         if (raw == null)
             return;
 
@@ -99,7 +100,7 @@ public class State implements KnowsSubInfoState {
         setChanged(SubInfo.METADATA);
     }
 
-    private void updateBouquet(JSONObject raw) {
+    private void updateBouquet(@Nullable JSONObject raw) {
         JSONArray list;
         String primary;
         String active;
@@ -155,7 +156,7 @@ public class State implements KnowsSubInfoState {
         setChanged(SubInfo.BOUQUET);
     }
 
-    private void updatePlayout(JSONObject raw) {
+    private void updatePlayout(@Nullable JSONObject raw) {
         if (raw == null)
             return;
 
@@ -167,7 +168,7 @@ public class State implements KnowsSubInfoState {
         }
     }
 
-    private void updateSwapInfo(JSONObject raw) {
+    private void updateSwapInfo(@Nullable JSONObject raw) {
         SwapInfo newSwapInfo;
         if (raw == null)
             return;
