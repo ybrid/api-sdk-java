@@ -69,7 +69,7 @@ public interface SessionClient {
      * @return This returns the current Service.
      */
     @NotNull
-    Service getCurrentService();
+    Service getCurrentService() throws IOException;
 
     /**
      * Get the current {@link PlayoutInfo} for the session.

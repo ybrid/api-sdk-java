@@ -135,7 +135,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public @NotNull Service getCurrentService() {
+    public @NotNull Service getCurrentService() throws IOException {
         return driver.getCurrentService();
     }
 

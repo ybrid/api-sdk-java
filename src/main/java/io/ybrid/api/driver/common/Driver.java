@@ -83,7 +83,7 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public @NotNull Service getCurrentService() {
+    public @NotNull Service getCurrentService() throws IOException {
         assertConnected();
 
         return currentService;

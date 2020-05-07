@@ -197,6 +197,12 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
+    public @NotNull Service getCurrentService() throws IOException {
+        requestSessionInfo(SubInfo.BOUQUET);
+        return state.getCurrentService();
+    }
+
+    @Override
     public @NotNull Bouquet getBouquet() throws IOException {
         requestSessionInfo(SubInfo.BOUQUET);
         return state.getBouquet();

@@ -88,6 +88,10 @@ final class State implements KnowsSubInfoState {
         return new io.ybrid.api.driver.common.PlayoutInfo(swapInfo, null, behindLive);
     }
 
+    public Service getCurrentService() {
+        return currentService;
+    }
+
     private void updateMetadata(@Nullable JSONObject raw) {
         if (raw == null)
             return;
