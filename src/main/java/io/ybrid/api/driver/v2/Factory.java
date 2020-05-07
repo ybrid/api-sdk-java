@@ -39,6 +39,21 @@ public final class Factory extends io.ybrid.api.driver.common.Factory {
 
     @Override
     public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
-        return getDriver(server.createSession(alias)).getBouquet();
+        final Driver driver = getDriver(server.createSession(alias));
+        Bouquet bouquet = null;
+        IOException thrown = null;
+
+        driver.connect();
+        try {
+            bouquet = driver.getBouquet();
+        } catch (IOException e) {
+            thrown = e;
+        }
+        driver.disconnect();
+
+        if (thrown != null)
+            throw thrown;
+
+        return bouquet;
     }
 }
