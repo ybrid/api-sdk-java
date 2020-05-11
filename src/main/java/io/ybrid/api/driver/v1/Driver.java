@@ -35,6 +35,9 @@ import java.util.logging.Level;
 public final class Driver extends io.ybrid.api.driver.common.Driver {
     private static final Capability[] initialCapabilities = {Capability.PLAYBACK_URL};
     private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
+    private Metadata metadata;
+    private PlayoutInfo playoutInfo;
+
     public Driver(Session session) {
         super(session);
 
@@ -85,28 +88,46 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         request("swap", "mode=" + mode.getOnWire());
     }
 
-    @Override
-    public io.ybrid.api.@NotNull Metadata getMetadata() throws IOException {
-        Metadata ret;
+    private void updateMetadata() throws IOException {
+        final JSONObject json;
 
         assertConnected();
 
-        ret = new Metadata((Service) getCurrentService(), request("show-meta"));
+        json = request("show-meta");
 
-        if (ret.getSwapInfo().canSwap()) {
-            capabilities.add(Capability.SWAP_ITEM);
-        } else {
-            capabilities.remove(Capability.SWAP_ITEM);
+        metadata = new Metadata((Service) getCurrentService(), json);
+
+        if (json.has("swapInfo")) {
+            final SwapInfo swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
+            final long timeToNextItem;
+
+            if (json.has("timeToNextItemMillis")) {
+                timeToNextItem = json.getLong("timeToNextItemMillis");
+            } else {
+                timeToNextItem = -1;
+            }
+
+            if (swapInfo.canSwap()) {
+                capabilities.add(Capability.SWAP_ITEM);
+            } else {
+                capabilities.remove(Capability.SWAP_ITEM);
+            }
+            haveCapabilitiesChanged = true;
+
+            playoutInfo = new io.ybrid.api.driver.common.PlayoutInfo(swapInfo, Duration.ofMillis(timeToNextItem), null);
         }
-        haveCapabilitiesChanged = true;
+    }
 
-        return ret;
+    @Override
+    public io.ybrid.api.@NotNull Metadata getMetadata() throws IOException {
+        updateMetadata();
+        return metadata;
     }
 
     @Override
     public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
-        Metadata metadata = (Metadata) getMetadata();
-        return new io.ybrid.api.driver.common.PlayoutInfo(metadata.getSwapInfo(), Duration.ofMillis(metadata.getTimeToNextItem()), null);
+        updateMetadata();
+        return playoutInfo;
     }
 
     @Override
