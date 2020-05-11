@@ -25,12 +25,17 @@ package io.ybrid.api;
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * This class implements an actual session with a Ybrid server.
@@ -42,6 +47,17 @@ public class Session implements Connectable, SessionClient {
     private final Driver driver;
     private final Server server;
     private final Alias alias;
+    private Map<String, Double> acceptedMediaFormats = null;
+    private Map<String, Double> acceptedLanguages = null;
+
+    private static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
+        if (list == null)
+            return;
+
+        for (double weight : list.values())
+            if (weight < 0 || weight > 1)
+                throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
+    }
 
     Session(Server server, Alias alias) throws MalformedURLException {
         this.server = server;
@@ -123,6 +139,74 @@ public class Session implements Connectable, SessionClient {
     @Override
     public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
         return driver.getPlayoutInfo();
+    }
+
+    /**
+     * Get the list of media formats supported by the player.
+     *
+     * If this returns null no {@code Accept:}-header should be generated.
+     * @return List of supported formats or null.
+     */
+    @Nullable
+    public Map<String, Double> getAcceptedMediaFormats() {
+        return acceptedMediaFormats;
+    }
+
+    /**
+     * Set the list of formats supported by the player and their corresponding weights.
+     * @param acceptedMediaFormats List of supported formats or null.
+     */
+    public void setAcceptedMediaFormats(@Nullable Map<String, Double> acceptedMediaFormats) {
+        assertValidAcceptList(acceptedMediaFormats);
+        this.acceptedMediaFormats = acceptedMediaFormats;
+    }
+
+    /**
+     * Get list of languages requested by the user.
+     *
+     * If this returns null no {@code Accept-Language:}-header should be generated.
+     * @return List of languages requested by the user or null.
+     */
+    @Nullable
+    public Map<String, Double> getAcceptedLanguages() {
+        return acceptedLanguages;
+    }
+
+    /**
+     * Sets the list of languages requested by the user.
+     *
+     * This function is only still included for older versions of Android
+     * (before {@code android.os.Build.VERSION_CODES.O})
+     * and might be removed at any time.
+     *
+     * @param acceptedLanguages List of languages to set or null.
+     * @deprecated Use {@link #setAcceptedLanguages(List)} instead.
+     */
+    @Deprecated
+    public void setAcceptedLanguages(@Nullable Map<String, Double> acceptedLanguages) {
+        assertValidAcceptList(acceptedLanguages);
+        this.acceptedLanguages = acceptedLanguages;
+    }
+
+    /**
+     * Sets the list of langauges requested by the user and their corresponding weights.
+     * @param list The list of languages or null.
+     */
+    public void setAcceptedLanguages(@Nullable List<Locale.LanguageRange> list) {
+        Map<String, Double> newList;
+
+        if (list == null) {
+            this.acceptedLanguages = null;
+            return;
+        }
+
+        newList = new HashMap<>();
+
+        for (Locale.LanguageRange range : list)
+            newList.put(range.getRange(), range.getWeight());
+
+        assertValidAcceptList(newList);
+        this.acceptedLanguages = newList;
     }
 
     /**
