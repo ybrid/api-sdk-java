@@ -111,6 +111,7 @@ public abstract class Driver implements Connectable, SessionClient {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
         connection.setDoInput(true);
         connection.setDoOutput(body != null);
 
