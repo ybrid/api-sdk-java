@@ -182,4 +182,13 @@ public interface CapabilitySet extends Iterable<Capability> {
             }
         };
     }
+
+    /**
+     * This builds a new {@code CapabilitySet} that is empty.
+     *
+     * @return A new empty {@code CapabilitySet}.
+     */
+    static @NotNull CapabilitySet emptySet() {
+        return fromSet(EnumSet.noneOf(Capability.class));
+    }
 }
