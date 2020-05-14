@@ -22,6 +22,7 @@
 
 package io.ybrid.api.driver.common;
 
+import io.ybrid.api.Service;
 import io.ybrid.api.SwapInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +52,7 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
-    public io.ybrid.api.@NotNull Service getService() {
+    public @NotNull Service getService() {
         return service;
     }
 
