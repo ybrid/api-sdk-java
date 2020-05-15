@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
 
 final class Item extends io.ybrid.api.driver.common.Item {
     Item(@NotNull JSONObject json) throws MalformedURLException {
@@ -49,7 +50,7 @@ final class Item extends io.ybrid.api.driver.common.Item {
             this.type = ItemType.valueOf(json.getString("type"));
         }
 
-        duration = json.getLong("durationMillis");
+        playbackLength = Duration.ofMillis(json.getLong("durationMillis"));
 
         array = json.getJSONArray("companions");
         if (array != null) {

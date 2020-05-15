@@ -24,6 +24,7 @@ package io.ybrid.api;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +49,20 @@ public interface Item extends hasIdentifier, hasDisplayName {
 
     /**
      * Return the total playback time of the item.
+     *
      * @return Returns the playback time in [ms].
+     * @deprecated Use {@link #getPlaybackLength()} instead.
      */
-    long getDuration();
+    @Deprecated
+    default long getDuration() {
+        return getPlaybackLength().toMillis();
+    }
+
+    /**
+     * Return the total playback time of the item.
+     * @return Returns the playback time.
+     */
+    Duration getPlaybackLength();
 
     /**
      * Returns the list of Companions as to be displayed while this item is played.

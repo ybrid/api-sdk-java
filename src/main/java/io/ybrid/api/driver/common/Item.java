@@ -25,6 +25,7 @@ package io.ybrid.api.driver.common;
 import io.ybrid.api.ItemType;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.*;
 
 abstract public class Item implements io.ybrid.api.Item {
@@ -37,7 +38,7 @@ abstract public class Item implements io.ybrid.api.Item {
     protected String identifier;
     protected final HashMap<String, String> metadata = new HashMap<>();
     protected ItemType type;
-    protected long duration;
+    protected Duration playbackLength;
     protected final ArrayList<Companion> companions = new ArrayList<>();
 
     @Override
@@ -68,8 +69,8 @@ abstract public class Item implements io.ybrid.api.Item {
     }
 
     @Override
-    public long getDuration() {
-        return duration;
+    public Duration getPlaybackLength() {
+        return playbackLength;
     }
 
     @Override
@@ -83,7 +84,7 @@ abstract public class Item implements io.ybrid.api.Item {
                 "identifier='" + identifier + '\'' +
                 ", metadata=" + metadata +
                 ", type=" + type +
-                ", duration=" + duration +
+                ", playbackLength=" + playbackLength +
                 ", companions=" + companions +
                 '}';
     }
