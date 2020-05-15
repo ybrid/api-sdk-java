@@ -93,6 +93,7 @@ public final class FactorySelector {
             connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
             connection.setDoOutput(false);
             connection.setDoInput(true);
 
