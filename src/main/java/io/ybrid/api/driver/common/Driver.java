@@ -104,7 +104,7 @@ public abstract class Driver implements Connectable, SessionClient {
         if (body != null) {
             return request(new JSONRequest(url, "POST", body));
         } else {
-            return request(new JSONRequest(url, "GET"));
+            return request(new JSONRequest(url, "POST"));
         }
     }
 
