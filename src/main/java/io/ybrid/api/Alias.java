@@ -83,7 +83,7 @@ public class Alias implements ApiUser {
      *
      * @param logger The logger to use for the Alias.
      * @param url The {@link URL} of the Alias.
-     * @deprecated Use {@link #Alias(URL, Server)} instead.
+     * @deprecated Use {@link #Alias(URL)} instead.
      */
     @Deprecated
     public Alias(Logger logger, URL url) {
