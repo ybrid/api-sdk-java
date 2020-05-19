@@ -75,7 +75,15 @@ public class Alias implements ApiUser {
     @Deprecated
     public Alias(Logger logger, URL url, Server server) {
         this.url = url;
-        this.server = server;
+        if (server != null) {
+            this.server = server;
+        } else {
+            try {
+                this.server = new Server(url);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
