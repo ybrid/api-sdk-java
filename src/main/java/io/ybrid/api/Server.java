@@ -143,11 +143,6 @@ public class Server implements Connectable {
         return logger;
     }
 
-    void finer(String msg) {
-        if (logger != null)
-            logger.finer(msg);
-    }
-
     @Override
     public void connect() {
         /* NOOP */
