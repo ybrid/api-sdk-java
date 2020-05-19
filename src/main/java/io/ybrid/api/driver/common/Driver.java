@@ -31,13 +31,11 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,7 +54,6 @@ public abstract class Driver implements Connectable, SessionClient {
     abstract public @NotNull Metadata getMetadata() throws IOException;
     abstract public URL getStreamURL() throws MalformedURLException;
     abstract public @NotNull Bouquet getBouquet() throws IOException;
-    abstract protected JSONObject request(@NotNull String command, @Nullable String parameters) throws IOException;
 
     protected Driver(Session session) {
         this.session = session;
@@ -103,37 +100,26 @@ public abstract class Driver implements Connectable, SessionClient {
             throw new IllegalStateException("Not connected");
     }
 
-    protected JSONObject request(URL url, String body) throws IOException {
-        HttpURLConnection connection;
-        InputStream inputStream;
-        OutputStream outputStream;
-        final JSONObject jsonObject;
-
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
-        connection.setDoInput(true);
-        connection.setDoOutput(body != null);
-
+    protected JSONObject request(URL url, @Nullable Map<String, String> body) throws IOException {
         if (body != null) {
-            outputStream = connection.getOutputStream();
-            outputStream.write(body.getBytes());
-            outputStream.close();
+            return request(new JSONRequest(url, "POST", body));
+        } else {
+            return request(new JSONRequest(url, "GET"));
         }
-
-        inputStream = connection.getInputStream();
-        jsonObject = Utils.slurpToJSONObject(inputStream);
-        inputStream.close();
-        connection.disconnect();
-
-        if (LOGGER.isLoggable(Level.FINE))
-            LOGGER.fine("request: url=" + url + ", jsonObject=" + jsonObject);
-        return jsonObject;
     }
 
-    protected JSONObject request(String command) throws IOException {
-        return request(command, null);
+    protected JSONObject request(@NotNull JSONRequest request) throws IOException {
+        final JSONObject jsonObject;
+
+        if (request.perform()) {
+            jsonObject = request.getResponseBody();
+        } else {
+            jsonObject = null;
+        }
+
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("request: url=" + request.getUrl() + ", jsonObject=" + jsonObject);
+        return jsonObject;
     }
 
     @Override

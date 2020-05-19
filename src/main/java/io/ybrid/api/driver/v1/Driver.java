@@ -24,12 +24,15 @@ package io.ybrid.api.driver.v1;
 
 import io.ybrid.api.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,35 +52,31 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         capabilities.add(initialCapabilities);
     }
 
-    @Override
-    protected JSONObject request(@NotNull String command, String parameters) throws IOException {
+    protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
         Server server = session.getServer();
         String hostname = this.hostname;
         String path = getMountpoint() + "/ctrl/" + command;
-        String body = null;
-        URL url;
 
-        LOGGER.finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
-
-        if (parameters != null) {
-            body = parameters;
-            if (token != null)
-                body += "&sessionId=" + token;
-        } else if (token != null) {
-            body = "sessionId=" + token;
+        if (token != null) {
+            if (parameters == null) {
+                parameters = new HashMap<>();
+            } else {
+                parameters = new HashMap<>(parameters);
+            }
+            parameters.put("sessionId", token);
         }
 
         if (hostname == null)
             hostname = server.getHostname();
 
-        if (body != null) {
-            path += "?" + body;
-            body = null;
-        }
-
-        url = new URL(server.getProtocol(), hostname, server.getPort(), path);
-        return request(url, body);
+        final URL url = new URL(server.getProtocol(), hostname, server.getPort(), path);
+        return request(url, parameters);
     }
+
+    protected JSONObject request(String command) throws IOException {
+        return request(command, null);
+    }
+
 
     @Override
     public @NotNull Bouquet getBouquet() {
@@ -86,9 +85,14 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void swapItem(SwapMode mode) throws IOException {
+        final Map<String, String> parameters;
+
         assertConnected();
 
-        request("swap", "mode=" + mode.getOnWire());
+        parameters = new HashMap<>();
+        parameters.put("mode", mode.getOnWire());
+
+        request("swap", parameters);
     }
 
     private void updateMetadata() throws IOException {

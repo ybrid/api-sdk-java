@@ -22,17 +22,14 @@
 
 package io.ybrid.api.driver.v2;
 
-import io.ybrid.api.*;
 import io.ybrid.api.Service;
+import io.ybrid.api.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -104,40 +101,19 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         }
     }
 
-    @Override
-    protected JSONObject request(@NotNull String command, String parameters) throws IOException {
-        String body = null;
-
-        if (parameters != null) {
-            body = parameters;
-            if (token != null)
-                body += "&session-id=" + token;
-        } else if (token != null) {
-            body = "session-id=" + token;
-        }
-
-        if (body == null)
-            body = "";
-        return request(getUrl("/ctrl/v2/" + command + "?" + body), null);
-    }
-
     @NotNull
     protected Response v2request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
-        String renderedParameters = null;
-
-        if (parameters != null) {
-            StringBuilder rendered = new StringBuilder();
-            for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                if (rendered.length() > 0)
-                    rendered.append('&');
-                rendered.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()));
-                rendered.append('=');
-                rendered.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
+        if (token != null) {
+            if (parameters == null) {
+                parameters = new HashMap<>();
+            } else {
+                parameters = new HashMap<>(parameters);
             }
-            renderedParameters = rendered.toString();
+            parameters.put("session-id", token);
         }
 
-        Response response = new Response(request(command, renderedParameters));
+
+        Response response = new Response(request(getUrl("/ctrl/v2/" + command), parameters));
         state.accept(response);
         handleUpdates();
         return response;

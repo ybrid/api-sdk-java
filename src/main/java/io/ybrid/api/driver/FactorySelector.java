@@ -26,15 +26,14 @@ package io.ybrid.api.driver;
 import io.ybrid.api.Alias;
 import io.ybrid.api.ApiVersion;
 import io.ybrid.api.Server;
-import io.ybrid.api.Utils;
 import io.ybrid.api.driver.common.Factory;
+import io.ybrid.api.driver.common.JSONRequest;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,29 +91,14 @@ public final class FactorySelector {
         }
 
         try {
-            String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
-            JSONObject response;
+            final String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
+            final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
+            final JSONRequest request = new JSONRequest(url, "GET");
             JSONArray supportedVersions;
-            URL url;
-            HttpURLConnection connection;
 
-            url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
-            connection = (HttpURLConnection) url.openConnection();
+            request.perform();
 
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
-            connection.setDoOutput(false);
-            connection.setDoInput(true);
-
-            connection.connect();
-
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                response = Utils.slurpToJSONObject(connection.getInputStream());
-            } else {
-                response = Utils.slurpToJSONObject(connection.getErrorStream());
-            }
-
-            supportedVersions = response.getJSONObject("__responseHeader").getJSONArray("supportedVersions");
+            supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
             for (int i = 0; i < supportedVersions.length(); i++) {
                 ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
             }
