@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,10 +34,11 @@ import java.util.logging.Logger;
  * An Alias represents a entry point on a {@link Server}.
  * The alias can be used to open a {@link Session} and a stream.
  */
-public class Alias {
+public class Alias implements ApiUser {
     private final Logger logger;
     private final URL url;
     private Server server;
+    private @Nullable ApiVersion apiVersion = null;
 
     private void assertServer() throws MalformedURLException {
         boolean secure;
@@ -126,5 +128,15 @@ public class Alias {
      */
     public Bouquet getBouquet() throws IOException {
         return FactorySelector.getFactory(getServer(), this).getBouquet(getServer(), this);
+    }
+
+    @Override
+    public void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException {
+        this.apiVersion = version;
+    }
+
+    @Override
+    public @Nullable ApiVersion getForcedApiVersion() {
+        return apiVersion;
     }
 }

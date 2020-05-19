@@ -78,12 +78,22 @@ public final class FactorySelector {
 
     private static EnumSet<ApiVersion> getSupportedVersions(Server server, Alias alias) throws MalformedURLException {
         EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
-        String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
+
+        if (alias.getForcedApiVersion() != null) {
+            ret.add(alias.getForcedApiVersion());
+            return ret;
+        }
 
         if (server == null)
             server = alias.getServer();
 
+        if (server.getForcedApiVersion() != null) {
+            ret.add(server.getForcedApiVersion());
+            return ret;
+        }
+
         try {
+            String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
             JSONObject response;
             JSONArray supportedVersions;
             URL url;

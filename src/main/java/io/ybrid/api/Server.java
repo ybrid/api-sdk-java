@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.net.MalformedURLException;
 import java.util.logging.Logger;
 
@@ -30,7 +32,7 @@ import java.util.logging.Logger;
  *
  * Objects of this class can be reused for several sessions.
  */
-public class Server implements Connectable {
+public class Server implements Connectable, ApiUser {
     /**
      * The default port used for Ybrid servers.
      */
@@ -44,6 +46,7 @@ public class Server implements Connectable {
     private int port = DEFAULT_PORT;
     private boolean secure = DEFAULT_SECURE;
     private final Logger logger;
+    private @Nullable ApiVersion apiVersion = null;
 
     private void assertValidHostname(String hostname) throws MalformedURLException {
         if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
@@ -156,5 +159,15 @@ public class Server implements Connectable {
     @Override
     public boolean isConnected() {
         return true;
+    }
+
+    @Override
+    public void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException {
+        this.apiVersion = version;
+    }
+
+    @Override
+    public @Nullable ApiVersion getForcedApiVersion() {
+        return apiVersion;
     }
 }
