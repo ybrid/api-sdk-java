@@ -36,8 +36,8 @@ import java.util.logging.Logger;
  * The alias can be used to open a {@link Session} and a stream.
  */
 public class Alias implements ApiUser {
-    private final URL url;
-    private final Server server;
+    private final @NotNull URL url;
+    private final @NotNull Server server;
     private @Nullable ApiVersion apiVersion = null;
 
     /**
@@ -73,7 +73,7 @@ public class Alias implements ApiUser {
      * @deprecated Use {@link #Alias(URL, Server)} instead.
      */
     @Deprecated
-    public Alias(Logger logger, URL url, Server server) {
+    public Alias(Logger logger, @NotNull URL url, @Nullable Server server) {
         this.url = url;
         if (server != null) {
             this.server = server;
@@ -94,7 +94,7 @@ public class Alias implements ApiUser {
      * @deprecated Use {@link #Alias(URL)} instead.
      */
     @Deprecated
-    public Alias(Logger logger, URL url) {
+    public Alias(Logger logger, @NotNull URL url) {
         this.url = url;
         try {
             this.server = new Server(url);

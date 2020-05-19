@@ -44,13 +44,15 @@ public class Server implements Connectable, ApiUser {
      */
     public static final boolean DEFAULT_SECURE = false;
 
-    private final String hostname;
+    private final @NotNull String hostname;
     private int port = DEFAULT_PORT;
     private boolean secure = DEFAULT_SECURE;
-    private final Logger logger;
+    private final @NotNull Logger logger;
     private @Nullable ApiVersion apiVersion = null;
 
-    private void assertValidHostname(String hostname) throws MalformedURLException {
+    private void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
+        if (hostname == null)
+            throw new MalformedURLException("Bad hostname: null");
         if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
             throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
     }
@@ -121,7 +123,7 @@ public class Server implements Connectable, ApiUser {
      * @deprecated Use {@link #Server(String, int, boolean)} instead.
      */
     @Deprecated
-    public Server(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
+    public Server(@NotNull Logger logger, @NotNull String hostname, int port, boolean secure) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         assertValidPort(port);
@@ -142,7 +144,7 @@ public class Server implements Connectable, ApiUser {
      * @deprecated Use {@link #Server(String, int, boolean)} instead.
      */
     @Deprecated
-    public Server(Logger logger, String hostname) throws MalformedURLException {
+    public Server(@NotNull Logger logger, @NotNull String hostname) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         this.hostname = hostname;
@@ -152,7 +154,7 @@ public class Server implements Connectable, ApiUser {
      * Get the name of the host used to contact the server.
      * @return Returns the hostname.
      */
-    public String getHostname() {
+    public @NotNull String getHostname() {
         return hostname;
     }
 
@@ -176,7 +178,7 @@ public class Server implements Connectable, ApiUser {
      * Gets the transport protocol used.
      * @return Returns the name of the protocol.
      */
-    public String getProtocol() {
+    public @NotNull String getProtocol() {
         return isSecure() ? "https" : "http";
     }
 
@@ -200,7 +202,7 @@ public class Server implements Connectable, ApiUser {
      * @deprecated Callers should use their own instance of a {@link Logger}.
      */
     @Deprecated
-    public Logger getLogger() {
+    public @NotNull Logger getLogger() {
         return logger;
     }
 
