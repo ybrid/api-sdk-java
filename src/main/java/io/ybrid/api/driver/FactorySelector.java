@@ -44,6 +44,8 @@ import java.util.logging.Logger;
  * This should not be used directly.
  */
 public final class FactorySelector {
+    static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
+
     /**
      * Gets a {@link Factory} based on the parameters.
      * This method may access the network.
@@ -54,15 +56,12 @@ public final class FactorySelector {
      */
     public static Factory getFactory(Server server, Alias alias) throws MalformedURLException {
         EnumSet<ApiVersion> set = getSupportedVersions(server, alias);
-        final Logger logger;
 
         if (server == null)
             server = alias.getServer();
 
-        logger = server.getLogger();
-
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Supported versions for " + alias.getUrl().toString() +
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Supported versions for " + alias.getUrl().toString() +
                     " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
                     " = " + set);
         }

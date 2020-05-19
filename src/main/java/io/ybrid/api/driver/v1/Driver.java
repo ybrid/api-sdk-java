@@ -31,8 +31,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class Driver extends io.ybrid.api.driver.common.Driver {
+    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+
     private static final Capability[] initialCapabilities = {Capability.PLAYBACK_URL};
     private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
     private Metadata metadata;
@@ -54,7 +57,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         String body = null;
         URL url;
 
-        server.getLogger().finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
+        LOGGER.finer("Request: command=" + command + ", parameters=" + parameters + ", token=" + token);
 
         if (parameters != null) {
             body = parameters;
@@ -163,7 +166,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         if (hostname != null) {
             if (hostname.equals("localhost") || hostname.equals("localhost.localdomain")) {
-                session.getServer().getLogger().log(Level.SEVERE, "Invalid hostname from server: " + hostname);
+                LOGGER.log(Level.SEVERE, "Invalid hostname from server: " + hostname);
                 hostname = null;
             }
         }

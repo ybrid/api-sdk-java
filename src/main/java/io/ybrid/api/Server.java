@@ -61,12 +61,31 @@ public class Server implements Connectable, ApiUser {
     /**
      * Creates a new Server object.
      *
-     * @param logger The {@link Logger} to use.
      * @param hostname The name of the host used to access the server.
      * @param port The port to access the server.
      * @param secure Whether to use a secure connection to the server.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
      */
+    public Server(String hostname, int port, boolean secure) throws MalformedURLException {
+        this.logger = Logger.getLogger(Server.class.getName());
+        assertValidHostname(hostname);
+        assertValidPort(port);
+        this.hostname = hostname;
+        this.port = port;
+        this.secure = secure;
+    }
+
+    /**
+     * Creates a new Server object.
+     *
+     * @param logger The {@link Logger} to use.
+     * @param hostname The name of the host used to access the server.
+     * @param port The port to access the server.
+     * @param secure Whether to use a secure connection to the server.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated Use {@link #Server(String, int, boolean)} instead.
+     */
+    @Deprecated
     public Server(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
@@ -85,7 +104,9 @@ public class Server implements Connectable, ApiUser {
      * @param logger The {@link Logger} to use.
      * @param hostname The name of the host used to access the server.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated Use {@link #Server(String, int, boolean)} instead.
      */
+    @Deprecated
     public Server(Logger logger, String hostname) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
@@ -141,7 +162,9 @@ public class Server implements Connectable, ApiUser {
     /**
      * Get the {@link Logger} used by this Server object.
      * @return Returns the logger.
+     * @deprecated Callers should use their own instance of a {@link Logger}.
      */
+    @Deprecated
     public Logger getLogger() {
         return logger;
     }

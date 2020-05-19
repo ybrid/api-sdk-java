@@ -42,6 +42,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Driver implements Connectable, SessionClient {
+    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+
     protected final Session session;
     protected final CapabilitySet capabilities = new CapabilitySet();
     protected boolean haveCapabilitiesChanged = true;
@@ -102,7 +104,6 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     protected JSONObject request(URL url, String body) throws IOException {
-        final Logger logger = session.getServer().getLogger();
         HttpURLConnection connection;
         InputStream inputStream;
         OutputStream outputStream;
@@ -126,8 +127,8 @@ public abstract class Driver implements Connectable, SessionClient {
         inputStream.close();
         connection.disconnect();
 
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("request: url=" + url + ", jsonObject=" + jsonObject);
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("request: url=" + url + ", jsonObject=" + jsonObject);
         return jsonObject;
     }
 

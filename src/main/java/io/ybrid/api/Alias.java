@@ -62,7 +62,19 @@ public class Alias implements ApiUser {
         if (port < 0)
             port = url.getDefaultPort();
 
-        server = new Server(logger, url.getHost(), port, secure);
+        server = new Server(url.getHost(), port, secure);
+    }
+
+    /**
+     * Create a new Alias using the given {@link Server}.
+     *
+     * @param url The {@link URL} of the Alias.
+     * @param server The {@link Server} to use for contacting the Alias.
+     */
+    public Alias(URL url, @Nullable Server server) {
+        this.logger = Logger.getLogger(Alias.class.getName());
+        this.url = url;
+        this.server = server;
     }
 
     /**
@@ -71,7 +83,9 @@ public class Alias implements ApiUser {
      * @param logger The logger to use for the Alias.
      * @param url The {@link URL} of the Alias.
      * @param server The {@link Server} to use for contacting the Alias.
+     * @deprecated Use {@link #Alias(URL, Server)} instead.
      */
+    @Deprecated
     public Alias(Logger logger, URL url, Server server) {
         this.logger = logger;
         this.url = url;
@@ -83,7 +97,9 @@ public class Alias implements ApiUser {
      *
      * @param logger The logger to use for the Alias.
      * @param url The {@link URL} of the Alias.
+     * @deprecated Use {@link #Alias(URL, Server)} instead.
      */
+    @Deprecated
     public Alias(Logger logger, URL url) {
         this.logger = logger;
         this.url = url;
