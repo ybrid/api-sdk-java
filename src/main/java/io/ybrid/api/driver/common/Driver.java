@@ -101,15 +101,14 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     protected JSONObject request(URL url, @Nullable Map<String, String> body) throws IOException {
-        if (body != null) {
-            return request(new JSONRequest(url, "POST", body));
-        } else {
-            return request(new JSONRequest(url, "POST"));
-        }
-    }
-
-    protected JSONObject request(@NotNull JSONRequest request) throws IOException {
         final JSONObject jsonObject;
+        final JSONRequest request;
+
+        if (body != null) {
+            request = new JSONRequest(url, "POST", body);
+        } else {
+            request = new JSONRequest(url, "POST");
+        }
 
         if (request.perform()) {
             jsonObject = request.getResponseBody();
