@@ -31,8 +31,11 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
@@ -100,12 +103,32 @@ public abstract class Driver implements Connectable, SessionClient {
             throw new IllegalStateException("Not connected");
     }
 
+    // TODO: Remove this once the servers no longer require it.
+    private static URL workaroundNoPostBody(@NotNull URL url, @NotNull Map<String, String> body) {
+        try {
+            final StringBuilder rendered = new StringBuilder();
+            final String utf8Name = StandardCharsets.UTF_8.name();
+
+            for (Map.Entry<String, String> entry : body.entrySet()) {
+                if (rendered.length() > 0)
+                    rendered.append('&');
+                rendered.append(URLEncoder.encode(entry.getKey(), utf8Name));
+                rendered.append('=');
+                rendered.append(URLEncoder.encode(entry.getValue(), utf8Name));
+            }
+
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "?" + rendered.toString());
+        } catch (UnsupportedEncodingException | MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     protected JSONObject request(URL url, @Nullable Map<String, String> body) throws IOException {
         final JSONObject jsonObject;
         final JSONRequest request;
 
         if (body != null) {
-            request = new JSONRequest(url, "POST", body);
+            request = new JSONRequest(workaroundNoPostBody(url, body), "POST");
         } else {
             request = new JSONRequest(url, "POST");
         }
