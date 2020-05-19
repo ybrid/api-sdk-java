@@ -26,28 +26,25 @@ import junit.framework.TestCase;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Logger;
 
 public class ServerTest extends TestCase {
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
     public void testCreateSimplePositive() throws MalformedURLException {
-        String[] hostnames = {"localhost"};
+        URL[] urls = {new URL("http://localhost/")};
 
-        for (String hostname : hostnames) {
-            Server server = new Server(LOGGER, hostname);
+        for (URL url : urls) {
+            Server server = new Server(url);
 
             assertNotNull(server);
-            assertEquals(server.getHostname(), hostname);
+            assertEquals(server.getHostname(), url.getHost());
         }
     }
 
-    public void testCreateSimpleNegative() {
-        String[] hostnames = {null, ":", ""};
+    public void testCreateSimpleNegative() throws MalformedURLException {
+        URL[] urls = {new URL("file:///dev/null")};
 
-        for (String hostname : hostnames) {
+        for (URL url : urls) {
             try {
-                new Server(LOGGER, hostname);
+                new Server(url);
                 fail("Object creation successful.");
             } catch (Exception e) {
                 /* NOOP */
@@ -60,7 +57,7 @@ public class ServerTest extends TestCase {
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            Alias alias = new Alias(LOGGER, new URL("http://" + hostname + mountpoint));
+            Alias alias = new Alias(new URL("http://" + hostname + mountpoint));
             Session session = alias.createSession();
 
             assertNotNull(session);

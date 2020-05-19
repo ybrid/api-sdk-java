@@ -28,18 +28,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.logging.Logger;
 
 public class SessionTest extends TestCase {
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
     public void testGetStreamURLPositive() throws IOException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
             Alias alias;
             Session session;
             URL url;
 
-            alias = new Alias(LOGGER, aliasUrl);
+            alias = new Alias(aliasUrl);
             assertNotNull(alias);
 
             session = alias.createSession();
@@ -56,7 +53,7 @@ public class SessionTest extends TestCase {
 
     public void testSessionInfo() throws IOException, InterruptedException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
-            Session session = new Alias(LOGGER, aliasUrl).createSession();
+            Session session = new Alias(aliasUrl).createSession();
             Metadata oldMetadata = null;
             Metadata newMetadata;
 
