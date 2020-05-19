@@ -27,7 +27,6 @@ import io.ybrid.api.Alias;
 import io.ybrid.api.ApiVersion;
 import io.ybrid.api.Server;
 import io.ybrid.api.driver.common.Factory;
-import io.ybrid.api.driver.common.JSONRequest;
 import org.json.JSONArray;
 
 import java.net.MalformedURLException;

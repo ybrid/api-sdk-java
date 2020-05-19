@@ -26,6 +26,7 @@ import io.ybrid.api.Metadata;
 import io.ybrid.api.Service;
 import io.ybrid.api.*;
 import io.ybrid.api.driver.CapabilitySet;
+import io.ybrid.api.driver.JSONRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;

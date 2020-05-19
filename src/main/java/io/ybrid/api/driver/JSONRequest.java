@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api.driver;
 
 import io.ybrid.api.Utils;
 import org.jetbrains.annotations.NotNull;
