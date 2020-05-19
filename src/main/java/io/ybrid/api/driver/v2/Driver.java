@@ -124,7 +124,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         return v2request(command, null);
     }
 
-    protected void requestSessionInfo(SubInfo what) throws IOException {
+    protected void requestSessionInfo(@NotNull SubInfo what) throws IOException {
         Instant lastUpdate;
 
         assertConnected();
@@ -191,7 +191,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void swapItem(SwapMode mode) throws IOException {
+    public void swapItem(@NotNull SwapMode mode) throws IOException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("mode", mode.getOnWire());
         v2request(COMMAND_PLAYOUT_SWAP_ITEM, parameters);

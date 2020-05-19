@@ -73,7 +73,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         return request(url, parameters);
     }
 
-    protected JSONObject request(String command) throws IOException {
+    protected JSONObject request(@NotNull String command) throws IOException {
         return request(command, null);
     }
 
@@ -84,7 +84,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void swapItem(SwapMode mode) throws IOException {
+    public void swapItem(@NotNull SwapMode mode) throws IOException {
         final Map<String, String> parameters;
 
         assertConnected();

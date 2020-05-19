@@ -53,7 +53,7 @@ public abstract class Driver implements Connectable, SessionClient {
     protected String token;
     protected Service currentService;
 
-    abstract public void swapItem(SwapMode mode) throws IOException;
+    abstract public void swapItem(@NotNull SwapMode mode) throws IOException;
     abstract public @NotNull Metadata getMetadata() throws IOException;
     abstract public URL getStreamURL() throws MalformedURLException;
     abstract public @NotNull Bouquet getBouquet() throws IOException;
@@ -123,7 +123,7 @@ public abstract class Driver implements Connectable, SessionClient {
         }
     }
 
-    protected JSONObject request(URL url, @Nullable Map<String, String> body) throws IOException {
+    protected JSONObject request(@NotNull URL url, @Nullable Map<String, String> body) throws IOException {
         final JSONObject jsonObject;
         final JSONRequest request;
 
