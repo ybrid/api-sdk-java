@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -37,33 +38,8 @@ import java.util.logging.Logger;
 public class Alias implements ApiUser {
     private final Logger logger;
     private final URL url;
-    private Server server;
+    private final Server server;
     private @Nullable ApiVersion apiVersion = null;
-
-    private void assertServer() throws MalformedURLException {
-        boolean secure;
-        int port;
-
-        if (server != null)
-            return;
-
-        switch (url.getProtocol()) {
-            case "http":
-                secure = false;
-                break;
-            case "https":
-                secure = true;
-                break;
-            default:
-                throw new MalformedURLException("Invalid protocol");
-        }
-
-        port = url.getPort();
-        if (port < 0)
-            port = url.getDefaultPort();
-
-        server = new Server(url.getHost(), port, secure);
-    }
 
     /**
      * Create a new Alias using the given {@link Server}.
@@ -71,10 +47,23 @@ public class Alias implements ApiUser {
      * @param url The {@link URL} of the Alias.
      * @param server The {@link Server} to use for contacting the Alias.
      */
-    public Alias(URL url, @Nullable Server server) {
+    public Alias(@NotNull URL url, @Nullable Server server) throws MalformedURLException {
         this.logger = Logger.getLogger(Alias.class.getName());
         this.url = url;
-        this.server = server;
+        if (server != null) {
+            this.server = server;
+        } else {
+            this.server = new Server(url);
+        }
+    }
+
+    /**
+     * Create a new Alias using the given {@link Server}.
+     *
+     * @param url The {@link URL} of the Alias.
+     */
+    public Alias(@NotNull URL url) throws MalformedURLException {
+        this(url, null);
     }
 
     /**
@@ -103,6 +92,11 @@ public class Alias implements ApiUser {
     public Alias(Logger logger, URL url) {
         this.logger = logger;
         this.url = url;
+        try {
+            this.server = new Server(url);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -118,10 +112,8 @@ public class Alias implements ApiUser {
      * If no {@link Server} has been passed to the Constructor it is automatically created.
      *
      * @return Returns the {@link Server} object of this Alias.
-     * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Server getServer() throws MalformedURLException {
-        assertServer();
+    public Server getServer() {
         return server;
     }
 

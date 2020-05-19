@@ -51,7 +51,7 @@ class Client {
         URL url = new URL("https://stagecast.ybrid.io/adaptive-demo");
 
         /* Create an Alias object from the URL.*/
-        Alias alias = new Alias(url, null);
+        Alias alias = new Alias(url);
 
         /* create an unconnected session */
         Session session = alias.createSession();

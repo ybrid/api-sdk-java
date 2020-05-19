@@ -22,9 +22,11 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 /**
@@ -61,12 +63,45 @@ public class Server implements Connectable, ApiUser {
     /**
      * Creates a new Server object.
      *
+     * @param baseURL The base URL to use for this server.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     */
+    public Server(@NotNull URL baseURL) throws MalformedURLException {
+        int newPort;
+
+        this.logger = Logger.getLogger(Server.class.getName());
+
+        newPort = baseURL.getPort();
+        if (newPort < 0)
+            newPort = baseURL.getDefaultPort();
+
+        assertValidHostname(baseURL.getHost());
+        assertValidPort(newPort);
+        this.hostname = baseURL.getHost();
+        this.port = newPort;
+        switch (baseURL.getProtocol()) {
+            case "http":
+                this.secure = false;
+                break;
+            case "https":
+                this.secure = true;
+                break;
+            default:
+                throw new MalformedURLException("Unsupported protocol: " + baseURL.getProtocol());
+        }
+    }
+
+    /**
+     * Creates a new Server object.
+     *
      * @param hostname The name of the host used to access the server.
      * @param port The port to access the server.
      * @param secure Whether to use a secure connection to the server.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated Use {@link #Server(URL)} instead.
      */
-    public Server(String hostname, int port, boolean secure) throws MalformedURLException {
+    @Deprecated
+    public Server(@NotNull String hostname, int port, boolean secure) throws MalformedURLException {
         this.logger = Logger.getLogger(Server.class.getName());
         assertValidHostname(hostname);
         assertValidPort(port);
