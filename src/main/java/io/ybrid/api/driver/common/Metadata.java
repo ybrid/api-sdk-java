@@ -35,6 +35,10 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     protected Duration timeToNextItem;
     protected Instant requestTime;
 
+    private Duration getTimeToNextItemAsDuration() {
+        return timeToNextItem.minus(Duration.between(requestTime, Instant.now()));
+    }
+
     @Override
     public Item getCurrentItem() {
         return currentItem;
@@ -53,14 +57,14 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     @Override
     @Deprecated
     public long getTimeToNextItem() {
-        return timeToNextItem.minus(Duration.between(requestTime, Instant.now())).toMillis();
+        return getTimeToNextItemAsDuration().toMillis();
     }
 
     @Override
     public boolean isValid() {
         if (timeToNextItem == null)
             return true;
-        return getTimeToNextItem() >= 0;
+        return !getTimeToNextItemAsDuration().isNegative();
     }
 
     @Override
