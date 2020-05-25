@@ -63,14 +63,6 @@ public interface Metadata {
     Service getService();
 
     /**
-     * Returns the information on the current swap state.
-     * @return Returns the current SwapInfo.
-     * @deprecated Use {@link PlayoutInfo#getSwapInfo()} instead.
-     */
-    @Deprecated
-    SwapInfo getSwapInfo();
-
-    /**
      * Returns the time to the next Item.
      * This is measured with the current system clock so that every call to this method will give an updated result.
      * may return a negative number if the start of the next Item is in the past.

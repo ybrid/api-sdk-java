@@ -40,11 +40,6 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
         }
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
-        if (json.has("swapInfo")) {
-            swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
-        } else {
-            swapInfo = null;
-        }
         if (json.has("timeToNextItemMillis")) {
             timeToNextItem = json.getLong("timeToNextItemMillis");
         } else {

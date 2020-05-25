@@ -23,7 +23,6 @@
 package io.ybrid.api.driver.common;
 
 import io.ybrid.api.Service;
-import io.ybrid.api.SwapInfo;
 import org.jetbrains.annotations.NotNull;
 
 abstract public class Metadata implements io.ybrid.api.Metadata {
@@ -31,7 +30,6 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     protected Item currentItem;
     protected Item nextItem;
     protected Service service;
-    protected SwapInfo swapInfo;
     protected long timeToNextItem;
     protected long requestTime;
 
@@ -58,12 +56,6 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
 
     @Override
     @Deprecated
-    public SwapInfo getSwapInfo() {
-        return swapInfo;
-    }
-
-    @Override
-    @Deprecated
     public long getTimeToNextItem() {
         return timeToNextItem - (System.currentTimeMillis() - requestTime);
     }
@@ -80,7 +72,6 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
                 ", currentItem=" + currentItem +
                 ", nextItem=" + nextItem +
                 ", service=" + service +
-                ", swapInfo=" + swapInfo +
                 ", timeToNextItem=" + timeToNextItem +
                 ", requestTime=" + requestTime +
                 '}';
