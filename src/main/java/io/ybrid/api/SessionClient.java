@@ -31,26 +31,22 @@ import java.time.Instant;
 /**
  * This interface is implemented by objects that control a session.
  */
-public interface SessionClient {
+public interface SessionClient extends KnowsSubInfoState {
     /**
      * Get the current set of {@link Capability Capabilities} supported.
      * This can be used to display different options to the user.
      *
-     * Calling this resets the flag returned by {@link #haveCapabilitiesChanged()}
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the set of current {@link Capability Capabilities}.
      */
     @NotNull
     CapabilitySet getCapabilities();
 
     /**
-     * Checks whether the {@link CapabilitySet} has changed since last call to {@link #getCapabilities()}.
-     * @return Whether {@link #getCapabilities()} needs to be called again.
-     */
-    boolean haveCapabilitiesChanged();
-
-    /**
      * Get the current Bouquet of active Services.
      * The Bouquet may be displayed to the user to select the Service to listen to.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the current Bouquet.
      */
     @NotNull
@@ -58,6 +54,8 @@ public interface SessionClient {
 
     /**
      * Get the current Metadata for the session.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the current Metadata.
      * @throws IOException Thrown on any I/O-Error.
      */
@@ -73,6 +71,8 @@ public interface SessionClient {
 
     /**
      * Get the current {@link PlayoutInfo} for the session.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the current {@link PlayoutInfo}.
      * @throws IOException Thrown on any I/O-Error.
      */

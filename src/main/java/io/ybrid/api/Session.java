@@ -87,12 +87,8 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public boolean haveCapabilitiesChanged() {
-        return driver.haveCapabilitiesChanged();
-    }
-
-    @Override
     public @NotNull Bouquet getBouquet() throws IOException {
+        driver.clearChanged(SubInfo.BOUQUET);
         return driver.getBouquet();
     }
 
@@ -133,12 +129,19 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public @NotNull Metadata getMetadata() throws IOException {
+        driver.clearChanged(SubInfo.METADATA);
         return driver.getMetadata();
     }
 
     @Override
     public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
+        driver.clearChanged(SubInfo.PLAYOUT);
         return driver.getPlayoutInfo();
+    }
+
+    @Override
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return driver.hasChanged(what);
     }
 
     /**

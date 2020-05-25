@@ -39,16 +39,17 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Driver implements Connectable, SessionClient {
+public abstract class Driver implements Connectable, SessionClient, KnowsSubInfoState {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     protected final Session session;
     protected final CapabilitySet capabilities = new CapabilitySet();
-    protected boolean haveCapabilitiesChanged = true;
+    private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     protected boolean connected = false;
     protected String hostname;
     protected String token;
@@ -76,13 +77,21 @@ public abstract class Driver implements Connectable, SessionClient {
 
     @Override
     public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
-        haveCapabilitiesChanged = false;
+        clearChanged(SubInfo.CAPABILITIES);
         return capabilities;
     }
 
+    public void clearChanged(@NotNull SubInfo what) {
+        changed.remove(what);
+    }
+
+    protected void setChanged(@NotNull SubInfo what) {
+        changed.add(what);
+    }
+
     @Override
-    public boolean haveCapabilitiesChanged() {
-        return haveCapabilitiesChanged;
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return changed.contains(what);
     }
 
     @Override

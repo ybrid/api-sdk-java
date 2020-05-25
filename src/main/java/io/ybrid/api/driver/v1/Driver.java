@@ -50,6 +50,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         this.currentService = bouquet.getDefaultService();
 
         capabilities.add(initialCapabilities);
+
+        setChanged(SubInfo.BOUQUET);
     }
 
     protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
@@ -103,6 +105,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         json = request("show-meta");
 
         metadata = new Metadata((Service) getCurrentService(), json);
+        setChanged(SubInfo.METADATA);
 
         if (json.has("swapInfo")) {
             final SwapInfo swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
@@ -119,9 +122,10 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
             } else {
                 capabilities.remove(Capability.SWAP_ITEM);
             }
-            haveCapabilitiesChanged = true;
+            setChanged(SubInfo.CAPABILITIES);
 
             playoutInfo = new io.ybrid.api.driver.common.PlayoutInfo(swapInfo, Duration.ofMillis(timeToNextItem), null);
+            setChanged(SubInfo.PLAYOUT);
         }
     }
 

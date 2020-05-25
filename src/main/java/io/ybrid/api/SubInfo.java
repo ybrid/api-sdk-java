@@ -31,5 +31,6 @@ public enum SubInfo {
      */
     METADATA,
     BOUQUET,
-    PLAYOUT;
+    PLAYOUT,
+    CAPABILITIES;
 }

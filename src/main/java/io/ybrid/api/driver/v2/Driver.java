@@ -79,7 +79,8 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
             } else {
                 capabilities.remove(Capability.SWAP_SERVICE);
             }
-            haveCapabilitiesChanged = true;
+            setChanged(SubInfo.CAPABILITIES);
+            setChanged(SubInfo.BOUQUET);
         }
 
         if (state.hasChanged(SubInfo.PLAYOUT)) {
@@ -97,8 +98,12 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
                 capabilities.remove(Capability.WIND_TO_LIVE);
                 capabilities.remove(Capability.SKIP_FORWARDS);
             }
-            haveCapabilitiesChanged = true;
+            setChanged(SubInfo.CAPABILITIES);
+            setChanged(SubInfo.PLAYOUT);
         }
+
+        if (state.hasChanged(SubInfo.METADATA))
+            setChanged(SubInfo.METADATA);
     }
 
     @NotNull
@@ -139,7 +144,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     public void disconnect() {
         capabilities.remove(Capability.SKIP_BACKWARDS);
         capabilities.remove(Capability.PLAYBACK_URL);
-        haveCapabilitiesChanged = true;
+        setChanged(SubInfo.CAPABILITIES);
 
         try {
             v2request(COMMAND_SESSION_CLOSE);
@@ -163,7 +168,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
         capabilities.add(Capability.PLAYBACK_URL);
         capabilities.add(Capability.SKIP_BACKWARDS);
-        haveCapabilitiesChanged = true;
+        setChanged(SubInfo.CAPABILITIES);
     }
 
     @Override
