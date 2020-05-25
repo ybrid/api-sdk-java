@@ -50,11 +50,4 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
     public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
         this(service, json, Instant.now());
     }
-
-    @Override
-    public boolean isValid() {
-        if (timeToNextItem == null)
-            return true;
-        return super.isValid();
-    }
 }
