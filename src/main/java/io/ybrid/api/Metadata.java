@@ -47,15 +47,6 @@ public interface Metadata {
     Item getNextItem();
 
     /**
-     * Get the currently selected bitrate.
-     * The exact bitrate can only be obtained from the audio decoder.
-     * @return Returns the current bitrate in [Bit/s].
-     * @deprecated Extract current bitrate from the audio signal itself.
-     */
-    @Deprecated
-    int getCurrentBitRate();
-
-    /**
      * Returns the current service the listener is attached to.
      * @return Returns the current service.
      */

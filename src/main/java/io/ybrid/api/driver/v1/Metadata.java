@@ -35,11 +35,6 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
         this.service = service;
         this.requestTime = requestTime;
 
-        if (json.has("currentBitRate")) {
-            currentBitRate = json.getInt("currentBitRate");
-        } else {
-            currentBitRate = -1;
-        }
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
         if (json.has("timeToNextItemMillis")) {

@@ -29,7 +29,6 @@ import java.time.Duration;
 import java.time.Instant;
 
 abstract public class Metadata implements io.ybrid.api.Metadata {
-    protected int currentBitRate;
     protected Item currentItem;
     protected Item nextItem;
     protected Service service;
@@ -44,12 +43,6 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     @Override
     public Item getNextItem() {
         return nextItem;
-    }
-
-    @Override
-    @Deprecated
-    public int getCurrentBitRate() {
-        return currentBitRate;
     }
 
     @Override
@@ -71,8 +64,7 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     @Override
     public String toString() {
         return "Metadata{" +
-                "currentBitRate=" + currentBitRate +
-                ", currentItem=" + currentItem +
+                "currentItem=" + currentItem +
                 ", nextItem=" + nextItem +
                 ", service=" + service +
                 ", timeToNextItem=" + timeToNextItem +
