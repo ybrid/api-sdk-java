@@ -31,9 +31,9 @@ import java.time.Duration;
 import java.time.Instant;
 
 public final class Metadata extends io.ybrid.api.driver.common.Metadata {
-    private Metadata(@NotNull Service service, @NotNull JSONObject json, Instant requestTime) throws MalformedURLException {
+    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
         this.service = service;
-        this.requestTime = requestTime;
+        this.requestTime = Instant.now();
 
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
@@ -45,9 +45,5 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
 
         if (service instanceof io.ybrid.api.driver.v1.Service)
             ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));
-    }
-
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        this(service, json, Instant.now());
     }
 }
