@@ -38,9 +38,10 @@ public class Companion implements io.ybrid.api.Companion {
     @Override
     public void onView() throws IOException {
         URLConnection connection = onView.openConnection();
-        connection.setDoInput(false);
+        connection.setDoInput(true);
         connection.setDoOutput(false);
         connection.connect();
+        connection.getInputStream().close();
     }
 
     @Override
