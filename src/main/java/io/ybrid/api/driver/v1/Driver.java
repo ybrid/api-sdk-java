@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -130,14 +131,22 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public io.ybrid.api.@NotNull Metadata getMetadata() throws IOException {
+    public void refresh(@NotNull SubInfo what) throws IOException {
         updateMetadata();
+    }
+
+    @Override
+    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        updateMetadata();
+    }
+
+    @Override
+    public io.ybrid.api.@NotNull Metadata getMetadata() {
         return metadata;
     }
 
     @Override
-    public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
-        updateMetadata();
+    public @NotNull PlayoutInfo getPlayoutInfo() {
         return playoutInfo;
     }
 

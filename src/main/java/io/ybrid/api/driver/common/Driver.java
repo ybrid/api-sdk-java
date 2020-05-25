@@ -56,9 +56,9 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     protected Service currentService;
 
     abstract public void swapItem(@NotNull SwapMode mode) throws IOException;
-    abstract public @NotNull Metadata getMetadata() throws IOException;
+    abstract public @NotNull Metadata getMetadata();
     abstract public URL getStreamURL() throws MalformedURLException;
-    abstract public @NotNull Bouquet getBouquet() throws IOException;
+    abstract public @NotNull Bouquet getBouquet();
 
     protected Driver(Session session) {
         this.session = session;
@@ -95,7 +95,7 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     }
 
     @Override
-    public @NotNull Service getCurrentService() throws IOException {
+    public @NotNull Service getCurrentService() {
         assertConnected();
 
         return currentService;

@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -129,15 +130,13 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         return v2request(command, null);
     }
 
-    protected void requestSessionInfo(@NotNull SubInfo what) throws IOException {
+    protected boolean shouldRequestSessionInfo(@NotNull SubInfo what) throws IOException {
         Instant lastUpdate;
 
         assertConnected();
 
         lastUpdate = state.getLastUpdated(what);
-        if (lastUpdate != null && lastUpdate.plus(MINIMUM_BETWEEN_SESSION_INFO).isAfter(Instant.now()))
-            return;
-        v2request(COMMAND_SESSION_INFO);
+        return lastUpdate == null || !lastUpdate.plus(MINIMUM_BETWEEN_SESSION_INFO).isAfter(Instant.now());
     }
 
     @Override
@@ -172,27 +171,39 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public @NotNull Metadata getMetadata() throws IOException {
-        requestSessionInfo(SubInfo.METADATA);
+    public @NotNull Metadata getMetadata() {
         return state.getMetadata();
     }
 
     @Override
-    public @NotNull Service getCurrentService() throws IOException {
-        requestSessionInfo(SubInfo.BOUQUET);
+    public @NotNull Service getCurrentService() {
         return state.getCurrentService();
     }
 
     @Override
-    public @NotNull Bouquet getBouquet() throws IOException {
-        requestSessionInfo(SubInfo.BOUQUET);
+    public @NotNull Bouquet getBouquet() {
         return state.getBouquet();
     }
 
     @Override
-    public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
-        requestSessionInfo(SubInfo.PLAYOUT);
+    public @NotNull PlayoutInfo getPlayoutInfo() {
         return state.getPlayoutInfo();
+    }
+
+    @Override
+    public void refresh(@NotNull SubInfo what) throws IOException {
+        if (shouldRequestSessionInfo(what))
+            v2request(COMMAND_SESSION_INFO);
+    }
+
+    @Override
+    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        for (SubInfo subInfo : what) {
+            if (shouldRequestSessionInfo(subInfo)) {
+                v2request(COMMAND_SESSION_INFO);
+                return;
+            }
+        }
     }
 
     @Override

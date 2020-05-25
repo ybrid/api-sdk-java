@@ -68,6 +68,7 @@ public class SessionTest extends TestCase {
                 Instant end;
 
                 start = Instant.now();
+                session.refresh(SubInfo.METADATA);
                 newMetadata = session.getMetadata();
                 end = Instant.now();
 

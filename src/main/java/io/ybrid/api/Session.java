@@ -32,10 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class implements an actual session with a Ybrid server.
@@ -87,7 +84,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public @NotNull Bouquet getBouquet() throws IOException {
+    public @NotNull Bouquet getBouquet() {
         driver.clearChanged(SubInfo.BOUQUET);
         return driver.getBouquet();
     }
@@ -128,13 +125,13 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public @NotNull Metadata getMetadata() throws IOException {
+    public @NotNull Metadata getMetadata() {
         driver.clearChanged(SubInfo.METADATA);
         return driver.getMetadata();
     }
 
     @Override
-    public @NotNull PlayoutInfo getPlayoutInfo() throws IOException {
+    public @NotNull PlayoutInfo getPlayoutInfo() {
         driver.clearChanged(SubInfo.PLAYOUT);
         return driver.getPlayoutInfo();
     }
@@ -142,6 +139,16 @@ public class Session implements Connectable, SessionClient {
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
         return driver.hasChanged(what);
+    }
+
+    @Override
+    public void refresh(@NotNull SubInfo what) throws IOException {
+        driver.refresh(what);
+    }
+
+    @Override
+    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        driver.refresh(what);
     }
 
     /**
@@ -222,7 +229,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public @NotNull Service getCurrentService() throws IOException {
+    public @NotNull Service getCurrentService() {
         return driver.getCurrentService();
     }
 

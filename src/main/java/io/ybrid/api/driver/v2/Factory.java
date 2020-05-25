@@ -22,10 +22,7 @@
 
 package io.ybrid.api.driver.v2;
 
-import io.ybrid.api.Alias;
-import io.ybrid.api.Bouquet;
-import io.ybrid.api.Server;
-import io.ybrid.api.Session;
+import io.ybrid.api.*;
 import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +42,9 @@ public final class Factory extends io.ybrid.api.driver.common.Factory {
 
         driver.connect();
         try {
+            if (!driver.hasChanged(SubInfo.BOUQUET))
+                driver.refresh(SubInfo.BOUQUET);
+
             bouquet = driver.getBouquet();
         } catch (IOException e) {
             thrown = e;

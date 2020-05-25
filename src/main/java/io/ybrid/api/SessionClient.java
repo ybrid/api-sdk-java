@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
 
 /**
  * This interface is implemented by objects that control a session.
@@ -52,37 +53,61 @@ public interface SessionClient extends KnowsSubInfoState {
      * @return Returns the current Bouquet.
      */
     @NotNull
-    Bouquet getBouquet() throws IOException;
+    Bouquet getBouquet();
 
     /**
      * Get the current Metadata for the session.
      *
      * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the current Metadata.
-     * @throws IOException Thrown on any I/O-Error.
      */
     @NotNull
-    Metadata getMetadata() throws IOException;
+    Metadata getMetadata();
 
     /**
      * Returns the current Service the session is connected to.
      * @return This returns the current Service.
      */
     @NotNull
-    Service getCurrentService() throws IOException;
+    Service getCurrentService();
 
     /**
      * Get the current {@link PlayoutInfo} for the session.
      *
      * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the current {@link PlayoutInfo}.
-     * @throws IOException Thrown on any I/O-Error.
      */
     @NotNull
-    PlayoutInfo getPlayoutInfo() throws IOException;
+    PlayoutInfo getPlayoutInfo();
 
 
     /* --- Actions --- */
+
+    /**
+     * Reload the state of {@code what} from the server.
+     *
+     * This should be used sparely.
+     * If multiple items need to be refreshed {@link #refresh(EnumSet)} should be used instead.
+     *
+     * @param what What to refresh.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    void refresh(@NotNull SubInfo what) throws IOException;
+
+    /**
+     * Reload the state of {@code what} from the server.
+     * This is the same as calling {@link #refresh(SubInfo)} for each element in the set expect
+     * that the backend can optimize calls to the server.
+     *
+     * This should be used sparely.
+     *
+     * @param what What to refresh.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    default void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        for (SubInfo subInfo : what)
+            refresh(subInfo);
+    }
 
     /**
      * This call requests the session to be brought back to the live portion of the current service.
