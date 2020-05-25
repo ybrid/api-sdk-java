@@ -29,8 +29,11 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.time.Duration;
+import java.util.logging.Logger;
 
 final class Item extends io.ybrid.api.driver.common.Item {
+    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+
     Item(@NotNull JSONObject json) throws MalformedURLException {
         JSONArray array;
         String type;
@@ -47,7 +50,12 @@ final class Item extends io.ybrid.api.driver.common.Item {
         if (type == null || type.equals("") || type.equals("unrecognized")) {
             this.type = null;
         } else {
-            this.type = ItemType.valueOf(json.getString("type"));
+            try {
+                this.type = ItemType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                LOGGER.warning("Unrecognized value for type: " + type + ": " + e.toString());
+                this.type = null;
+            }
         }
 
         playbackLength = Duration.ofMillis(json.getLong("durationMillis"));
