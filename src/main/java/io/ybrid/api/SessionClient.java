@@ -32,6 +32,8 @@ import java.time.Instant;
  * This interface is implemented by objects that control a session.
  */
 public interface SessionClient extends KnowsSubInfoState {
+    /* --- Getters --- */
+
     /**
      * Get the current set of {@link Capability Capabilities} supported.
      * This can be used to display different options to the user.
@@ -78,6 +80,9 @@ public interface SessionClient extends KnowsSubInfoState {
      */
     @NotNull
     PlayoutInfo getPlayoutInfo() throws IOException;
+
+
+    /* --- Actions --- */
 
     /**
      * This call requests the session to be brought back to the live portion of the current service.
