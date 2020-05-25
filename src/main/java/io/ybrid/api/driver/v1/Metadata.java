@@ -27,9 +27,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
+import java.time.Instant;
 
 public final class Metadata extends io.ybrid.api.driver.common.Metadata {
-    private Metadata(@NotNull Service service, @NotNull JSONObject json, long requestTime) throws MalformedURLException {
+    private Metadata(@NotNull Service service, @NotNull JSONObject json, Instant requestTime) throws MalformedURLException {
         this.service = service;
         this.requestTime = requestTime;
 
@@ -41,9 +43,9 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
         if (json.has("timeToNextItemMillis")) {
-            timeToNextItem = json.getLong("timeToNextItemMillis");
+            timeToNextItem = Duration.ofMillis(json.getLong("timeToNextItemMillis"));
         } else {
-            timeToNextItem = -1;
+            timeToNextItem = null;
         }
 
         if (service instanceof io.ybrid.api.driver.v1.Service)
@@ -51,12 +53,12 @@ public final class Metadata extends io.ybrid.api.driver.common.Metadata {
     }
 
     public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        this(service, json, System.currentTimeMillis());
+        this(service, json, Instant.now());
     }
 
     @Override
     public boolean isValid() {
-        if (timeToNextItem == -1)
+        if (timeToNextItem == null)
             return true;
         return super.isValid();
     }
