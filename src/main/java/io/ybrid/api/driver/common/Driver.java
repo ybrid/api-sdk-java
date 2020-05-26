@@ -133,6 +133,7 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         }
     }
 
+    @Nullable
     protected JSONObject request(@NotNull URL url, @Nullable Map<String, String> body) throws IOException {
         final JSONObject jsonObject;
         final JSONRequest request;

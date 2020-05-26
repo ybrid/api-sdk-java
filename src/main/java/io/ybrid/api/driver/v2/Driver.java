@@ -107,8 +107,10 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
             setChanged(SubInfo.METADATA);
     }
 
-    @NotNull
+    @Nullable
     protected Response v2request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
+        Response response = null;
+
         if (token != null) {
             if (parameters == null) {
                 parameters = new HashMap<>();
@@ -119,13 +121,17 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         }
 
 
-        Response response = new Response(request(getUrl("/ctrl/v2/" + command), parameters));
-        state.accept(response);
+        try {
+            response = new Response(Objects.requireNonNull(request(getUrl("/ctrl/v2/" + command), parameters)));
+            state.accept(response);
+        } catch (NullPointerException ignored) {
+        }
+
         handleUpdates();
         return response;
     }
 
-    @NotNull
+    @Nullable
     protected Response v2request(@NotNull String command) throws IOException {
         return v2request(command, null);
     }
@@ -161,6 +167,9 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
             return;
 
         response = v2request(COMMAND_SESSION_CREATE);
+        if (response == null)
+            throw new IOException("No valid response from server. BAD.");
+
         token = response.getToken();
 
         connected = true;

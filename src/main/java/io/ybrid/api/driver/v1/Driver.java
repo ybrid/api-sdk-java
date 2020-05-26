@@ -104,6 +104,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         assertConnected();
 
         json = request("show-meta");
+        if (json == null)
+            throw new IOException("No valid reply from server");
 
         metadata = new Metadata((Service) getCurrentService(), json);
         setChanged(SubInfo.METADATA);
@@ -173,6 +175,9 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
             return;
 
         response = request("create-session");
+        if (response == null)
+            throw new IOException("No valid response from server. BAD.");
+
         token = response.getString("sessionId");
         if (token == null)
             throw new IOException("No SessionID from server. BAD.");
