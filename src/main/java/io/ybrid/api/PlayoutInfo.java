@@ -25,9 +25,10 @@ package io.ybrid.api;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.time.Duration;
 
-public interface PlayoutInfo {
+public interface PlayoutInfo extends Serializable {
     /**
      * Returns the information on the current swap state.
      * @return Returns the current SwapInfo.

@@ -22,10 +22,12 @@
 
 package io.ybrid.api;
 
+import java.io.Serializable;
+
 /**
  * This interface is implemented by objects returning a swap state.
  */
-public interface SwapInfo {
+public interface SwapInfo extends Serializable {
     /**
      * This returns the state of the next swap.
      * @return Returns whether the next swap will return to the main program.
