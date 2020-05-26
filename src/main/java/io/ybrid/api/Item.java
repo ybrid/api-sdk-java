@@ -23,10 +23,12 @@
 package io.ybrid.api;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This interface is implemented by objects representing an Item. A item roughly corresponds to a track.
@@ -45,6 +47,7 @@ public interface Item extends hasIdentifier, hasDisplayName {
      * This can be useful to for example provide different settings for traffic announcements.
      * @return Returns the type of the item.
      */
+    @Nullable
     ItemType getType();
 
     /**
@@ -55,13 +58,14 @@ public interface Item extends hasIdentifier, hasDisplayName {
      */
     @Deprecated
     default long getDuration() {
-        return getPlaybackLength().toMillis();
+        return Objects.requireNonNull(getPlaybackLength()).toMillis();
     }
 
     /**
      * Return the total playback time of the item.
      * @return Returns the playback time.
      */
+    @Nullable
     Duration getPlaybackLength();
 
     /**
