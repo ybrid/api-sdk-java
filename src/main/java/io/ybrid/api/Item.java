@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This interface is implemented by objects representing an Item. A item roughly corresponds to a track.
@@ -49,17 +48,6 @@ public interface Item extends hasIdentifier, hasDisplayName {
      */
     @Nullable
     ItemType getType();
-
-    /**
-     * Return the total playback time of the item.
-     *
-     * @return Returns the playback time in [ms].
-     * @deprecated Use {@link #getPlaybackLength()} instead.
-     */
-    @Deprecated
-    default long getDuration() {
-        return Objects.requireNonNull(getPlaybackLength()).toMillis();
-    }
 
     /**
      * Return the total playback time of the item.
