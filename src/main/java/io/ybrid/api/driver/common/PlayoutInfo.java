@@ -68,8 +68,8 @@ public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
     public String toString() {
         return "PlayoutInfo{" +
                 "swapInfo=" + swapInfo +
-                ", timeToNextItem=" + timeToNextItem +
-                ", behindLive=" + behindLive +
+                ", getTimeToNextItem()=" + getTimeToNextItem() +
+                ", getBehindLive()=" + getBehindLive() +
                 ", buildTimestamp=" + buildTimestamp +
                 '}';
     }
