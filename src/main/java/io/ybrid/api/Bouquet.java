@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 
 /**
@@ -29,15 +31,15 @@ import java.util.Collection;
  * to the user by the server.
  */
 public class Bouquet {
-    private final Service defaultService;
-    private final Collection<Service> services;
+    private final @NotNull Service defaultService;
+    private final @NotNull Collection<Service> services;
 
     /**
      * Creates a new Bouquet object.
      * @param defaultService The default {@link Service} of the Bouquet. Must be part of {@code services}.
      * @param services The collection of all {@link Service Services} in this Bouquet.
      */
-    public Bouquet(Service defaultService, Collection<Service> services) {
+    public Bouquet(@NotNull Service defaultService, @NotNull Collection<Service> services) {
         if (!services.contains(defaultService))
             throw new IllegalArgumentException("Default Service not part of Services");
 
@@ -49,7 +51,7 @@ public class Bouquet {
      * Gets the default {@link Service} from this Bouquet.
      * @return Returns the default {@link Service}.
      */
-    public Service getDefaultService() {
+    public @NotNull Service getDefaultService() {
         return defaultService;
     }
 
@@ -57,7 +59,7 @@ public class Bouquet {
      * Returns the collection of {@link Service Services} known in this Bouquet.
      * @return Returns the collection of {@link Service Services}.
      */
-    public Collection<Service> getServices() {
+    public @NotNull Collection<Service> getServices() {
         return services;
     }
 }
