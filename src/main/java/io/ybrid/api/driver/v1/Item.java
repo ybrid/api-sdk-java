@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.time.Duration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 final class Item extends io.ybrid.api.driver.common.Item {
@@ -47,13 +48,17 @@ final class Item extends io.ybrid.api.driver.common.Item {
         }
 
         type = json.getString("type");
-        if (type == null || type.equals("") || type.equals("unrecognized")) {
+        if (type == null || type.equals("") || type.equals("_unrecognized")) {
             this.type = null;
         } else {
             try {
                 this.type = ItemType.valueOf(type);
             } catch (IllegalArgumentException e) {
-                LOGGER.warning("Unrecognized value for type: " + type + ": " + e.toString());
+                Level level = Level.SEVERE;
+                if (type.startsWith("_"))
+                    level = Level.WARNING;
+
+                LOGGER.log(level, "Unrecognized value for type: " + type + ": " + e.toString());
                 this.type = null;
             }
         }
