@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,5 +55,53 @@ public interface PlayoutInfo extends Serializable {
     @Nullable
     default Duration getBehindLive() {
         return null;
+    }
+
+    /**
+     * This method adjusts in objects understanding of passed time by adjusting the passed time
+     * with a constant offset.
+     * @param adjustment The offset to use.
+     * @return The new instance of PlayoutInfo with the adjustment made.
+     */
+    @NotNull
+    @Contract("_, _ -> new")
+    default PlayoutInfo adjustTimeToNextItem(Duration adjustment) {
+        @NotNull final PlayoutInfo aliasThis = this;
+        @NotNull final Duration aliasAdjustment = adjustment;
+
+        return new PlayoutInfo() {
+            @NotNull private final PlayoutInfo parent = aliasThis;
+            @NotNull private final Duration adjustment = aliasAdjustment;
+
+            @Override
+            @NotNull
+            public SwapInfo getSwapInfo() {
+                return parent.getSwapInfo();
+            }
+
+            @Override
+            @Nullable
+            public Duration getTimeToNextItem() {
+                Duration timeToNextItem = parent.getTimeToNextItem();
+
+                if (timeToNextItem == null)
+                    return null;
+
+                return parent.getTimeToNextItem().plus(adjustment);
+            }
+
+            @Override
+            @Nullable
+            public Duration getBehindLive() {
+                return parent.getBehindLive();
+            }
+
+            @Override
+            @Contract("_, _ -> new")
+            @NotNull
+            public PlayoutInfo adjustTimeToNextItem(Duration adjustment) {
+                return parent.adjustTimeToNextItem(this.adjustment.plus(adjustment));
+            }
+        };
     }
 }
