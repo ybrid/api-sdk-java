@@ -37,6 +37,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * This helper class allows to make request to an {@link URL} expecting a JSON document in return.
@@ -45,6 +46,8 @@ import java.util.Map;
  * This class only performs I/O operations in {@link #perform()}.
  */
 public final class JSONRequest {
+    static final Logger LOGGER = Logger.getLogger(JSONRequest.class.getName());
+
     private final @NotNull URL url;
     private final @NotNull String requestMethod;
     private final @Nullable String requestBodyContentType;
@@ -177,6 +180,12 @@ public final class JSONRequest {
 
         success = connection.getResponseCode() == HttpURLConnection.HTTP_OK;
         acceptable = isAcceptable(connection);
+
+        if (success) {
+            LOGGER.info("JSONRequest to " + url + " returned " + connection.getResponseCode() + " " + connection.getResponseMessage() + " [" + connection.getContentType() + "]");
+        } else {
+            LOGGER.warning("JSONRequest to " + url + " failed with " + connection.getResponseCode() + " " + connection.getResponseMessage() + " [" + connection.getContentType() + "]");
+        }
 
         if (acceptable) {
             if (success) {
