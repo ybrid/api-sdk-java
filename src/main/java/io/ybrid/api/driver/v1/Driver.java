@@ -109,6 +109,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         metadata = new Metadata((Service) getCurrentService(), json);
         setChanged(SubInfo.METADATA);
+        setChanged(SubInfo.BOUQUET);
 
         if (json.has("swapInfo")) {
             final SwapInfo swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
