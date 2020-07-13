@@ -33,6 +33,16 @@ import java.util.EnumSet;
  * This interface is implemented by objects that control a session.
  */
 public interface SessionClient extends KnowsSubInfoState {
+    /* --- Object Status --- */
+
+    /**
+     * Returns whether this Session is valid.
+     * If the Session is invalid the client must no longer use it and create a new session if necessary.
+     * @return Returns validity of this Session.
+     */
+    boolean isValid();
+
+
     /* --- Getters --- */
 
     /**

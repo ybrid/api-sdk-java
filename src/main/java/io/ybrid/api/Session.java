@@ -249,6 +249,11 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
+    public boolean isValid() {
+        return driver.isValid();
+    }
+
+    @Override
     public void close() throws IOException {
         driver.close();
     }

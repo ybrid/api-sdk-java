@@ -124,6 +124,9 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         try {
             response = new Response(Objects.requireNonNull(request(getUrl("/ctrl/v2/" + command), parameters)));
             state.accept(response);
+
+            if (!response.getValid())
+                setInvalid();
         } catch (NullPointerException ignored) {
         }
 
@@ -165,6 +168,9 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
         if (isConnected())
             return;
+
+        if (!isValid())
+            throw new IOException("Session is not valid.");
 
         response = v2request(COMMAND_SESSION_CREATE);
         if (response == null)

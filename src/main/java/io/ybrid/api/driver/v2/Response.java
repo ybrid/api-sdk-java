@@ -44,6 +44,10 @@ final class Response {
         return sessionId;
     }
 
+    public boolean getValid() {
+        return responseObject.getBoolean("valid");
+    }
+
     @Nullable
     protected JSONObject getRawBouquet() {
         if (!responseObject.has("bouquet"))

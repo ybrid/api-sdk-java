@@ -51,6 +51,7 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     protected final CapabilitySet capabilities = new CapabilitySet();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     protected boolean connected = false;
+    private boolean valid = true;
     protected String hostname;
     protected String token;
     protected Service currentService;
@@ -165,6 +166,14 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         return connected;
     }
 
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
+
+    protected void setInvalid() {
+        valid = false;
+    }
 
     @Override
     public void windToLive() throws IOException {
