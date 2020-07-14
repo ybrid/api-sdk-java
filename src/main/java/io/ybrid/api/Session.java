@@ -125,6 +125,11 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
+    public void swapToMain() throws IOException {
+        driver.swapToMain();
+    }
+
+    @Override
     public @NotNull Metadata getMetadata() {
         driver.clearChanged(SubInfo.METADATA);
         return driver.getMetadata();
