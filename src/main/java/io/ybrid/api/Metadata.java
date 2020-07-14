@@ -22,6 +22,9 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * This Interface is implemented by Metadata objects.
  *
@@ -40,33 +43,24 @@ public interface Metadata {
      * Get the Item that is expected to be played next.
      * @return Returns the next item or null.
      */
+    @Nullable
     Item getNextItem();
-
-    /**
-     * Get the currently selected bitrate.
-     * The exact bitrate can only be obtained from the audio decoder.
-     * @return Returns the current bitrate in [Bit/s].
-     */
-    int getCurrentBitRate();
 
     /**
      * Returns the current service the listener is attached to.
      * @return Returns the current service.
      */
+    @NotNull
     Service getService();
-
-    /**
-     * Returns the information on the current swap state.
-     * @return Returns the current SwapInfo.
-     */
-    SwapInfo getSwapInfo();
 
     /**
      * Returns the time to the next Item.
      * This is measured with the current system clock so that every call to this method will give an updated result.
      * may return a negative number if the start of the next Item is in the past.
      * @return Returns the time to the next item in [ms].
+     * @deprecated Use {@link PlayoutInfo#getTimeToNextItem()} instead.
      */
+    @Deprecated
     long getTimeToNextItem();
 
     /**

@@ -25,36 +25,47 @@ package io.ybrid.api.driver.common;
 import io.ybrid.api.Metadata;
 import io.ybrid.api.Service;
 import io.ybrid.api.*;
+import io.ybrid.api.driver.CapabilitySet;
+import io.ybrid.api.driver.JSONRequest;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Driver implements Connectable, SessionClient {
+public abstract class Driver implements Connectable, SessionClient, KnowsSubInfoState {
+    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+
     protected final Session session;
+    protected final CapabilitySet capabilities = new CapabilitySet();
+    private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     protected boolean connected = false;
+    private boolean valid = true;
     protected String hostname;
     protected String token;
     protected Service currentService;
 
-    abstract public void swapItem(SwapMode mode) throws IOException;
-    abstract public Metadata getMetadata() throws IOException;
+    abstract public void swapItem(@NotNull SwapMode mode) throws IOException;
+    abstract public @NotNull Metadata getMetadata();
     abstract public URL getStreamURL() throws MalformedURLException;
-    abstract public Bouquet getBouquet();
-    abstract protected JSONObject request(String command, String parameters) throws IOException;
+    abstract public @NotNull Bouquet getBouquet();
 
     protected Driver(Session session) {
         this.session = session;
     }
 
-    protected static void assertValidMountpoint(String mountpoint) throws MalformedURLException {
+    protected static void assertValidMountpoint(@NotNull String mountpoint) throws MalformedURLException {
         if (!mountpoint.startsWith("/"))
             throw new MalformedURLException();
     }
@@ -66,11 +77,32 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public Service getCurrentService() {
+    public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
+        clearChanged(SubInfo.CAPABILITIES);
+        return capabilities;
+    }
+
+    public void clearChanged(@NotNull SubInfo what) {
+        changed.remove(what);
+    }
+
+    protected void setChanged(@NotNull SubInfo what) {
+        changed.add(what);
+    }
+
+    @Override
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return changed.contains(what);
+    }
+
+    @Override
+    public @NotNull Service getCurrentService() {
+        assertConnected();
+
         return currentService;
     }
 
-    public void swapService(Service service) {
+    public void swapService(@NotNull Service service) throws IOException {
         if (service.equals(getCurrentService()))
             return;
 
@@ -82,37 +114,46 @@ public abstract class Driver implements Connectable, SessionClient {
             throw new IllegalStateException("Not connected");
     }
 
-    protected JSONObject request(URL url, String body) throws IOException {
-        final Logger logger = session.getServer().getLogger();
-        HttpURLConnection connection;
-        InputStream inputStream;
-        OutputStream outputStream;
-        final JSONObject jsonObject;
+    // TODO: Remove this once the servers no longer require it.
+    private static URL workaroundNoPostBody(@NotNull URL url, @NotNull Map<String, String> body) {
+        try {
+            final StringBuilder rendered = new StringBuilder();
+            final String utf8Name = StandardCharsets.UTF_8.name();
 
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setDoInput(true);
-        connection.setDoOutput(body != null);
+            for (Map.Entry<String, String> entry : body.entrySet()) {
+                if (rendered.length() > 0)
+                    rendered.append('&');
+                rendered.append(URLEncoder.encode(entry.getKey(), utf8Name));
+                rendered.append('=');
+                rendered.append(URLEncoder.encode(entry.getValue(), utf8Name));
+            }
 
-        if (body != null) {
-            outputStream = connection.getOutputStream();
-            outputStream.write(body.getBytes());
-            outputStream.close();
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "?" + rendered.toString());
+        } catch (UnsupportedEncodingException | MalformedURLException e) {
+            throw new IllegalArgumentException(e);
         }
-
-        inputStream = connection.getInputStream();
-        jsonObject = Utils.slurpToJSONObject(inputStream);
-        inputStream.close();
-        connection.disconnect();
-
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("request: url=" + url + ", jsonObject=" + jsonObject);
-        return jsonObject;
     }
 
-    protected JSONObject request(String command) throws IOException {
-        return request(command, null);
+    @Nullable
+    protected JSONObject request(@NotNull URL url, @Nullable Map<String, String> body) throws IOException {
+        final JSONObject jsonObject;
+        final JSONRequest request;
+
+        if (body != null) {
+            request = new JSONRequest(workaroundNoPostBody(url, body), "POST");
+        } else {
+            request = new JSONRequest(url, "POST");
+        }
+
+        if (request.perform()) {
+            jsonObject = request.getResponseBody();
+        } else {
+            jsonObject = null;
+        }
+
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("request: url=" + request.getUrl() + ", jsonObject=" + jsonObject);
+        return jsonObject;
     }
 
     @Override
@@ -125,6 +166,14 @@ public abstract class Driver implements Connectable, SessionClient {
         return connected;
     }
 
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
+
+    protected void setInvalid() {
+        valid = false;
+    }
 
     @Override
     public void windToLive() throws IOException {
@@ -132,12 +181,12 @@ public abstract class Driver implements Connectable, SessionClient {
     }
 
     @Override
-    public void WindTo(Instant timestamp) throws IOException {
+    public void windTo(@NotNull Instant timestamp) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void Wind(long duration) throws IOException {
+    public void wind(@NotNull Duration duration) throws IOException {
         throw new UnsupportedOperationException();
     }
 

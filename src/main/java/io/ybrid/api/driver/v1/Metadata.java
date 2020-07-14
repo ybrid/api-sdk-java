@@ -22,31 +22,28 @@
 
 package io.ybrid.api.driver.v1;
 
+import io.ybrid.api.driver.common.Service;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
+import java.time.Instant;
 
-final class Metadata extends io.ybrid.api.driver.common.Metadata {
-    private Metadata(Service service, JSONObject json, long requestTime) throws MalformedURLException {
+public final class Metadata extends io.ybrid.api.driver.common.Metadata {
+    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
         this.service = service;
-        this.requestTime = requestTime;
+        this.requestTime = Instant.now();
 
-        currentBitRate = json.getInt("currentBitRate");
         currentItem = new Item(json.getJSONObject("currentItem"));
         nextItem = new Item(json.getJSONObject("nextItem"));
-        service.updateStation(json.getJSONObject("station"));
-        swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
-        timeToNextItem = json.getLong("timeToNextItemMillis");
-    }
+        if (json.has("timeToNextItemMillis")) {
+            timeToNextItem = Duration.ofMillis(json.getLong("timeToNextItemMillis"));
+        } else {
+            timeToNextItem = null;
+        }
 
-    Metadata(Service service, JSONObject json) throws MalformedURLException {
-        this(service, json, System.currentTimeMillis());
-    }
-
-    @Override
-    public boolean isValid() {
-        if (timeToNextItem == -1)
-            return true;
-        return super.isValid();
+        if (service instanceof io.ybrid.api.driver.v1.Service)
+            ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));
     }
 }

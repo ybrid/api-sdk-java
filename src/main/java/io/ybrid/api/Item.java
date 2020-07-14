@@ -22,6 +22,10 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +37,7 @@ public interface Item extends hasIdentifier, hasDisplayName {
      * This allows access to the items Metadata.
      * @return Returns the map of metadata.
      */
+    @NotNull
     Map<String, String> getMetadata();
 
     /**
@@ -41,17 +46,20 @@ public interface Item extends hasIdentifier, hasDisplayName {
      * This can be useful to for example provide different settings for traffic announcements.
      * @return Returns the type of the item.
      */
+    @Nullable
     ItemType getType();
 
     /**
      * Return the total playback time of the item.
-     * @return Returns the playback time in [ms].
+     * @return Returns the playback time.
      */
-    long getDuration();
+    @Nullable
+    Duration getPlaybackLength();
 
     /**
      * Returns the list of Companions as to be displayed while this item is played.
      * @return Returns the list of Companions.
      */
+    @NotNull
     List<Companion> getCompanions();
 }

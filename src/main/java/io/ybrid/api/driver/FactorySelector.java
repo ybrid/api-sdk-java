@@ -24,8 +24,17 @@ package io.ybrid.api.driver;
 
 
 import io.ybrid.api.Alias;
+import io.ybrid.api.ApiVersion;
 import io.ybrid.api.Server;
 import io.ybrid.api.driver.common.Factory;
+import org.json.JSONArray;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class selects a {@link Factory} based on a given {@link Server} and {@link Alias}.
@@ -33,14 +42,70 @@ import io.ybrid.api.driver.common.Factory;
  * This should not be used directly.
  */
 public final class FactorySelector {
+    static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
+
     /**
      * Gets a {@link Factory} based on the parameters.
+     * This method may access the network.
      *
      * @param server The {@link Server} to use.
      * @param alias The {@link Alias} to use.
      * @return The instance of the {@link Factory} to use.
      */
-    public static Factory getFactory(Server server, Alias alias) {
-        return new io.ybrid.api.driver.v1.Factory();
+    public static Factory getFactory(Server server, Alias alias) throws MalformedURLException {
+        EnumSet<ApiVersion> set = getSupportedVersions(server, alias);
+
+        if (server == null)
+            server = alias.getServer();
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Supported versions for " + alias.getUrl().toString() +
+                    " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
+                    " = " + set);
+        }
+
+        if (set.contains(ApiVersion.V2_BETA))
+            return new io.ybrid.api.driver.v2.Factory();
+
+        if (set.contains(ApiVersion.V1))
+            return new io.ybrid.api.driver.v1.Factory();
+
+        throw new UnsupportedOperationException("Server and client do not share a common supported version.");
+    }
+
+    private static EnumSet<ApiVersion> getSupportedVersions(Server server, Alias alias) throws MalformedURLException {
+        EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
+
+        if (alias.getForcedApiVersion() != null) {
+            ret.add(alias.getForcedApiVersion());
+            return ret;
+        }
+
+        if (server == null)
+            server = alias.getServer();
+
+        if (server.getForcedApiVersion() != null) {
+            ret.add(server.getForcedApiVersion());
+            return ret;
+        }
+
+        try {
+            final String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
+            final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
+            final JSONRequest request = new JSONRequest(url, "GET");
+            JSONArray supportedVersions;
+
+            request.perform();
+
+            supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
+            for (int i = 0; i < supportedVersions.length(); i++) {
+                ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
+            }
+        } catch (Exception e) {
+            // Best guess:
+            ret.clear();
+            ret.add(ApiVersion.V1);
+        }
+        return ret;
     }
 }

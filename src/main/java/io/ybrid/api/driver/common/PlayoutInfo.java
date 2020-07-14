@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,59 +22,55 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.Service;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import io.ybrid.api.SwapInfo;
 
 import java.time.Duration;
 import java.time.Instant;
 
-abstract public class Metadata implements io.ybrid.api.Metadata {
-    protected Item currentItem;
-    protected Item nextItem;
-    protected Service service;
-    protected Duration timeToNextItem;
-    protected Instant requestTime;
+public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
+    @NotNull
+    protected final SwapInfo swapInfo;
+    @Nullable
+    protected final Duration timeToNextItem;
+    @Nullable
+    protected final Duration behindLive;
+    private final Instant buildTimestamp = Instant.now();
 
-    private Duration getTimeToNextItemAsDuration() {
-        return timeToNextItem.minus(Duration.between(requestTime, Instant.now()));
+    public PlayoutInfo(@NotNull SwapInfo swapInfo, @Nullable Duration timeToNextItem, @Nullable Duration behindLive) {
+        this.swapInfo = swapInfo;
+        this.timeToNextItem = timeToNextItem;
+        this.behindLive = behindLive;
     }
 
+    @NotNull
     @Override
-    public Item getCurrentItem() {
-        return currentItem;
+    public SwapInfo getSwapInfo() {
+        return swapInfo;
     }
 
+    @Nullable
     @Override
-    public Item getNextItem() {
-        return nextItem;
-    }
-
-    @Override
-    public @NotNull Service getService() {
-        return service;
-    }
-
-    @Override
-    @Deprecated
-    public long getTimeToNextItem() {
-        return getTimeToNextItemAsDuration().toMillis();
-    }
-
-    @Override
-    public boolean isValid() {
+    public Duration getTimeToNextItem() {
         if (timeToNextItem == null)
-            return true;
-        return !getTimeToNextItemAsDuration().isNegative();
+            return null;
+        return timeToNextItem.minus(Duration.between(buildTimestamp, Instant.now()));
+    }
+
+    @Nullable
+    @Override
+    public Duration getBehindLive() {
+        return behindLive;
     }
 
     @Override
     public String toString() {
-        return "Metadata{" +
-                "currentItem=" + currentItem +
-                ", nextItem=" + nextItem +
-                ", service=" + service +
-                ", timeToNextItem=" + timeToNextItem +
-                ", requestTime=" + requestTime +
+        return "PlayoutInfo{" +
+                "swapInfo=" + swapInfo +
+                ", getTimeToNextItem()=" + getTimeToNextItem() +
+                ", getBehindLive()=" + getBehindLive() +
+                ", buildTimestamp=" + buildTimestamp +
                 '}';
     }
 }

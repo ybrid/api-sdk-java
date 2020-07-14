@@ -22,7 +22,11 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 /**
@@ -30,7 +34,7 @@ import java.util.logging.Logger;
  *
  * Objects of this class can be reused for several sessions.
  */
-public class Server implements Connectable {
+public class Server implements Connectable, ApiUser {
     /**
      * The default port used for Ybrid servers.
      */
@@ -40,12 +44,15 @@ public class Server implements Connectable {
      */
     public static final boolean DEFAULT_SECURE = false;
 
-    private String hostname;
+    private final @NotNull String hostname;
     private int port = DEFAULT_PORT;
     private boolean secure = DEFAULT_SECURE;
-    private final Logger logger;
+    private final @NotNull Logger logger;
+    private @Nullable ApiVersion apiVersion = null;
 
-    private void assertValidHostname(String hostname) throws MalformedURLException {
+    private void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
+        if (hostname == null)
+            throw new MalformedURLException("Bad hostname: null");
         if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
             throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
     }
@@ -58,13 +65,65 @@ public class Server implements Connectable {
     /**
      * Creates a new Server object.
      *
+     * @param baseURL The base URL to use for this server.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     */
+    public Server(@NotNull URL baseURL) throws MalformedURLException {
+        int newPort;
+
+        this.logger = Logger.getLogger(Server.class.getName());
+
+        newPort = baseURL.getPort();
+        if (newPort < 0)
+            newPort = baseURL.getDefaultPort();
+
+        assertValidHostname(baseURL.getHost());
+        assertValidPort(newPort);
+        this.hostname = baseURL.getHost();
+        this.port = newPort;
+        switch (baseURL.getProtocol()) {
+            case "http":
+                this.secure = false;
+                break;
+            case "https":
+                this.secure = true;
+                break;
+            default:
+                throw new MalformedURLException("Unsupported protocol: " + baseURL.getProtocol());
+        }
+    }
+
+    /**
+     * Creates a new Server object.
+     *
+     * @param hostname The name of the host used to access the server.
+     * @param port The port to access the server.
+     * @param secure Whether to use a secure connection to the server.
+     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated Use {@link #Server(URL)} instead.
+     */
+    @Deprecated
+    public Server(@NotNull String hostname, int port, boolean secure) throws MalformedURLException {
+        this.logger = Logger.getLogger(Server.class.getName());
+        assertValidHostname(hostname);
+        assertValidPort(port);
+        this.hostname = hostname;
+        this.port = port;
+        this.secure = secure;
+    }
+
+    /**
+     * Creates a new Server object.
+     *
      * @param logger The {@link Logger} to use.
      * @param hostname The name of the host used to access the server.
      * @param port The port to access the server.
      * @param secure Whether to use a secure connection to the server.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated Use {@link #Server(String, int, boolean)} instead.
      */
-    public Server(Logger logger, String hostname, int port, boolean secure) throws MalformedURLException {
+    @Deprecated
+    public Server(@NotNull Logger logger, @NotNull String hostname, int port, boolean secure) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         assertValidPort(port);
@@ -82,8 +141,10 @@ public class Server implements Connectable {
      * @param logger The {@link Logger} to use.
      * @param hostname The name of the host used to access the server.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated Use {@link #Server(String, int, boolean)} instead.
      */
-    public Server(Logger logger, String hostname) throws MalformedURLException {
+    @Deprecated
+    public Server(@NotNull Logger logger, @NotNull String hostname) throws MalformedURLException {
         this.logger = logger;
         assertValidHostname(hostname);
         this.hostname = hostname;
@@ -93,7 +154,7 @@ public class Server implements Connectable {
      * Get the name of the host used to contact the server.
      * @return Returns the hostname.
      */
-    public String getHostname() {
+    public @NotNull String getHostname() {
         return hostname;
     }
 
@@ -117,14 +178,14 @@ public class Server implements Connectable {
      * Gets the transport protocol used.
      * @return Returns the name of the protocol.
      */
-    public String getProtocol() {
+    public @NotNull String getProtocol() {
         return isSecure() ? "https" : "http";
     }
 
     /**
      * Create a new unconnected {@link Session} for the given {@link Alias}.
      *
-     * This may will connect the used {@link Server} if needed.
+     * This may connect if needed. See {@link #connect()}.
      *
      * @param alias The {@link Alias} to connect to.
      * @return Returns the newly created {@link Session}.
@@ -138,14 +199,11 @@ public class Server implements Connectable {
     /**
      * Get the {@link Logger} used by this Server object.
      * @return Returns the logger.
+     * @deprecated Callers should use their own instance of a {@link Logger}.
      */
-    public Logger getLogger() {
+    @Deprecated
+    public @NotNull Logger getLogger() {
         return logger;
-    }
-
-    void finer(String msg) {
-        if (logger != null)
-            logger.finer(msg);
     }
 
     @Override
@@ -161,5 +219,15 @@ public class Server implements Connectable {
     @Override
     public boolean isConnected() {
         return true;
+    }
+
+    @Override
+    public void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException {
+        this.apiVersion = version;
+    }
+
+    @Override
+    public @Nullable ApiVersion getForcedApiVersion() {
+        return apiVersion;
     }
 }

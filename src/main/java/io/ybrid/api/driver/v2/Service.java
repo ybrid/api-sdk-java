@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,43 +20,20 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.v2;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
-final class Companion extends io.ybrid.api.driver.common.Companion {
-    private static String getString(@NotNull JSONObject json, @NotNull String key) {
-        String ret;
-
-        if (json.isNull(key))
-            return null;
-
-        ret = json.getString(key);
-        if (ret.isEmpty())
-            return null;
-
-        return ret;
+final class Service extends io.ybrid.api.driver.common.Service {
+    public Service(@NotNull JSONObject json) throws MalformedURLException {
+        super(json);
     }
 
-    private static URL getURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
-        String string = getString(json, key);
-        if (string == null)
-            return null;
-
-        return new URL(string);
-    }
-
-    Companion(@NotNull JSONObject json) throws MalformedURLException {
-        alternativeText = getString(json, "altText");
-        height = json.getInt("height");
-        width = json.getInt("width");
-        sequenceNumber = json.getInt("sequenceNumber");
-        staticResource = getURL(json, "staticResourceURL");
-        onClick = getURL(json, "onClickThroughURL");
-        onView = getURL(json, "onCreativeViewURL");
+    @Override
+    public String getGenre() {
+        return null;
     }
 }

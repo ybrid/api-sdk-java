@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,28 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api;
 
-import io.ybrid.api.Service;
-import io.ybrid.api.*;
-import io.ybrid.api.driver.common.Driver;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * This implements the {@link io.ybrid.api.driver.common.Factory} for version 1 API.
+ * This interface is to be implemented by classes that directly use a specific API.
  */
-public final class Factory extends io.ybrid.api.driver.common.Factory {
-    @Override
-    public @NotNull Driver getDriver(@NotNull Session session) {
-        return new io.ybrid.api.driver.v1.Driver(session);
-    }
+public interface ApiUser {
+    /**
+     * Sets the {@link ApiVersion} to use.
+     * @param version The version to use.
+     * @throws IllegalArgumentException Thrown if the argument is unsupported in any way.
+     * @throws IllegalStateException Thrown if the object is in the wrong state to change the version. Such as the object is already connected.
+     */
+    void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException;
 
-    @Override
-    public @NotNull Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) {
-        final Service service = new io.ybrid.api.driver.v1.Service();
-        final ArrayList<Service> services = new ArrayList<>();
-
-        services.add(service);
-
-        return new Bouquet(service, services);
-    }
+    /**
+     * Returns the {@link ApiVersion} that is currently set to forced mode.
+     * @return The {@link ApiVersion} or null if none is set.
+     */
+    @Nullable
+    @Contract(pure = true)
+    ApiVersion getForcedApiVersion();
 }

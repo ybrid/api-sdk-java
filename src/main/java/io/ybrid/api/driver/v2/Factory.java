@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,40 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.v2;
 
-import io.ybrid.api.Service;
 import io.ybrid.api.*;
 import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
-/**
- * This implements the {@link io.ybrid.api.driver.common.Factory} for version 1 API.
- */
 public final class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
     public @NotNull Driver getDriver(@NotNull Session session) {
-        return new io.ybrid.api.driver.v1.Driver(session);
+        return new io.ybrid.api.driver.v2.Driver(session);
     }
 
     @Override
-    public @NotNull Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) {
-        final Service service = new io.ybrid.api.driver.v1.Service();
-        final ArrayList<Service> services = new ArrayList<>();
+    public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
+        final Driver driver = getDriver(server.createSession(alias));
+        Bouquet bouquet = null;
+        IOException thrown = null;
 
-        services.add(service);
+        driver.connect();
+        try {
+            if (!driver.hasChanged(SubInfo.BOUQUET))
+                driver.refresh(SubInfo.BOUQUET);
 
-        return new Bouquet(service, services);
+            bouquet = driver.getBouquet();
+        } catch (IOException e) {
+            thrown = e;
+        }
+        driver.disconnect();
+
+        if (thrown != null)
+            throw thrown;
+
+        return bouquet;
     }
 }

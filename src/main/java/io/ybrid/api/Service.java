@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.net.URL;
 
 /**
@@ -32,11 +34,13 @@ public interface Service extends hasIdentifier, hasDisplayName {
      * Get an icon that can be displayed by the user interface next to the display of the service.
      * @return Returns an URL to a icon for the service or null.
      */
+    @Nullable
     URL getIcon();
 
     /**
      * This returns the genre of the service as a string that can be presented to the user.
      * @return Returns the genre of the service.
      */
+    @Nullable
     String getGenre();
 }

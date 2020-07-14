@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -42,7 +44,7 @@ public class NetworkHelper {
      * @return The URL as {@link URL}.
      */
     @Contract("_ -> new")
-    private static @NotNull URL newURL(String url) {
+    private static @NotNull URL newURL(@NotNull String url) {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
@@ -79,5 +81,23 @@ public class NetworkHelper {
     @Contract(pure = true)
     public static URL[] getAliases() {
         return aliases;
+    }
+
+    /**
+     * Make a HTTP GET request and discard returned document.
+     *
+     * @param url The URL to ping
+     * @return The HTTP status code
+     * @throws IOException Thrown on any I/O-Error
+     */
+    public static int pingURL(URL url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setDoOutput(false);
+        connection.setDoInput(true);
+        connection.connect();
+        connection.getInputStream().close();
+        connection.disconnect();
+        return connection.getResponseCode();
     }
 }

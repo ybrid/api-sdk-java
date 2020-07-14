@@ -23,7 +23,10 @@
 package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
@@ -32,34 +35,33 @@ import java.util.logging.Logger;
  * An Alias represents a entry point on a {@link Server}.
  * The alias can be used to open a {@link Session} and a stream.
  */
-public class Alias {
-    private final Logger logger;
-    private final URL url;
-    private Server server;
+public class Alias implements ApiUser {
+    private final @NotNull URL url;
+    private final @NotNull Server server;
+    private @Nullable ApiVersion apiVersion = null;
 
-    private void assertServer() throws MalformedURLException {
-        boolean secure;
-        int port;
-
-        if (server != null)
-            return;
-
-        switch (url.getProtocol()) {
-            case "http":
-                secure = false;
-                break;
-            case "https":
-                secure = true;
-                break;
-            default:
-                throw new MalformedURLException("Invalid protocol");
+    /**
+     * Create a new Alias using the given {@link Server}.
+     *
+     * @param url The {@link URL} of the Alias.
+     * @param server The {@link Server} to use for contacting the Alias.
+     */
+    public Alias(@NotNull URL url, @Nullable Server server) throws MalformedURLException {
+        this.url = url;
+        if (server != null) {
+            this.server = server;
+        } else {
+            this.server = new Server(url);
         }
+    }
 
-        port = url.getPort();
-        if (port < 0)
-            port = url.getDefaultPort();
-
-        server = new Server(logger, url.getHost(), port, secure);
+    /**
+     * Create a new Alias using the given {@link Server}.
+     *
+     * @param url The {@link URL} of the Alias.
+     */
+    public Alias(@NotNull URL url) throws MalformedURLException {
+        this(url, null);
     }
 
     /**
@@ -68,11 +70,20 @@ public class Alias {
      * @param logger The logger to use for the Alias.
      * @param url The {@link URL} of the Alias.
      * @param server The {@link Server} to use for contacting the Alias.
+     * @deprecated Use {@link #Alias(URL, Server)} instead.
      */
-    public Alias(Logger logger, URL url, Server server) {
-        this.logger = logger;
+    @Deprecated
+    public Alias(Logger logger, @NotNull URL url, @Nullable Server server) {
         this.url = url;
-        this.server = server;
+        if (server != null) {
+            this.server = server;
+        } else {
+            try {
+                this.server = new Server(url);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -80,10 +91,16 @@ public class Alias {
      *
      * @param logger The logger to use for the Alias.
      * @param url The {@link URL} of the Alias.
+     * @deprecated Use {@link #Alias(URL)} instead.
      */
-    public Alias(Logger logger, URL url) {
-        this.logger = logger;
+    @Deprecated
+    public Alias(Logger logger, @NotNull URL url) {
         this.url = url;
+        try {
+            this.server = new Server(url);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -99,10 +116,8 @@ public class Alias {
      * If no {@link Server} has been passed to the Constructor it is automatically created.
      *
      * @return Returns the {@link Server} object of this Alias.
-     * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Server getServer() throws MalformedURLException {
-        assertServer();
+    public Server getServer() {
         return server;
     }
 
@@ -123,7 +138,17 @@ public class Alias {
      * @return Returns the current {@link Bouquet}.
      * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Bouquet getBouquet() throws MalformedURLException {
+    public Bouquet getBouquet() throws IOException {
         return FactorySelector.getFactory(getServer(), this).getBouquet(getServer(), this);
+    }
+
+    @Override
+    public void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException {
+        this.apiVersion = version;
+    }
+
+    @Override
+    public @Nullable ApiVersion getForcedApiVersion() {
+        return apiVersion;
     }
 }

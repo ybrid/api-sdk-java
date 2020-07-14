@@ -22,19 +22,102 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
 
 /**
  * This interface is implemented by objects that control a session.
  */
-public interface SessionClient {
+public interface SessionClient extends KnowsSubInfoState {
+    /* --- Object Status --- */
+
+    /**
+     * Returns whether this Session is valid.
+     * If the Session is invalid the client must no longer use it and create a new session if necessary.
+     * @return Returns validity of this Session.
+     */
+    boolean isValid();
+
+
+    /* --- Getters --- */
+
+    /**
+     * Get the current set of {@link Capability Capabilities} supported.
+     * This can be used to display different options to the user.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
+     * @return Returns the set of current {@link Capability Capabilities}.
+     */
+    @NotNull
+    CapabilitySet getCapabilities();
+
     /**
      * Get the current Bouquet of active Services.
      * The Bouquet may be displayed to the user to select the Service to listen to.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
      * @return Returns the current Bouquet.
      */
+    @NotNull
     Bouquet getBouquet();
+
+    /**
+     * Get the current Metadata for the session.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
+     * @return Returns the current Metadata.
+     */
+    @NotNull
+    Metadata getMetadata();
+
+    /**
+     * Returns the current Service the session is connected to.
+     * @return This returns the current Service.
+     */
+    @NotNull
+    Service getCurrentService();
+
+    /**
+     * Get the current {@link PlayoutInfo} for the session.
+     *
+     * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}
+     * @return Returns the current {@link PlayoutInfo}.
+     */
+    @NotNull
+    PlayoutInfo getPlayoutInfo();
+
+
+    /* --- Actions --- */
+
+    /**
+     * Reload the state of {@code what} from the server.
+     *
+     * This should be used sparely.
+     * If multiple items need to be refreshed {@link #refresh(EnumSet)} should be used instead.
+     *
+     * @param what What to refresh.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    void refresh(@NotNull SubInfo what) throws IOException;
+
+    /**
+     * Reload the state of {@code what} from the server.
+     * This is the same as calling {@link #refresh(SubInfo)} for each element in the set expect
+     * that the backend can optimize calls to the server.
+     *
+     * This should be used sparely.
+     *
+     * @param what What to refresh.
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    default void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        for (SubInfo subInfo : what)
+            refresh(subInfo);
+    }
 
     /**
      * This call requests the session to be brought back to the live portion of the current service.
@@ -47,16 +130,16 @@ public interface SessionClient {
      * @param timestamp The timestamp to jump to.
      * @throws IOException Thrown on any I/O-Error.
      */
-    void WindTo(Instant timestamp) throws IOException;
+    void windTo(@NotNull Instant timestamp) throws IOException;
 
     /**
      * This call allows to move in the stream by a relative time.
      * The time can be positive to move into the future or negative to move into the past
      * relative to the current position.
-     * @param duration The duration to wind in [ms].
+     * @param duration The duration to wind.
      * @throws IOException Thrown on any I/O-Error.
      */
-    void Wind(long duration) throws IOException;
+    void wind(@NotNull Duration duration) throws IOException;
 
     /**
      * Skip to the next Item of the given type.
@@ -80,21 +163,17 @@ public interface SessionClient {
     void swapItem(SwapMode mode) throws IOException;
 
     /**
+     * This call requests the session to be brought back to the main service of this bouquet.
+     *
+     * @throws IOException Thrown on any I/O-Error.
+     */
+    default void swapToMain() throws IOException {
+        swapService(getBouquet().getDefaultService());
+    }
+
+    /**
      * Swap to a different Service.
      * @param service The new service to listen to.
      */
-    void swapService(Service service);
-
-    /**
-     * Get the current Metadata for the session.
-     * @return Returns the current Metadata.
-     * @throws IOException Thrown on any I/O-Error.
-     */
-    Metadata getMetadata() throws IOException;
-
-    /**
-     * Returns the current Service the session is connected to.
-     * @return This returns the current Service.
-     */
-    Service getCurrentService();
+    void swapService(@NotNull Service service) throws IOException;
 }

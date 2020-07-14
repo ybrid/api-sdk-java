@@ -26,18 +26,17 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Logger;
+import java.time.Duration;
+import java.time.Instant;
 
 public class SessionTest extends TestCase {
-    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
     public void testGetStreamURLPositive() throws IOException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
             Alias alias;
             Session session;
             URL url;
 
-            alias = new Alias(LOGGER, aliasUrl);
+            alias = new Alias(aliasUrl);
             assertNotNull(alias);
 
             session = alias.createSession();
@@ -47,6 +46,39 @@ public class SessionTest extends TestCase {
 
             url = session.getStreamURL();
             assertNotNull(url);
+
+            session.close();
+        }
+    }
+
+    public void testSessionInfo() throws IOException, InterruptedException {
+        for (URL aliasUrl : NetworkHelper.getAliases()) {
+            Session session = new Alias(aliasUrl).createSession();
+            Metadata oldMetadata = null;
+            Metadata newMetadata;
+
+            assertNotNull(session);
+
+            session.connect();
+
+            assertEquals(200, NetworkHelper.pingURL(session.getStreamURL()));
+
+            for (int i = 0; i < 10; i++) {
+                Instant start;
+                Instant end;
+
+                start = Instant.now();
+                session.refresh(SubInfo.METADATA);
+                newMetadata = session.getMetadata();
+                end = Instant.now();
+
+                assertNotNull(newMetadata);
+
+                System.out.println("i = " + i + ", end - start = " + Duration.between(start, end).toMillis() + "ms, (oldMetadata == newMetadata) = " + (oldMetadata == newMetadata));
+
+                oldMetadata = newMetadata;
+                Thread.sleep(100);
+            }
 
             session.close();
         }

@@ -23,13 +23,19 @@
 package io.ybrid.api.driver.v1;
 
 import io.ybrid.api.ItemType;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class Item extends io.ybrid.api.driver.common.Item {
-    Item(JSONObject json) throws MalformedURLException {
+    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+
+    Item(@NotNull JSONObject json) throws MalformedURLException {
         JSONArray array;
         String type;
 
@@ -42,13 +48,22 @@ final class Item extends io.ybrid.api.driver.common.Item {
         }
 
         type = json.getString("type");
-        if (type == null || type.equals("") || type.equals("unrecognized")) {
+        if (type == null || type.equals("") || type.equals("_unrecognized")) {
             this.type = null;
         } else {
-            this.type = ItemType.valueOf(json.getString("type"));
+            try {
+                this.type = ItemType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                Level level = Level.SEVERE;
+                if (type.startsWith("_"))
+                    level = Level.WARNING;
+
+                LOGGER.log(level, "Unrecognized value for type: " + type + ": " + e.toString());
+                this.type = null;
+            }
         }
 
-        duration = json.getLong("durationMillis");
+        playbackLength = Duration.ofMillis(json.getLong("durationMillis"));
 
         array = json.getJSONArray("companions");
         if (array != null) {

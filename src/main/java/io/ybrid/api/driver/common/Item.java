@@ -23,7 +23,9 @@
 package io.ybrid.api.driver.common;
 
 import io.ybrid.api.ItemType;
+import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.*;
 
 abstract public class Item implements io.ybrid.api.Item {
@@ -34,10 +36,10 @@ abstract public class Item implements io.ybrid.api.Item {
     protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
 
     protected String identifier;
-    protected HashMap<String, String> metadata = new HashMap<>();
+    protected final HashMap<String, String> metadata = new HashMap<>();
     protected ItemType type;
-    protected long duration;
-    protected ArrayList<Companion> companions = new ArrayList<>();
+    protected Duration playbackLength;
+    protected final ArrayList<Companion> companions = new ArrayList<>();
 
     @Override
     public String getDisplayName() {
@@ -52,12 +54,12 @@ abstract public class Item implements io.ybrid.api.Item {
     }
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return identifier;
     }
 
     @Override
-    public Map<String, String> getMetadata() {
+    public @NotNull Map<String, String> getMetadata() {
         return Collections.unmodifiableMap(metadata);
     }
 
@@ -67,12 +69,12 @@ abstract public class Item implements io.ybrid.api.Item {
     }
 
     @Override
-    public long getDuration() {
-        return duration;
+    public Duration getPlaybackLength() {
+        return playbackLength;
     }
 
     @Override
-    public List<io.ybrid.api.Companion> getCompanions() {
+    public @NotNull List<io.ybrid.api.Companion> getCompanions() {
         return Collections.unmodifiableList(companions);
     }
 
@@ -82,7 +84,7 @@ abstract public class Item implements io.ybrid.api.Item {
                 "identifier='" + identifier + '\'' +
                 ", metadata=" + metadata +
                 ", type=" + type +
-                ", duration=" + duration +
+                ", playbackLength=" + playbackLength +
                 ", companions=" + companions +
                 '}';
     }

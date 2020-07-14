@@ -20,31 +20,36 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
-
-import io.ybrid.api.Service;
-import io.ybrid.api.*;
-import io.ybrid.api.driver.common.Driver;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
+package io.ybrid.api;
 
 /**
- * This implements the {@link io.ybrid.api.driver.common.Factory} for version 1 API.
+ * This enum is used to identify a specific version of the Ybrid® API.
  */
-public final class Factory extends io.ybrid.api.driver.common.Factory {
-    @Override
-    public @NotNull Driver getDriver(@NotNull Session session) {
-        return new io.ybrid.api.driver.v1.Driver(session);
-    }
+public enum ApiVersion {
+    /**
+     * Version 1 of the Ybrid® API.
+     */
+    V1,
+    /**
+     * Beta of version 2 of the Ybrid® API.
+     */
+    V2_BETA;
 
-    @Override
-    public @NotNull Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) {
-        final Service service = new io.ybrid.api.driver.v1.Service();
-        final ArrayList<Service> services = new ArrayList<>();
-
-        services.add(service);
-
-        return new Bouquet(service, services);
+    /** Returns the enum constant of this type with the specified on-wire representation.
+     *
+     * This is like {@link #valueOf(String)} except that it uses the on-wire representation
+     * as input.
+     * @param input The on-wire representation to convert.
+     * @return The corresponding enum value.
+     */
+    public static ApiVersion fromWire(String input) {
+        switch (input) {
+            case "v1":
+                return V1;
+            case "v2":
+                return V2_BETA;
+            default:
+                throw new IllegalArgumentException("No enum constant for string \"" + input +"\"");
+        }
     }
 }

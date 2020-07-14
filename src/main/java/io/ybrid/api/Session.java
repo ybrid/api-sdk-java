@@ -24,11 +24,15 @@ package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.*;
 
 /**
  * This class implements an actual session with a Ybrid server.
@@ -38,13 +42,24 @@ import java.time.Instant;
  */
 public class Session implements Connectable, SessionClient {
     private final Driver driver;
-    private Server server;
-    private Alias alias;
+    private final Server server;
+    private final Alias alias;
+    private Map<String, Double> acceptedMediaFormats = null;
+    private Map<String, Double> acceptedLanguages = null;
+
+    private static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
+        if (list == null)
+            return;
+
+        for (double weight : list.values())
+            if (weight < 0 || weight > 1)
+                throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
+    }
 
     Session(Server server, Alias alias) throws MalformedURLException {
-        this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
         this.server = server;
         this.alias = alias;
+        this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
     }
 
     /**
@@ -64,7 +79,13 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public Bouquet getBouquet() {
+    public @NotNull CapabilitySet getCapabilities() {
+        return driver.getCapabilities();
+    }
+
+    @Override
+    public @NotNull Bouquet getBouquet() {
+        driver.clearChanged(SubInfo.BOUQUET);
         return driver.getBouquet();
     }
 
@@ -74,13 +95,13 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void WindTo(Instant timestamp) throws IOException {
-        driver.WindTo(timestamp);
+    public void windTo(@NotNull Instant timestamp) throws IOException {
+        driver.windTo(timestamp);
     }
 
     @Override
-    public void Wind(long duration) throws IOException {
-        driver.Wind(duration);
+    public void wind(@NotNull Duration duration) throws IOException {
+        driver.wind(duration);
     }
 
     @Override
@@ -99,13 +120,108 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void swapService(Service service) {
+    public void swapService(@NotNull Service service) throws IOException {
         driver.swapService(service);
     }
 
     @Override
-    public Metadata getMetadata() throws IOException {
+    public void swapToMain() throws IOException {
+        driver.swapToMain();
+    }
+
+    @Override
+    public @NotNull Metadata getMetadata() {
+        driver.clearChanged(SubInfo.METADATA);
         return driver.getMetadata();
+    }
+
+    @Override
+    public @NotNull PlayoutInfo getPlayoutInfo() {
+        driver.clearChanged(SubInfo.PLAYOUT);
+        return driver.getPlayoutInfo();
+    }
+
+    @Override
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return driver.hasChanged(what);
+    }
+
+    @Override
+    public void refresh(@NotNull SubInfo what) throws IOException {
+        driver.refresh(what);
+    }
+
+    @Override
+    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        driver.refresh(what);
+    }
+
+    /**
+     * Get the list of media formats supported by the player.
+     *
+     * If this returns null no {@code Accept:}-header should be generated.
+     * @return List of supported formats or null.
+     */
+    @Nullable
+    public Map<String, Double> getAcceptedMediaFormats() {
+        return acceptedMediaFormats;
+    }
+
+    /**
+     * Set the list of formats supported by the player and their corresponding weights.
+     * @param acceptedMediaFormats List of supported formats or null.
+     */
+    public void setAcceptedMediaFormats(@Nullable Map<String, Double> acceptedMediaFormats) {
+        assertValidAcceptList(acceptedMediaFormats);
+        this.acceptedMediaFormats = acceptedMediaFormats;
+    }
+
+    /**
+     * Get list of languages requested by the user.
+     *
+     * If this returns null no {@code Accept-Language:}-header should be generated.
+     * @return List of languages requested by the user or null.
+     */
+    @Nullable
+    public Map<String, Double> getAcceptedLanguages() {
+        return acceptedLanguages;
+    }
+
+    /**
+     * Sets the list of languages requested by the user.
+     *
+     * This function is only still included for older versions of Android
+     * (before {@code android.os.Build.VERSION_CODES.O})
+     * and might be removed at any time.
+     *
+     * @param acceptedLanguages List of languages to set or null.
+     * @deprecated Use {@link #setAcceptedLanguages(List)} instead.
+     */
+    @Deprecated
+    public void setAcceptedLanguages(@Nullable Map<String, Double> acceptedLanguages) {
+        assertValidAcceptList(acceptedLanguages);
+        this.acceptedLanguages = acceptedLanguages;
+    }
+
+    /**
+     * Sets the list of langauges requested by the user and their corresponding weights.
+     * @param list The list of languages or null.
+     */
+    public void setAcceptedLanguages(@Nullable List<Locale.LanguageRange> list) {
+        Map<String, Double> newList;
+
+        if (list == null) {
+            this.acceptedLanguages = null;
+            return;
+        }
+
+        newList = new HashMap<>();
+
+        for (Locale.LanguageRange range : list)
+            newList.put(range.getRange(), range.getWeight());
+
+        assertValidAcceptList(newList);
+        this.acceptedLanguages = newList;
     }
 
     /**
@@ -118,7 +234,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public Service getCurrentService() {
+    public @NotNull Service getCurrentService() {
         return driver.getCurrentService();
     }
 
@@ -135,6 +251,11 @@ public class Session implements Connectable, SessionClient {
     @Override
     public void connect() throws IOException {
         driver.connect();
+    }
+
+    @Override
+    public boolean isValid() {
+        return driver.isValid();
     }
 
     @Override

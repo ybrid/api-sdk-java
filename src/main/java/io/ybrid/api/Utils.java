@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
  * This is a utility class used internally by the Ybrid client.
  * It should not be used outside the Ybrid ecosystem.
  */
-public class Utils {
+public final class Utils {
     private static ByteArrayOutputStream slurp(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
