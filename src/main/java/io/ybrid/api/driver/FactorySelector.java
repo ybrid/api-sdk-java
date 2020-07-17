@@ -27,6 +27,7 @@ import io.ybrid.api.Alias;
 import io.ybrid.api.ApiVersion;
 import io.ybrid.api.Server;
 import io.ybrid.api.driver.common.Factory;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.net.MalformedURLException;
@@ -52,11 +53,8 @@ public final class FactorySelector {
      * @param alias The {@link Alias} to use.
      * @return The instance of the {@link Factory} to use.
      */
-    public static Factory getFactory(Server server, Alias alias) throws MalformedURLException {
+    public static @NotNull Factory getFactory(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
         EnumSet<ApiVersion> set = getSupportedVersions(server, alias);
-
-        if (server == null)
-            server = alias.getServer();
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.info("Supported versions for " + alias.getUrl().toString() +
@@ -73,16 +71,13 @@ public final class FactorySelector {
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersions(Server server, Alias alias) throws MalformedURLException {
+    private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
         EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
 
         if (alias.getForcedApiVersion() != null) {
             ret.add(alias.getForcedApiVersion());
             return ret;
         }
-
-        if (server == null)
-            server = alias.getServer();
 
         if (server.getForcedApiVersion() != null) {
             ret.add(server.getForcedApiVersion());

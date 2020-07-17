@@ -42,9 +42,9 @@ import java.util.*;
  */
 public class Session implements Connectable, SessionClient {
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
-    private final Driver driver;
-    private final Server server;
-    private final Alias alias;
+    private final @NotNull Driver driver;
+    private final @NotNull Server server;
+    private final @NotNull Alias alias;
     private Map<String, Double> acceptedMediaFormats = null;
     private Map<String, Double> acceptedLanguages = null;
 
@@ -57,7 +57,7 @@ public class Session implements Connectable, SessionClient {
                 throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
     }
 
-    Session(Server server, Alias alias) throws MalformedURLException {
+    Session(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
@@ -70,7 +70,7 @@ public class Session implements Connectable, SessionClient {
      * Gets the {@link Alias} used for this session.
      * @return Returns the {@link Alias}.
      */
-    public Alias getAlias() {
+    public @NotNull Alias getAlias() {
         return alias;
     }
 
@@ -78,7 +78,7 @@ public class Session implements Connectable, SessionClient {
      * Gets the {@link Server} object used to communicate with the server.
      * @return Returns the {@link Server} object.
      */
-    public Server getServer() {
+    public @NotNull Server getServer() {
         return server;
     }
 

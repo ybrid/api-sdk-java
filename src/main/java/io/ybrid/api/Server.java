@@ -192,7 +192,7 @@ public class Server implements Connectable, ApiUser {
      * @return Returns the newly created {@link Session}.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
      */
-    public Session createSession(Alias alias) throws MalformedURLException {
+    public @NotNull Session createSession(@NotNull Alias alias) throws MalformedURLException {
         connect();
         return new Session(this, alias);
     }

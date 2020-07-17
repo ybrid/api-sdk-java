@@ -108,7 +108,7 @@ public class Alias implements ApiUser {
      * Get the {@link URL} of the Alias.
      * @return Returns the {@link URL} of the Alias.
      */
-    public URL getUrl() {
+    public @NotNull URL getUrl() {
         return url;
     }
 
@@ -118,7 +118,7 @@ public class Alias implements ApiUser {
      *
      * @return Returns the {@link Server} object of this Alias.
      */
-    public Server getServer() {
+    public @NotNull Server getServer() {
         return server;
     }
 
@@ -130,7 +130,7 @@ public class Alias implements ApiUser {
      * @return Returns a newly created and unconnected {@link Session}.
      * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
      */
-    public Session createSession() throws MalformedURLException {
+    public @NotNull Session createSession() throws MalformedURLException {
         return getServer().createSession(this);
     }
 
