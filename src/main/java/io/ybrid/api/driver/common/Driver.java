@@ -32,11 +32,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumSet;
@@ -116,21 +113,12 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
 
     // TODO: Remove this once the servers no longer require it.
     private static URL workaroundNoPostBody(@NotNull URL url, @NotNull Map<String, String> body) {
+        final XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
+        builder.append(body);
         try {
-            final StringBuilder rendered = new StringBuilder();
-            final String utf8Name = StandardCharsets.UTF_8.name();
-
-            for (Map.Entry<String, String> entry : body.entrySet()) {
-                if (rendered.length() > 0)
-                    rendered.append('&');
-                rendered.append(URLEncoder.encode(entry.getKey(), utf8Name));
-                rendered.append('=');
-                rendered.append(URLEncoder.encode(entry.getValue(), utf8Name));
-            }
-
-            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "?" + rendered.toString());
-        } catch (UnsupportedEncodingException | MalformedURLException e) {
-            throw new IllegalArgumentException(e);
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "?" + builder.toString());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -23,6 +23,7 @@
 package io.ybrid.api.driver;
 
 import io.ybrid.api.Utils;
+import io.ybrid.api.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -33,7 +34,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
@@ -131,19 +131,13 @@ public final class JSONRequest {
             this.requestBodyContentType = null;
             this.requestBody = null;
         } else {
-            final StringBuilder rendered = new StringBuilder();
-            final String utf8Name = StandardCharsets.UTF_8.name();
+            final XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
 
-            this.requestBodyContentType = "application/x-www-form-urlencoded; charset=utf-8";
+            builder.append(requestBody);
 
-            for (Map.Entry<String, String> entry : requestBody.entrySet()) {
-                if (rendered.length() > 0)
-                    rendered.append('&');
-                rendered.append(URLEncoder.encode(entry.getKey(), utf8Name));
-                rendered.append('=');
-                rendered.append(URLEncoder.encode(entry.getValue(), utf8Name));
-            }
-            this.requestBody = rendered.toString().getBytes(StandardCharsets.UTF_8);
+            this.requestBodyContentType = builder.getMediaType();
+
+            this.requestBody = builder.getBytes();
         }
     }
 
