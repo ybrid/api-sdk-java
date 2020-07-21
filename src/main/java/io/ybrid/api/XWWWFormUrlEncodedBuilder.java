@@ -88,7 +88,7 @@ public class XWWWFormUrlEncodedBuilder {
      * This is the same as calling {@link #append(Map.Entry)} for each entry.
      * @param map The map to add.
      */
-    public void append(Map<@NotNull String, @Nullable String> map) {
+    public void append(@NotNull Map<@NotNull String, @Nullable String> map) {
         for (Map.Entry<@NotNull String, @Nullable String> entry : map.entrySet())
             append(entry);
     }
