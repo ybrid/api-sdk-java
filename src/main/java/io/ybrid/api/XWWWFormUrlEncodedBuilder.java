@@ -28,10 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class implements a renderer for the {@code application/x-www-form-urlencoded} media type.
@@ -68,10 +65,10 @@ public class XWWWFormUrlEncodedBuilder {
      * Appends a map {@link java.util.Map.Entry}.
      * The key of the map must not be {@code null}.
      * @param entry The entry to append.
-     * @see #append(String, String)
+     * @see #append(String, Object)
      */
-    public void append(Map.Entry<@NotNull String, @Nullable String> entry) {
-        list.add(entry);
+    public void append(Map.Entry<@NotNull String, @Nullable ?> entry) {
+        append(entry.getKey(), entry.getValue());
     }
 
     /**
@@ -79,8 +76,18 @@ public class XWWWFormUrlEncodedBuilder {
      * @param key The key to use.
      * @param value The value to use or {@code null} if no value is used for this key.
      */
-    public void append(@NotNull String key, @Nullable String value) {
-        append(new AbstractMap.SimpleEntry<>(key, value));
+    public void append(@NotNull String key, @Nullable Object value) {
+        final @Nullable String stringValue;
+
+        if (value == null) {
+            list.add(new AbstractMap.SimpleEntry<>(key, null));
+        } else if (value instanceof Collection) {
+            for (Object item : (Collection<?>)value) {
+                append(key, item);
+            }
+        } else {
+            list.add(new AbstractMap.SimpleEntry<>(key, value.toString()));
+        }
     }
 
     /**
@@ -88,8 +95,8 @@ public class XWWWFormUrlEncodedBuilder {
      * This is the same as calling {@link #append(Map.Entry)} for each entry.
      * @param map The map to add.
      */
-    public void append(@NotNull Map<@NotNull String, @Nullable String> map) {
-        for (Map.Entry<@NotNull String, @Nullable String> entry : map.entrySet())
+    public void append(@NotNull Map<@NotNull String, @Nullable ?> map) {
+        for (Map.Entry<@NotNull String, @Nullable ?> entry : map.entrySet())
             append(entry);
     }
 
