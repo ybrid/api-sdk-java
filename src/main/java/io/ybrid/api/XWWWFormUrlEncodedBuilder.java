@@ -101,6 +101,23 @@ public class XWWWFormUrlEncodedBuilder {
     }
 
     /**
+     * Appends the content of a {@link Map}.
+     * If {@code prefix} is {@code null} this is the same as calling {@link #append(Map)}.
+     * If {@code prefix} is not {@code null} this adds each entry of the map by prefixing the key
+     * with the given prefix.
+     * @param map The map to add.
+     * @param prefix The prefix to use or {@code null}.
+     */
+    public void append(@NotNull Map<@NotNull String, @Nullable ?> map, @Nullable String prefix) {
+        if (prefix == null) {
+            append(map);
+        } else {
+            for (Map.Entry<@NotNull String, @Nullable ?> entry : map.entrySet())
+                append(prefix + entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
      * Returns the full media type for the rendered result.
      * This includes the MIME-Type as well as parameters like the charset.
      * @return The full media type.
