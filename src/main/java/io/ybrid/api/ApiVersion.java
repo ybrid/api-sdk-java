@@ -29,11 +29,11 @@ public enum ApiVersion {
     /**
      * Version 1 of the Ybrid® API.
      */
-    V1,
+    YBRID_V1,
     /**
      * Beta of version 2 of the Ybrid® API.
      */
-    V2_BETA;
+    YBRID_V2_BETA;
 
     /** Returns the enum constant of this type with the specified on-wire representation.
      *
@@ -45,9 +45,9 @@ public enum ApiVersion {
     public static ApiVersion fromWire(String input) {
         switch (input) {
             case "v1":
-                return V1;
+                return YBRID_V1;
             case "v2":
-                return V2_BETA;
+                return YBRID_V2_BETA;
             default:
                 throw new IllegalArgumentException("No enum constant for string \"" + input +"\"");
         }

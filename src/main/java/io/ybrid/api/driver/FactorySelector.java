@@ -62,10 +62,10 @@ public final class FactorySelector {
                     " = " + set);
         }
 
-        if (set.contains(ApiVersion.V2_BETA))
+        if (set.contains(ApiVersion.YBRID_V2_BETA))
             return new io.ybrid.api.driver.v2.Factory();
 
-        if (set.contains(ApiVersion.V1))
+        if (set.contains(ApiVersion.YBRID_V1))
             return new io.ybrid.api.driver.v1.Factory();
 
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
@@ -99,7 +99,7 @@ public final class FactorySelector {
         } catch (Exception e) {
             // Best guess:
             ret.clear();
-            ret.add(ApiVersion.V1);
+            ret.add(ApiVersion.YBRID_V1);
         }
         return ret;
     }
