@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,56 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api;
 
-import io.ybrid.api.ItemType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.*;
 
-abstract public class Item implements io.ybrid.api.Item {
+public class SimpleItem implements Item {
+    protected final @NotNull HashMap<@NotNull String, @NotNull String> metadata = new HashMap<>();
+    protected final @NotNull ArrayList<Companion> companions = new ArrayList<>();
     protected @NotNull String identifier;
-    protected final HashMap<String, String> metadata = new HashMap<>();
-    protected ItemType type;
-    protected Duration playbackLength;
-    protected final ArrayList<Companion> companions = new ArrayList<>();
+    protected @Nullable ItemType type;
+    protected @Nullable Duration playbackLength;
 
-    public Item(@NotNull String identifier) {
+    public SimpleItem(@NotNull String identifier) {
         this.identifier = identifier;
+    }
+
+    public SimpleItem(@NotNull String identifier, @Nullable String artist, @Nullable String title) {
+        this(identifier);
+        if (artist != null)
+            metadata.put(METADATA_ARTIST, artist);
+        if (title != null)
+            metadata.put(METADATA_TITLE, title);
+    }
+
+    @Override
+    public @NotNull String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public @Nullable ItemType getType() {
+        return type;
+    }
+
+    @Override
+    public @Nullable Duration getPlaybackLength() {
+        return playbackLength;
+    }
+
+    @Override
+    public @NotNull Map<String, String> getMetadata() {
+        return Collections.unmodifiableMap(metadata);
+    }
+
+    @Override
+    public @NotNull List<Companion> getCompanions() {
+        return Collections.unmodifiableList(companions);
     }
 
     @Override
@@ -49,31 +82,6 @@ abstract public class Item implements io.ybrid.api.Item {
         }
 
         return title;
-    }
-
-    @Override
-    public @NotNull String getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public @NotNull Map<String, String> getMetadata() {
-        return Collections.unmodifiableMap(metadata);
-    }
-
-    @Override
-    public ItemType getType() {
-        return type;
-    }
-
-    @Override
-    public Duration getPlaybackLength() {
-        return playbackLength;
-    }
-
-    @Override
-    public @NotNull List<io.ybrid.api.Companion> getCompanions() {
-        return Collections.unmodifiableList(companions);
     }
 
     @Override

@@ -22,6 +22,7 @@
 
 package io.ybrid.api.driver.common;
 
+import io.ybrid.api.Item;
 import io.ybrid.api.Service;
 import org.jetbrains.annotations.NotNull;
 

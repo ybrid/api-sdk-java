@@ -22,9 +22,11 @@
 
 package io.ybrid.api.driver.plain;
 
+import io.ybrid.api.SimpleItem;
+
 import java.util.UUID;
 
-public class Item extends io.ybrid.api.driver.common.Item {
+public class Item extends SimpleItem {
     public Item() {
         super(UUID.randomUUID().toString());
     }
