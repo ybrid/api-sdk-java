@@ -102,7 +102,7 @@ public final class FactorySelector {
         } catch (Exception e) {
             // Best guess:
             ret.clear();
-            ret.add(ApiVersion.YBRID_V1);
+            ret.add(ApiVersion.PLAIN);
         }
         return ret;
     }
