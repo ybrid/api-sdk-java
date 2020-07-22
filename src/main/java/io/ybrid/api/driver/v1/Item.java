@@ -34,6 +34,8 @@ import java.util.logging.Logger;
 
 final class Item extends io.ybrid.api.driver.common.Item {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+    protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
+
 
     Item(@NotNull JSONObject json) throws MalformedURLException {
         super(json.getString("id"));

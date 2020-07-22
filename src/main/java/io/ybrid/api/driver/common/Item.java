@@ -29,12 +29,6 @@ import java.time.Duration;
 import java.util.*;
 
 abstract public class Item implements io.ybrid.api.Item {
-    public static final String METADATA_TITLE = "title";
-    public static final String METADATA_ARTIST = "artist";
-    public static final String METADATA_DESCRIPTION = "description";
-
-    protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
-
     protected @NotNull String identifier;
     protected final HashMap<String, String> metadata = new HashMap<>();
     protected ItemType type;
