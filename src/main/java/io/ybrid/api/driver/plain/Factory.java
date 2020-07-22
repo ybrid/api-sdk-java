@@ -23,6 +23,7 @@
 package io.ybrid.api.driver.plain;
 
 import io.ybrid.api.*;
+import io.ybrid.api.SimpleService;
 import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +38,7 @@ public class Factory extends io.ybrid.api.driver.common.Factory {
 
     @Override
     public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
-        final Service service = new io.ybrid.api.driver.plain.Service();
+        final SimpleService service = new SimpleService();
         final ArrayList<io.ybrid.api.Service> services = new ArrayList<>();
 
         services.add(service);

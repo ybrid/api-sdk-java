@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.plain;
+package io.ybrid.api;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,24 +28,24 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URL;
 import java.util.UUID;
 
-public class Service implements io.ybrid.api.Service {
+public class SimpleService implements io.ybrid.api.Service {
     final @NotNull String displayName;
     final @NotNull String identifier;
     final @Nullable URL icon;
     final @Nullable String genre;
 
-    public Service(@NotNull String displayName, @NotNull String identifier, @Nullable URL icon, @Nullable String genre) {
+    public SimpleService(@NotNull String displayName, @NotNull String identifier, @Nullable URL icon, @Nullable String genre) {
         this.displayName = displayName;
         this.identifier = identifier;
         this.icon = icon;
         this.genre = genre;
     }
 
-    public Service(@NotNull String displayName, @NotNull String identifier) {
+    public SimpleService(@NotNull String displayName, @NotNull String identifier) {
         this(displayName, identifier, null, null);
     }
 
-    public Service() {
+    public SimpleService() {
         this("default", UUID.randomUUID().toString());
     }
 
