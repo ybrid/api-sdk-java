@@ -36,10 +36,10 @@ final class Item extends io.ybrid.api.driver.common.Item {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     Item(@NotNull JSONObject json) throws MalformedURLException {
+        super(json.getString("id"));
+
         JSONArray array;
         String type;
-
-        identifier = json.getString("id");
 
         for (String key : metadataList) {
             String value = json.getString(key);

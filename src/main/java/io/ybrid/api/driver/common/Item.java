@@ -35,11 +35,15 @@ abstract public class Item implements io.ybrid.api.Item {
 
     protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
 
-    protected String identifier;
+    protected @NotNull String identifier;
     protected final HashMap<String, String> metadata = new HashMap<>();
     protected ItemType type;
     protected Duration playbackLength;
     protected final ArrayList<Companion> companions = new ArrayList<>();
+
+    public Item(@NotNull String identifier) {
+        this.identifier = identifier;
+    }
 
     @Override
     public String getDisplayName() {
