@@ -60,7 +60,7 @@ public class SimpleService implements io.ybrid.api.Service {
     }
 
     @Override
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return displayName;
     }
 
