@@ -204,7 +204,7 @@ public class Session implements Connectable, SessionClient {
     }
 
     /**
-     * Sets the list of langauges requested by the user and their corresponding weights.
+     * Sets the list of languages requested by the user and their corresponding weights.
      * @param list The list of languages or null.
      */
     public void setAcceptedLanguages(@Nullable List<Locale.LanguageRange> list) {

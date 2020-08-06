@@ -64,7 +64,7 @@ public interface PlayoutInfo extends Serializable {
      * @return The new instance of PlayoutInfo with the adjustment made.
      */
     @NotNull
-    @Contract("_, _ -> new")
+    @Contract("_ -> new")
     default PlayoutInfo adjustTimeToNextItem(Duration adjustment) {
         @NotNull final PlayoutInfo aliasThis = this;
         @NotNull final Duration aliasAdjustment = adjustment;
@@ -97,7 +97,7 @@ public interface PlayoutInfo extends Serializable {
             }
 
             @Override
-            @Contract("_, _ -> new")
+            @Contract("_ -> new")
             @NotNull
             public PlayoutInfo adjustTimeToNextItem(Duration adjustment) {
                 return parent.adjustTimeToNextItem(this.adjustment.plus(adjustment));

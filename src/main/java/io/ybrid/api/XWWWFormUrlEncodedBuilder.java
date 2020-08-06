@@ -122,6 +122,7 @@ public class XWWWFormUrlEncodedBuilder {
      * This includes the MIME-Type as well as parameters like the charset.
      * @return The full media type.
      */
+    @SuppressWarnings("SameReturnValue")
     public @NotNull String getMediaType() {
         return "application/x-www-form-urlencoded; charset=utf-8";
     }
@@ -157,7 +158,7 @@ public class XWWWFormUrlEncodedBuilder {
                     rendered.append('=');
                     rendered.append(URLEncoder.encode(value, UTF_8_NAME));
                 }
-            };
+            }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
