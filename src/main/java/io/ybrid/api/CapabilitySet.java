@@ -132,7 +132,7 @@ public interface CapabilitySet extends Iterable<Capability> {
 
     /**
      * This builds a {@link EnumSet} that corresponds to the current state of the set.
-     * The returned {@link EnumSet} is a copy and can be copied by the caller at will.
+     * The returned {@link EnumSet} is a copy and can be modified by the caller at will.
      * It will not be updated by changes of the object it was obtained.
      *
      * @return Returns a {@link EnumSet} representing the current state.
