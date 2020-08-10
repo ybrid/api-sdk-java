@@ -168,6 +168,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void connect() throws IOException {
+        final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
         JSONObject response;
         String hostname;
         String token;
@@ -185,12 +186,19 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         this.token = token;
 
-        hostname = response.getString("host");
+        if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) == TriState.TRUE) {
+            hostname = null;
+        } else {
+            hostname = response.getString("host");
 
-        if (hostname != null) {
-            if (hostname.equals("localhost") || hostname.equals("localhost.localdomain")) {
-                LOGGER.log(Level.SEVERE, "Invalid hostname from server: " + hostname);
-                hostname = null;
+            if (hostname != null) {
+                if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) == TriState.AUTOMATIC) {
+                    if (hostname.equals("localhost") || hostname.equals("localhost.localdomain")) {
+                        LOGGER.log(Level.SEVERE, "Invalid hostname from server: " + hostname);
+                        hostname = null;
+                        workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                    }
+                }
             }
         }
 

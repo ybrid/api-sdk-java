@@ -22,29 +22,24 @@
 
 package io.ybrid.api;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * This interface is to be implemented by classes that directly use a specific API.
- */
-public interface ApiUser {
-    /**
-     * Sets the {@link ApiVersion} to use.
-     * @param version The version to use.
-     * @throws IllegalArgumentException Thrown if the argument is unsupported in any way.
-     * @throws IllegalStateException Thrown if the object is in the wrong state to change the version. Such as the object is already connected.
-     */
-    void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException;
+public enum TriState {
+    TRI,
+    FALSE,
+    TRUE;
 
-    /**
-     * Returns the {@link ApiVersion} that is currently set to forced mode.
-     * @return The {@link ApiVersion} or null if none is set.
-     */
-    @Nullable
-    @Contract(pure = true)
-    ApiVersion getForcedApiVersion();
+    public static final @NotNull TriState NULL = TRI;
+    public static final @NotNull TriState AUTOMATIC = TRI;
 
-    @NotNull WorkaroundMap getWorkarounds();
+    public boolean toBool(boolean def) {
+        switch (this) {
+            case FALSE:
+                return false;
+            case TRUE:
+                return true;
+        }
+
+        return def;
+    }
 }

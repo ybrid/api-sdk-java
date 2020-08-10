@@ -22,29 +22,27 @@
 
 package io.ybrid.api;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * This interface is to be implemented by classes that directly use a specific API.
- */
-public interface ApiUser {
-    /**
-     * Sets the {@link ApiVersion} to use.
-     * @param version The version to use.
-     * @throws IllegalArgumentException Thrown if the argument is unsupported in any way.
-     * @throws IllegalStateException Thrown if the object is in the wrong state to change the version. Such as the object is already connected.
-     */
-    void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException;
+import static org.junit.Assert.*;
 
-    /**
-     * Returns the {@link ApiVersion} that is currently set to forced mode.
-     * @return The {@link ApiVersion} or null if none is set.
-     */
-    @Nullable
-    @Contract(pure = true)
-    ApiVersion getForcedApiVersion();
+public class WorkaroundMapTest {
+    private WorkaroundMap instance;
 
-    @NotNull WorkaroundMap getWorkarounds();
+    @Before
+    public void setUp() {
+        instance = new WorkaroundMap();
+    }
+
+    @Test
+    public void testToString() {
+        System.out.println("instance = " + instance);
+        instance.enable(Workaround.WORKAROUND_BAD_FQDN);
+        System.out.println("instance = " + instance);
+        instance.disable(Workaround.WORKAROUND_BAD_FQDN);
+        System.out.println("instance = " + instance);
+        instance.remove(Workaround.WORKAROUND_BAD_FQDN);
+        System.out.println("instance = " + instance);
+    }
 }

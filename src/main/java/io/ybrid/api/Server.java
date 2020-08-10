@@ -44,6 +44,7 @@ public class Server implements Connectable, ApiUser {
      */
     public static final boolean DEFAULT_SECURE = false;
 
+    private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull String hostname;
     private int port = DEFAULT_PORT;
     private boolean secure = DEFAULT_SECURE;
@@ -229,5 +230,10 @@ public class Server implements Connectable, ApiUser {
     @Override
     public @Nullable ApiVersion getForcedApiVersion() {
         return apiVersion;
+    }
+
+    @Override
+    public @NotNull WorkaroundMap getWorkarounds() {
+        return workarounds;
     }
 }

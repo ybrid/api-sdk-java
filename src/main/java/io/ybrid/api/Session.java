@@ -41,6 +41,7 @@ import java.util.*;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
+    private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final Driver driver;
     private final Server server;
     private final Alias alias;
@@ -60,6 +61,9 @@ public class Session implements Connectable, SessionClient {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
+
+        activeWorkarounds.merge(alias.getWorkarounds());
+        activeWorkarounds.merge(server.getWorkarounds());
     }
 
     /**
@@ -222,6 +226,10 @@ public class Session implements Connectable, SessionClient {
 
         assertValidAcceptList(newList);
         this.acceptedLanguages = newList;
+    }
+
+    public @NotNull WorkaroundMap getActiveWorkarounds() {
+        return activeWorkarounds;
     }
 
     /**

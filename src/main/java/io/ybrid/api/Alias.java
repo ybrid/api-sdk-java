@@ -36,6 +36,7 @@ import java.util.logging.Logger;
  * The alias can be used to open a {@link Session} and a stream.
  */
 public class Alias implements ApiUser {
+    private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull URL url;
     private final @NotNull Server server;
     private @Nullable ApiVersion apiVersion = null;
@@ -150,5 +151,10 @@ public class Alias implements ApiUser {
     @Override
     public @Nullable ApiVersion getForcedApiVersion() {
         return apiVersion;
+    }
+
+    @Override
+    public @NotNull WorkaroundMap getWorkarounds() {
+        return workarounds;
     }
 }
