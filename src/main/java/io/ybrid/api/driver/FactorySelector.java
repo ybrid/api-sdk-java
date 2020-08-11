@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * This should not be used directly.
  */
 public final class FactorySelector {
-    static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
 
     /**
      * Gets a {@link Factory} based on the parameters.
