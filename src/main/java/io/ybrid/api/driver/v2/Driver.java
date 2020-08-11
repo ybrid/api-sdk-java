@@ -36,8 +36,11 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 final class Driver extends io.ybrid.api.driver.common.Driver {
+    private static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+
     private static final String COMMAND_SESSION_CREATE = "session/create";
     private static final String COMMAND_SESSION_CLOSE = "session/close";
     private static final String COMMAND_SESSION_INFO = "session/info";
@@ -55,7 +58,10 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
     public Driver(@NotNull Session session) {
         super(session);
-        state = new State(session.getAlias().getUrl());
+        state = new State(session, session.getAlias().getUrl());
+
+        session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
+        session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_BAD_PACKED_RESPONSE);
     }
 
     private URL getUrl(@Nullable String suffix) throws MalformedURLException {
@@ -125,8 +131,17 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
             response = new Response(Objects.requireNonNull(request(getUrl("/ctrl/v2/" + command), parameters)));
             state.accept(response);
 
-            if (!response.getValid())
-                setInvalid();
+            try {
+                if (!response.getValid())
+                    setInvalid();
+            } catch (Exception e) {
+                if (session.getActiveWorkarounds().get(Workaround.WORKAROUND_BAD_PACKED_RESPONSE).toBool(false)) {
+                    LOGGER.warning("Invalid response from server but ignored by enabled WORKAROUND_BAD_PACKED_RESPONSE");
+                } else {
+                    LOGGER.severe("Invalid response from server.");
+                    throw e;
+                }
+            }
         } catch (NullPointerException ignored) {
         }
 

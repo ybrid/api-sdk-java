@@ -22,34 +22,47 @@
 
 package io.ybrid.api;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * This interface is to be implemented by classes that directly use a specific API.
+ * Generic tri-state class.
  */
-public interface ApiUser {
+public enum TriState {
     /**
-     * Sets the {@link ApiVersion} to use.
-     * @param version The version to use.
-     * @throws IllegalArgumentException Thrown if the argument is unsupported in any way.
-     * @throws IllegalStateException Thrown if the object is in the wrong state to change the version. Such as the object is already connected.
+     * Third state.
      */
-    void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException;
+    TRI,
+    /**
+     * False or negative state.
+     */
+    FALSE,
+    /**
+     * True or positive state.
+     */
+    TRUE;
 
     /**
-     * Returns the {@link ApiVersion} that is currently set to forced mode.
-     * @return The {@link ApiVersion} or null if none is set.
+     * Alias for the third state.
      */
-    @Nullable
-    @Contract(pure = true)
-    ApiVersion getForcedApiVersion();
+    public static final @NotNull TriState NULL = TRI;
+    /**
+     * Alias for the third state.
+     */
+    public static final @NotNull TriState AUTOMATIC = TRI;
 
     /**
-     * Gets the used map of workarounds.
-     * The map can be updated by the caller.
-     * @return The used map of workarounds.
+     * Conversion of a TriState value to a boolean.
+     * @param def The value used for the third state.
+     * @return The corresponding boolean value.
      */
-    @NotNull WorkaroundMap getWorkarounds();
+    public boolean toBool(boolean def) {
+        switch (this) {
+            case FALSE:
+                return false;
+            case TRUE:
+                return true;
+        }
+
+        return def;
+    }
 }

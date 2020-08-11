@@ -39,6 +39,7 @@ final class State implements KnowsSubInfoState {
     private final Map<String, Service> services = new HashMap<>();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final EnumMap<SubInfo, Instant> lastUpdated = new EnumMap<>(SubInfo.class);
+    private final @NotNull Session session;
     private Service defaultService;
     private Service currentService;
     private Metadata currentMetadata;
@@ -46,7 +47,8 @@ final class State implements KnowsSubInfoState {
     private Duration behindLive;
     private URL baseUrl;
 
-    public State(@NotNull URL baseUrl) {
+    public State(@NotNull Session session, @NotNull URL baseUrl) {
+        this.session = session;
         this.baseUrl = baseUrl;
     }
 
@@ -102,6 +104,37 @@ final class State implements KnowsSubInfoState {
         }
 
         setChanged(SubInfo.METADATA);
+    }
+
+    private void updateBaseURL(@Nullable String raw) {
+        final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
+        @Nullable URL newURL = null;
+
+        if (raw == null)
+            return;
+
+        try {
+            switch (workarounds.get(Workaround.WORKAROUND_BAD_FQDN)) {
+                case TRUE:
+                    newURL = null;
+                    break;
+                case FALSE:
+                    newURL = new URL(raw);
+                    break;
+                case TRI:
+                    newURL = new URL(raw);
+                    if (!io.ybrid.api.driver.common.Driver.isValidFQDN(newURL.getHost())) {
+                        newURL = null;
+                        workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                    }
+                    break;
+            }
+        } catch (MalformedURLException ignored) {
+        }
+
+
+        if (newURL != null)
+            baseUrl = newURL;
     }
 
     private void updateBouquet(@Nullable JSONObject raw) {
@@ -164,12 +197,10 @@ final class State implements KnowsSubInfoState {
         if (raw == null)
             return;
 
-        try {
-            baseUrl = new URL(raw.getString("baseURL"));
-            behindLive = Duration.ofMillis(raw.getLong("offsetToLive"));
-            setChanged(SubInfo.PLAYOUT);
-        } catch (MalformedURLException ignored) {
-        }
+        updateBaseURL(raw.getString("baseURL"));
+
+        behindLive = Duration.ofMillis(raw.getLong("offsetToLive"));
+        setChanged(SubInfo.PLAYOUT);
     }
 
     private void updateSwapInfo(@Nullable JSONObject raw) {

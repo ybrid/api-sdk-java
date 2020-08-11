@@ -67,6 +67,19 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
             throw new MalformedURLException();
     }
 
+    /**
+     * Checks the given FQDN for validity.
+     * {@code localhost} is not considered valid by this function.
+     * @param fqdn The FQDN to test.
+     * @return Whether the argument is a valid FQDN.
+     */
+    public static boolean isValidFQDN(@NotNull String fqdn) {
+        if (fqdn.equals("localhost") || fqdn.equals("localhost.localdomain") || fqdn.equals("127.0.0.1") || fqdn.equals("::1"))
+            return false;
+
+        return fqdn.contains(".");
+    }
+
     protected final String getMountpoint() throws MalformedURLException {
         String mountpoint = session.getAlias().getUrl().getPath();
         assertValidMountpoint(mountpoint);
@@ -128,7 +141,11 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         final JSONRequest request;
 
         if (body != null) {
-            request = new JSONRequest(workaroundNoPostBody(url, body), "POST");
+            if (session.getActiveWorkarounds().get(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING).toBool(false)) {
+                request = new JSONRequest(workaroundNoPostBody(url, body), "POST");
+            } else {
+                request = new JSONRequest(url, "POST", body);
+            }
         } else {
             request = new JSONRequest(url, "POST");
         }

@@ -22,34 +22,20 @@
 
 package io.ybrid.api;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
- * This interface is to be implemented by classes that directly use a specific API.
+ * This enum lists all known workarounds.
  */
-public interface ApiUser {
+public enum Workaround {
     /**
-     * Sets the {@link ApiVersion} to use.
-     * @param version The version to use.
-     * @throws IllegalArgumentException Thrown if the argument is unsupported in any way.
-     * @throws IllegalStateException Thrown if the object is in the wrong state to change the version. Such as the object is already connected.
+     * Workaround used for servers sending invalid FQDNs.
      */
-    void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException;
-
+    WORKAROUND_BAD_FQDN,
     /**
-     * Returns the {@link ApiVersion} that is currently set to forced mode.
-     * @return The {@link ApiVersion} or null if none is set.
+     * Workaround used for servers that require POST bodies to be send as query string.
      */
-    @Nullable
-    @Contract(pure = true)
-    ApiVersion getForcedApiVersion();
-
+    WORKAROUND_POST_BODY_AS_QUERY_STRING,
     /**
-     * Gets the used map of workarounds.
-     * The map can be updated by the caller.
-     * @return The used map of workarounds.
+     * Workaround used for servers that send invalidly packed response to some commands.
      */
-    @NotNull WorkaroundMap getWorkarounds();
+    WORKAROUND_BAD_PACKED_RESPONSE;
 }
