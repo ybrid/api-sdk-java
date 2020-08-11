@@ -33,5 +33,9 @@ public enum Workaround {
     /**
      * Workaround used for servers that require POST bodies to be send as query string.
      */
-    WORKAROUND_POST_BODY_AS_QUERY_STRING;
+    WORKAROUND_POST_BODY_AS_QUERY_STRING,
+    /**
+     * Workaround used for servers that send invalidly packed response to some commands.
+     */
+    WORKAROUND_BAD_PACKED_RESPONSE;
 }
