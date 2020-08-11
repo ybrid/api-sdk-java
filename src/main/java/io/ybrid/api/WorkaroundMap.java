@@ -96,6 +96,26 @@ public class WorkaroundMap extends EnumMap<Workaround, TriState> {
     }
 
     /**
+     * Enables a workaround iff currently set to automatic.
+     * @param workaround The workaround to enable.
+     * @see #enable(Workaround)
+     */
+    public void enableIfAutomatic(@NotNull Workaround workaround) {
+        if (get(workaround) == TriState.AUTOMATIC)
+            enable(workaround);
+    }
+
+    /**
+     * Disables a workaround iff currently set to automatic.
+     * @param workaround The workaround to disable.
+     * @see #disable(Workaround)
+     */
+    public void disableIfAutomatic(@NotNull Workaround workaround) {
+        if (get(workaround) == TriState.AUTOMATIC)
+            disable(workaround);
+    }
+
+    /**
      * Merge the given map into this one. By merging all enabled and disabled
      * states are copied but no automatic states.
      * @param map The map to merge.
