@@ -177,6 +177,8 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     }
 
     protected void setInvalid() {
+        if (valid)
+            setChanged(SubInfo.VALIDITY);
         valid = false;
     }
 

@@ -275,6 +275,7 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public boolean isValid() {
+        driver.clearChanged(SubInfo.VALIDITY);
         return driver.isValid();
     }
 

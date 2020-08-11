@@ -135,14 +135,43 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         }
     }
 
+    private void updateValidity() throws IOException {
+        final JSONObject json;
+        final @NotNull Map<String, String> parameters = new HashMap<>();
+
+        assertConnected();
+
+        parameters.put("sessionToCheckId", token);
+        json = request("is-session-valid", parameters);
+        if (json == null)
+            throw new IOException("No valid reply from server");
+
+        if (!json.getBoolean("valid"))
+            setInvalid();
+    }
+
     @Override
     public void refresh(@NotNull SubInfo what) throws IOException {
-        updateMetadata();
+        if (what == SubInfo.VALIDITY) {
+            updateValidity();
+        } else {
+            updateMetadata();
+        }
     }
 
     @Override
     public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
-        updateMetadata();
+        if (what.isEmpty())
+            return;
+
+        if (what.contains(SubInfo.VALIDITY)) {
+            updateValidity();
+            if (what.size() > 1) {
+                updateMetadata();
+            }
+        } else {
+            updateMetadata();
+        }
     }
 
     @Override
