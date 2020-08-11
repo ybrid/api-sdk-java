@@ -56,6 +56,8 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     public Driver(@NotNull Session session) {
         super(session);
         state = new State(session, session.getAlias().getUrl());
+
+        session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
     }
 
     private URL getUrl(@Nullable String suffix) throws MalformedURLException {

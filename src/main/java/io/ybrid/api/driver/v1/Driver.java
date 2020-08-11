@@ -48,6 +48,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     public Driver(Session session) {
         super(session);
 
+        session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
+
         this.currentService = bouquet.getDefaultService();
 
         capabilities.add(initialCapabilities);

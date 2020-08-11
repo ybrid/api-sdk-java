@@ -141,7 +141,11 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         final JSONRequest request;
 
         if (body != null) {
-            request = new JSONRequest(workaroundNoPostBody(url, body), "POST");
+            if (session.getActiveWorkarounds().get(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING).toBool(false)) {
+                request = new JSONRequest(workaroundNoPostBody(url, body), "POST");
+            } else {
+                request = new JSONRequest(url, "POST", body);
+            }
         } else {
             request = new JSONRequest(url, "POST");
         }

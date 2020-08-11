@@ -29,5 +29,9 @@ public enum Workaround {
     /**
      * Workaround used for servers sending invalid FQDNs.
      */
-    WORKAROUND_BAD_FQDN;
+    WORKAROUND_BAD_FQDN,
+    /**
+     * Workaround used for servers that require POST bodies to be send as query string.
+     */
+    WORKAROUND_POST_BODY_AS_QUERY_STRING;
 }
