@@ -29,7 +29,23 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This implements a map used to store the state of workarounds.
+ * Each workaround can have a state of {@link TriState#TRUE} when enabled,
+ * {@link TriState#FALSE} when disabled, or {@link TriState#AUTOMATIC} when
+ * it should be auto-detected.
+ * <P>
+ * This map ensures all workarounds have a defined state at all times.
+ * Class that set the value such as {@link #put(Workaround, TriState)} will check the validity of the value set.
+ * Calls that remove items such as {@link #remove(Object)} instead reset them to the default state of
+ * {@link TriState#AUTOMATIC}.
+ * <P>
+ * All values are initialised to {@link TriState#AUTOMATIC} after object creation.
+ */
 public class WorkaroundMap extends EnumMap<Workaround, TriState> {
+    /**
+     * The main constructor.
+     */
     public WorkaroundMap() {
         super(Workaround.class);
         clear();
@@ -63,14 +79,27 @@ public class WorkaroundMap extends EnumMap<Workaround, TriState> {
             put(workaround, TriState.AUTOMATIC);
     }
 
+    /**
+     * Enables a workaround.
+     * @param workaround The workaround to enable.
+     */
     public void enable(@NotNull Workaround workaround) {
         put(workaround, TriState.TRUE);
     }
 
+    /**
+     * Disabled a workaround.
+     * @param workaround The workaround to disable.
+     */
     public void disable(@NotNull Workaround workaround) {
         put(workaround, TriState.FALSE);
     }
 
+    /**
+     * Merge the given map into this one. By merging all enabled and disabled
+     * states are copied but no automatic states.
+     * @param map The map to merge.
+     */
     public void merge(@NotNull WorkaroundMap map) {
         for (final @NotNull Entry<Workaround, TriState> entry : map.entrySet()) {
             if (entry.getValue() != TriState.AUTOMATIC)

@@ -46,5 +46,10 @@ public interface ApiUser {
     @Contract(pure = true)
     ApiVersion getForcedApiVersion();
 
+    /**
+     * Gets the used map of workarounds.
+     * The map can be updated by the caller.
+     * @return The used map of workarounds.
+     */
     @NotNull WorkaroundMap getWorkarounds();
 }

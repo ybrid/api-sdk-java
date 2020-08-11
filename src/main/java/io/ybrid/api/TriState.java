@@ -24,14 +24,37 @@ package io.ybrid.api;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Generic tri-state class.
+ */
 public enum TriState {
+    /**
+     * Third state.
+     */
     TRI,
+    /**
+     * False or negative state.
+     */
     FALSE,
+    /**
+     * True or positive state.
+     */
     TRUE;
 
+    /**
+     * Alias for the third state.
+     */
     public static final @NotNull TriState NULL = TRI;
+    /**
+     * Alias for the third state.
+     */
     public static final @NotNull TriState AUTOMATIC = TRI;
 
+    /**
+     * Conversion of a TriState value to a boolean.
+     * @param def The value used for the third state.
+     * @return The corresponding boolean value.
+     */
     public boolean toBool(boolean def) {
         switch (this) {
             case FALSE:

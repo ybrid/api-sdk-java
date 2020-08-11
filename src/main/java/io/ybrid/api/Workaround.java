@@ -22,6 +22,12 @@
 
 package io.ybrid.api;
 
+/**
+ * This enum lists all known workarounds.
+ */
 public enum Workaround {
+    /**
+     * Workaround used for servers sending invalid FQDNs.
+     */
     WORKAROUND_BAD_FQDN;
 }

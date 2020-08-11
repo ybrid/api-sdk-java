@@ -228,6 +228,18 @@ public class Session implements Connectable, SessionClient {
         this.acceptedLanguages = newList;
     }
 
+    /**
+     * Gets the map of currently active workarounds.
+     * This map can be updated by the caller if needed.
+     * However special care must be taken when doing so to avoid data corruption.
+     * Generally applications that wish to communicate workaround settings
+     * should use {@link Alias#getWorkarounds()} or {@link Server#getWorkarounds()}.
+     * Those methods are always safe to use.
+     *
+     * @return The map of active workarounds.
+     * @see Alias#getWorkarounds()
+     * @see Server#getWorkarounds()
+     */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
     }
