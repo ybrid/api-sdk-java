@@ -43,7 +43,6 @@ A simple example of using the Alias and Session classes as often seen in applica
 import io.ybrid.api.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Logger;
 
 class Client {
     void run() throws IOException {
