@@ -95,63 +95,6 @@ public class Server implements Connectable, ApiUser {
     }
 
     /**
-     * Creates a new Server object.
-     *
-     * @param hostname The name of the host used to access the server.
-     * @param port The port to access the server.
-     * @param secure Whether to use a secure connection to the server.
-     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
-     * @deprecated Use {@link #Server(URL)} instead.
-     */
-    @Deprecated
-    public Server(@NotNull String hostname, int port, boolean secure) throws MalformedURLException {
-        this.logger = Logger.getLogger(Server.class.getName());
-        assertValidHostname(hostname);
-        assertValidPort(port);
-        this.hostname = hostname;
-        this.port = port;
-        this.secure = secure;
-    }
-
-    /**
-     * Creates a new Server object.
-     *
-     * @param logger The {@link Logger} to use.
-     * @param hostname The name of the host used to access the server.
-     * @param port The port to access the server.
-     * @param secure Whether to use a secure connection to the server.
-     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
-     * @deprecated Use {@link #Server(String, int, boolean)} instead.
-     */
-    @Deprecated
-    public Server(@NotNull Logger logger, @NotNull String hostname, int port, boolean secure) throws MalformedURLException {
-        this.logger = logger;
-        assertValidHostname(hostname);
-        assertValidPort(port);
-        this.hostname = hostname;
-        this.port = port;
-        this.secure = secure;
-    }
-
-    /**
-     * Creates a new Server object.
-     *
-     * This is like {@link #Server(Logger, String, int, boolean)} With {@code port} set to {@link #DEFAULT_PORT},
-     * and {@code secure} set to {@link #DEFAULT_SECURE}.
-     *
-     * @param logger The {@link Logger} to use.
-     * @param hostname The name of the host used to access the server.
-     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
-     * @deprecated Use {@link #Server(String, int, boolean)} instead.
-     */
-    @Deprecated
-    public Server(@NotNull Logger logger, @NotNull String hostname) throws MalformedURLException {
-        this.logger = logger;
-        assertValidHostname(hostname);
-        this.hostname = hostname;
-    }
-
-    /**
      * Get the name of the host used to contact the server.
      * @return Returns the hostname.
      */
@@ -195,16 +138,6 @@ public class Server implements Connectable, ApiUser {
     public @NotNull Session createSession(@NotNull Alias alias) throws MalformedURLException {
         connect();
         return new Session(this, alias);
-    }
-
-    /**
-     * Get the {@link Logger} used by this Server object.
-     * @return Returns the logger.
-     * @deprecated Callers should use their own instance of a {@link Logger}.
-     */
-    @Deprecated
-    public @NotNull Logger getLogger() {
-        return logger;
     }
 
     @Override

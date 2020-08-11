@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Logger;
 
 /**
  * An Alias represents a entry point on a {@link Server}.
@@ -63,45 +62,6 @@ public class Alias implements ApiUser {
      */
     public Alias(@NotNull URL url) throws MalformedURLException {
         this(url, null);
-    }
-
-    /**
-     * Create a new Alias using the given {@link Server}.
-     *
-     * @param logger The logger to use for the Alias.
-     * @param url The {@link URL} of the Alias.
-     * @param server The {@link Server} to use for contacting the Alias.
-     * @deprecated Use {@link #Alias(URL, Server)} instead.
-     */
-    @Deprecated
-    public Alias(Logger logger, @NotNull URL url, @Nullable Server server) {
-        this.url = url;
-        if (server != null) {
-            this.server = server;
-        } else {
-            try {
-                this.server = new Server(url);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    /**
-     * Create a Alias without a {@link Server} object. A {@link Server} object is created automatically if needed.
-     *
-     * @param logger The logger to use for the Alias.
-     * @param url The {@link URL} of the Alias.
-     * @deprecated Use {@link #Alias(URL)} instead.
-     */
-    @Deprecated
-    public Alias(Logger logger, @NotNull URL url) {
-        this.url = url;
-        try {
-            this.server = new Server(url);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
