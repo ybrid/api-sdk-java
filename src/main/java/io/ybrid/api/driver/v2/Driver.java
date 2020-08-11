@@ -55,7 +55,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
     public Driver(@NotNull Session session) {
         super(session);
-        state = new State(session.getAlias().getUrl());
+        state = new State(session, session.getAlias().getUrl());
     }
 
     private URL getUrl(@Nullable String suffix) throws MalformedURLException {
