@@ -55,12 +55,6 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
-    @Deprecated
-    public long getTimeToNextItem() {
-        return getTimeToNextItemAsDuration().toMillis();
-    }
-
-    @Override
     public boolean isValid() {
         if (timeToNextItem == null)
             return true;

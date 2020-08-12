@@ -54,16 +54,6 @@ public interface Metadata {
     Service getService();
 
     /**
-     * Returns the time to the next Item.
-     * This is measured with the current system clock so that every call to this method will give an updated result.
-     * may return a negative number if the start of the next Item is in the past.
-     * @return Returns the time to the next item in [ms].
-     * @deprecated Use {@link PlayoutInfo#getTimeToNextItem()} instead.
-     */
-    @Deprecated
-    long getTimeToNextItem();
-
-    /**
      * Returns whether this Metadata is valid.
      * Metadata may become invalid after the current item finished playback or any other event.
      * If the Metadata is invalid the client must no longer use it and refresh it's Metadata state.
