@@ -22,8 +22,8 @@
 
 package io.ybrid.api.driver.v1;
 
-import io.ybrid.api.ItemType;
-import io.ybrid.api.SimpleItem;
+import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.SimpleItem;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;

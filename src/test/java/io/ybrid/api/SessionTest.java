@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.metadata.Metadata;
 import junit.framework.TestCase;
 
 import java.io.IOException;

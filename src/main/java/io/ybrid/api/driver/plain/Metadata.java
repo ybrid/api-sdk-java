@@ -22,12 +22,12 @@
 
 package io.ybrid.api.driver.plain;
 
-import io.ybrid.api.Item;
+import io.ybrid.api.metadata.Item;
 import io.ybrid.api.Service;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Metadata implements io.ybrid.api.Metadata {
+public class Metadata implements io.ybrid.api.metadata.Metadata {
     final @NotNull Service service;
     final @NotNull Item currentItem;
 

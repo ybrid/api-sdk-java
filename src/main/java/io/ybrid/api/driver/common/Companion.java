@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class Companion implements io.ybrid.api.Companion {
+public class Companion implements io.ybrid.api.metadata.Companion {
     protected String alternativeText;
     protected int height;
     protected int width;

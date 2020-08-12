@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,50 +20,45 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.metadata;
 
+import io.ybrid.api.Service;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-
 /**
- * This interface is implemented by objects representing an Item. A item roughly corresponds to a track.
+ * This Interface is implemented by Metadata objects.
+ *
+ * Metadata objects contain information for a section of a stream.
  */
-public interface Item extends hasIdentifier, hasDisplayName {
-    String METADATA_TITLE = "title";
-    String METADATA_ARTIST = "artist";
-    String METADATA_DESCRIPTION = "description";
-
+public interface Metadata {
     /**
-     * This allows access to the items Metadata.
-     * @return Returns the map of metadata.
+     * Returns the currently playing Item.
+     * The result can be used to access metadata for the item for a display of what is currently played.
+     *
+     * @return Returns the current item.
      */
-    @NotNull
-    Map<String, String> getMetadata();
+    Item getCurrentItem();
 
     /**
-     * Returns the type of the item.
-     * The item type can be used by players to switch between audio profiles.
-     * This can be useful to for example provide different settings for traffic announcements.
-     * @return Returns the type of the item.
+     * Get the Item that is expected to be played next.
+     * @return Returns the next item or null.
      */
     @Nullable
-    ItemType getType();
+    Item getNextItem();
 
     /**
-     * Return the total playback time of the item.
-     * @return Returns the playback time.
-     */
-    @Nullable
-    Duration getPlaybackLength();
-
-    /**
-     * Returns the list of Companions as to be displayed while this item is played.
-     * @return Returns the list of Companions.
+     * Returns the current service the listener is attached to.
+     * @return Returns the current service.
      */
     @NotNull
-    List<Companion> getCompanions();
+    Service getService();
+
+    /**
+     * Returns whether this Metadata is valid.
+     * Metadata may become invalid after the current item finished playback or any other event.
+     * If the Metadata is invalid the client must no longer use it and refresh it's Metadata state.
+     * @return Returns validity of this Metadata.
+     */
+    boolean isValid();
 }

@@ -22,7 +22,7 @@
 
 package io.ybrid.api.driver.plain;
 
-import io.ybrid.api.SimpleItem;
+import io.ybrid.api.metadata.SimpleItem;
 
 import java.util.UUID;
 

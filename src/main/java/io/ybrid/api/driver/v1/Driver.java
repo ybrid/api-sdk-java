@@ -175,7 +175,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public io.ybrid.api.@NotNull Metadata getMetadata() {
+    public io.ybrid.api.metadata.@NotNull Metadata getMetadata() {
         return metadata;
     }
 

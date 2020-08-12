@@ -24,6 +24,7 @@ package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.*;
 import io.ybrid.api.driver.v1.SwapInfo;
+import io.ybrid.api.metadata.Metadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;

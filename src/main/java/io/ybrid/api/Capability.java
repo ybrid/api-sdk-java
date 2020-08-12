@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.metadata.Item;
+
 /**
  * This enum contains all possible capabilities which might be supported by a {@link SessionClient}.
  */

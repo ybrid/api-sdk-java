@@ -22,14 +22,14 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.Item;
+import io.ybrid.api.metadata.Item;
 import io.ybrid.api.Service;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
 
-abstract public class Metadata implements io.ybrid.api.Metadata {
+abstract public class Metadata implements io.ybrid.api.metadata.Metadata {
     protected Item currentItem;
     protected Item nextItem;
     protected Service service;

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.metadata;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

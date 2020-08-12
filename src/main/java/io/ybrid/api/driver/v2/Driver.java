@@ -24,6 +24,8 @@ package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.Service;
 import io.ybrid.api.*;
+import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.Metadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
