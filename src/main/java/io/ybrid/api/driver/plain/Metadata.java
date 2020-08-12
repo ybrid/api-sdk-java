@@ -52,12 +52,6 @@ public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
-    @Deprecated
-    public long getTimeToNextItem() {
-        return Long.MAX_VALUE;
-    }
-
-    @Override
     public boolean isValid() {
         return false;
     }
