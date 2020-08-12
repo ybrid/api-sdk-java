@@ -22,8 +22,9 @@
 
 package io.ybrid.api.driver.common;
 
+import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.metadata.Metadata;
-import io.ybrid.api.Service;
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.*;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;

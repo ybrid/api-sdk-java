@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.FactorySelector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-abstract public class Service implements io.ybrid.api.Service {
+abstract public class Service implements io.ybrid.api.bouquet.Service {
     protected String identifier;
     protected URL icon;
 

@@ -23,7 +23,7 @@
 package io.ybrid.api.driver.common;
 
 import io.ybrid.api.Alias;
-import io.ybrid.api.Bouquet;
+import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.Server;
 import io.ybrid.api.Session;
 import org.jetbrains.annotations.NotNull;

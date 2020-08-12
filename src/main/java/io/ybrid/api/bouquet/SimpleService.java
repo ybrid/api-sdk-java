@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.bouquet;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URL;
 import java.util.UUID;
 
-public class SimpleService implements io.ybrid.api.Service {
+public class SimpleService implements Service {
     final @NotNull String displayName;
     final @NotNull String identifier;
     final @Nullable URL icon;

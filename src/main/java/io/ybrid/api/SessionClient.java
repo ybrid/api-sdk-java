@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
 import org.jetbrains.annotations.NotNull;

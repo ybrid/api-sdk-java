@@ -23,6 +23,7 @@
 package io.ybrid.api.driver.v2;
 
 import io.ybrid.api.*;
+import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.v1.SwapInfo;
 import io.ybrid.api.metadata.Metadata;
 import org.jetbrains.annotations.NotNull;

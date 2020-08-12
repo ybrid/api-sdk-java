@@ -22,7 +22,7 @@
 
 package io.ybrid.api.metadata;
 
-import io.ybrid.api.Service;
+import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

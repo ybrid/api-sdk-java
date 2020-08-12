@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.ItemType;

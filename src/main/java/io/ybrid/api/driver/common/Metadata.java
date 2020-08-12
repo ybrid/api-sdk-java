@@ -23,7 +23,7 @@
 package io.ybrid.api.driver.common;
 
 import io.ybrid.api.metadata.Item;
-import io.ybrid.api.Service;
+import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
