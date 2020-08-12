@@ -31,7 +31,7 @@ import java.util.*;
 public class SimpleItem implements Item {
     protected final @NotNull HashMap<@NotNull String, @NotNull String> metadata = new HashMap<>();
     protected final @NotNull ArrayList<Companion> companions = new ArrayList<>();
-    protected @NotNull String identifier;
+    protected final @NotNull String identifier;
     protected @Nullable ItemType type;
     protected @Nullable Duration playbackLength;
 

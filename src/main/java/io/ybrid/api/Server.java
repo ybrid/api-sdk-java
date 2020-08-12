@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Logger;
 
 /**
  * This class represents the connection to a specific Ybrid server.
@@ -46,9 +45,8 @@ public class Server implements Connectable, ApiUser {
 
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull String hostname;
-    private int port = DEFAULT_PORT;
-    private boolean secure = DEFAULT_SECURE;
-    private final @NotNull Logger logger;
+    private final int port;
+    private final boolean secure;
     private @Nullable ApiVersion apiVersion = null;
 
     private void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
@@ -71,8 +69,6 @@ public class Server implements Connectable, ApiUser {
      */
     public Server(@NotNull URL baseURL) throws MalformedURLException {
         int newPort;
-
-        this.logger = Logger.getLogger(Server.class.getName());
 
         newPort = baseURL.getPort();
         if (newPort < 0)
