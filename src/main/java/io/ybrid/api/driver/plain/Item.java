@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,40 +20,14 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.driver.plain;
 
-/**
- * This enum is used to identify a specific version of the Ybrid® API.
- */
-public enum ApiVersion {
-    /**
-     * Plain stream, e.g. HTTP. With no additional controls.
-     */
-    PLAIN,
-    /**
-     * Version 1 of the Ybrid® API.
-     */
-    YBRID_V1,
-    /**
-     * Beta of version 2 of the Ybrid® API.
-     */
-    YBRID_V2_BETA;
+import io.ybrid.api.SimpleItem;
 
-    /** Returns the enum constant of this type with the specified on-wire representation.
-     *
-     * This is like {@link #valueOf(String)} except that it uses the on-wire representation
-     * as input.
-     * @param input The on-wire representation to convert.
-     * @return The corresponding enum value.
-     */
-    public static ApiVersion fromWire(String input) {
-        switch (input) {
-            case "v1":
-                return YBRID_V1;
-            case "v2":
-                return YBRID_V2_BETA;
-            default:
-                throw new IllegalArgumentException("No enum constant for string \"" + input +"\"");
-        }
+import java.util.UUID;
+
+public class Item extends SimpleItem {
+    public Item() {
+        super(UUID.randomUUID().toString());
     }
 }

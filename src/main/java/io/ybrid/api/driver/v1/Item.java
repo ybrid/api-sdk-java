@@ -23,6 +23,7 @@
 package io.ybrid.api.driver.v1;
 
 import io.ybrid.api.ItemType;
+import io.ybrid.api.SimpleItem;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,14 +33,16 @@ import java.time.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-final class Item extends io.ybrid.api.driver.common.Item {
+final class Item extends SimpleItem {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+    protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
+
 
     Item(@NotNull JSONObject json) throws MalformedURLException {
+        super(json.getString("id"));
+
         JSONArray array;
         String type;
-
-        identifier = json.getString("id");
 
         for (String key : metadataList) {
             String value = json.getString(key);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,20 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api.driver.plain;
 
 import io.ybrid.api.Item;
 import io.ybrid.api.Service;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.time.Instant;
+public class Metadata implements io.ybrid.api.Metadata {
+    final @NotNull Service service;
+    final @NotNull Item currentItem;
 
-abstract public class Metadata implements io.ybrid.api.Metadata {
-    protected Item currentItem;
-    protected Item nextItem;
-    protected Service service;
-    protected Duration timeToNextItem;
-    protected Instant requestTime;
-
-    private Duration getTimeToNextItemAsDuration() {
-        return timeToNextItem.minus(Duration.between(requestTime, Instant.now()));
-    }
-
-    @Override
-    public Item getCurrentItem() {
-        return currentItem;
-    }
-
-    @Override
-    public Item getNextItem() {
-        return nextItem;
+    public Metadata(@NotNull Service service, @NotNull Item currentItem) {
+        this.service = service;
+        this.currentItem = currentItem;
     }
 
     @Override
@@ -56,20 +42,23 @@ abstract public class Metadata implements io.ybrid.api.Metadata {
     }
 
     @Override
-    public boolean isValid() {
-        if (timeToNextItem == null)
-            return true;
-        return !getTimeToNextItemAsDuration().isNegative();
+    public @NotNull Item getCurrentItem() {
+        return currentItem;
     }
 
     @Override
-    public String toString() {
-        return "Metadata{" +
-                "currentItem=" + currentItem +
-                ", nextItem=" + nextItem +
-                ", service=" + service +
-                ", timeToNextItem=" + timeToNextItem +
-                ", requestTime=" + requestTime +
-                '}';
+    public @Nullable Item getNextItem() {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public long getTimeToNextItem() {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
     }
 }
