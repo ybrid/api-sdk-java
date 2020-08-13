@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,33 +20,41 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api.metadata;
 
-import io.ybrid.api.metadata.Item;
 import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
 
-abstract public class Metadata implements io.ybrid.api.metadata.Metadata {
-    protected Item currentItem;
-    protected Item nextItem;
-    protected Service service;
-    protected Duration timeToNextItem;
-    protected Instant requestTime;
+public class SimpleMetadata implements Metadata {
+    protected final @NotNull Item currentItem;
+    protected final @Nullable Item nextItem;
+    protected final @NotNull Service service;
+    protected final @Nullable Duration timeToNextItem;
+    protected final @NotNull Instant requestTime;
 
-    private Duration getTimeToNextItemAsDuration() {
-        return timeToNextItem.minus(Duration.between(requestTime, Instant.now()));
+    public SimpleMetadata(@NotNull Item currentItem, @Nullable Item nextItem, @NotNull Service service, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+        this.currentItem = currentItem;
+        this.nextItem = nextItem;
+        this.service = service;
+        this.timeToNextItem = timeToNextItem;
+        this.requestTime = requestTime;
+    }
+
+    public SimpleMetadata(@NotNull Item currentItem, @Nullable Item nextItem, @NotNull Service service, @Nullable Duration timeToNextItem) {
+        this(currentItem, nextItem, service, timeToNextItem, Instant.now());
     }
 
     @Override
-    public Item getCurrentItem() {
+    public @NotNull Item getCurrentItem() {
         return currentItem;
     }
 
     @Override
-    public Item getNextItem() {
+    public @Nullable Item getNextItem() {
         return nextItem;
     }
 
@@ -59,17 +67,6 @@ abstract public class Metadata implements io.ybrid.api.metadata.Metadata {
     public boolean isValid() {
         if (timeToNextItem == null)
             return true;
-        return !getTimeToNextItemAsDuration().isNegative();
-    }
-
-    @Override
-    public String toString() {
-        return "Metadata{" +
-                "currentItem=" + currentItem +
-                ", nextItem=" + nextItem +
-                ", service=" + service +
-                ", timeToNextItem=" + timeToNextItem +
-                ", requestTime=" + requestTime +
-                '}';
+        return !timeToNextItem.minus(Duration.between(requestTime, Instant.now())).isNegative();
     }
 }

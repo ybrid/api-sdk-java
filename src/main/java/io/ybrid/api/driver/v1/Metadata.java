@@ -28,20 +28,12 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.time.Duration;
-import java.time.Instant;
 
-public final class Metadata extends io.ybrid.api.driver.common.Metadata {
+public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
     public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        this.service = service;
-        this.requestTime = Instant.now();
-
-        currentItem = new Item(json.getJSONObject("currentItem"));
-        nextItem = new Item(json.getJSONObject("nextItem"));
-        if (json.has("timeToNextItemMillis")) {
-            timeToNextItem = Duration.ofMillis(json.getLong("timeToNextItemMillis"));
-        } else {
-            timeToNextItem = null;
-        }
+        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
+                json.has("timeToNextItemMillis") ? Duration.ofMillis(json.getLong("timeToNextItemMillis")) : null
+                );
 
         if (service instanceof io.ybrid.api.driver.v1.Service)
             ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));

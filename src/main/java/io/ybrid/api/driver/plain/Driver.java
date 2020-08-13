@@ -24,6 +24,8 @@ package io.ybrid.api.driver.plain;
 
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.SimpleMetadata;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -43,7 +45,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
             throw new RuntimeException(e);
         }
         this.currentService = bouquet.getDefaultService();
-        metadata = new Metadata(this.currentService, new Item());
+        metadata = new SimpleMetadata(new Item(), null, this.currentService, null);
         capabilities.add(Capability.PLAYBACK_URL);
         setChanged(SubInfo.CAPABILITIES);
         setChanged(SubInfo.BOUQUET);
