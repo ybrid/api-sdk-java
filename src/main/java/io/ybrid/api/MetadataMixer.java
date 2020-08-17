@@ -74,16 +74,27 @@ public class MetadataMixer {
 
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
+    private boolean hasChanged = false;
 
     MetadataMixer() {
     }
 
+    private void setChanged() {
+        hasChanged = true;
+    }
+
+    private void clearChanged() {
+        hasChanged = false;
+    }
+
     public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
         items.put(position, new ItemInfo(item, timeToNextItem, requestTime));
+        setChanged();
     }
 
     public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
         services.put(position, service);
+        setChanged();
     }
 
     public void add(@NotNull Metadata metadata, @NotNull Source source, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
@@ -96,12 +107,14 @@ public class MetadataMixer {
     public @NotNull Metadata getMetadata() {
         final @NotNull ItemInfo current = items.get(Position.CURRENT);
         final @Nullable ItemInfo next = items.get(Position.CURRENT);
+        clearChanged();
         return new SimpleMetadata(current.getItem(), next != null ? next.getItem() : null, services.get(Position.CURRENT), current.getTimeToNextItem(), current.getRequestTime());
     }
 
     public void removeNext() {
         items.remove(Position.NEXT);
         services.remove(Position.NEXT);
+        setChanged();
     }
 
     public void forwardToNextItem() {
@@ -117,5 +130,10 @@ public class MetadataMixer {
             services.put(Position.CURRENT, nextService);
 
         removeNext();
+        setChanged();
+    }
+
+    public boolean hasChanged() {
+        return hasChanged;
     }
 }
