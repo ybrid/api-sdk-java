@@ -68,10 +68,10 @@ public class SessionTest extends TestCase {
                 Instant start;
                 Instant end;
 
-                start = Instant.now();
+                start = ClockManager.now();
                 session.refresh(SubInfo.METADATA);
                 newMetadata = session.getMetadata();
-                end = Instant.now();
+                end = ClockManager.now();
 
                 assertNotNull(newMetadata);
 

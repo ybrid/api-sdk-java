@@ -22,6 +22,7 @@
 
 package io.ybrid.api.metadata;
 
+import io.ybrid.api.ClockManager;
 import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,7 @@ public class SimpleMetadata implements Metadata {
     }
 
     public SimpleMetadata(@NotNull Item currentItem, @Nullable Item nextItem, @NotNull Service service, @Nullable Duration timeToNextItem) {
-        this(currentItem, nextItem, service, timeToNextItem, Instant.now());
+        this(currentItem, nextItem, service, timeToNextItem, ClockManager.now());
     }
 
     @Override
@@ -67,6 +68,6 @@ public class SimpleMetadata implements Metadata {
     public boolean isValid() {
         if (timeToNextItem == null)
             return true;
-        return !timeToNextItem.minus(Duration.between(requestTime, Instant.now())).isNegative();
+        return !timeToNextItem.minus(Duration.between(requestTime, ClockManager.now())).isNegative();
     }
 }

@@ -163,7 +163,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         assertConnected();
 
         lastUpdate = state.getLastUpdated(what);
-        return lastUpdate == null || !lastUpdate.plus(MINIMUM_BETWEEN_SESSION_INFO).isAfter(Instant.now());
+        return lastUpdate == null || !lastUpdate.plus(MINIMUM_BETWEEN_SESSION_INFO).isAfter(ClockManager.now());
     }
 
     @Override

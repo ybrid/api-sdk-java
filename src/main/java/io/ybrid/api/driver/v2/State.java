@@ -74,7 +74,7 @@ final class State implements KnowsSubInfoState {
 
     private void setChanged(@NotNull SubInfo what) {
         changed.add(what);
-        lastUpdated.put(what, Instant.now());
+        lastUpdated.put(what, ClockManager.now());
     }
 
     public Metadata getMetadata() {
