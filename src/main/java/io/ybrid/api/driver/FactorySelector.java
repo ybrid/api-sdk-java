@@ -63,10 +63,10 @@ public final class FactorySelector {
         }
 
         if (set.contains(ApiVersion.YBRID_V2_BETA))
-            return new io.ybrid.api.driver.v2.Factory();
+            return new io.ybrid.api.driver.ybrid.v2.Factory();
 
         if (set.contains(ApiVersion.YBRID_V1))
-            return new io.ybrid.api.driver.v1.Factory();
+            return new io.ybrid.api.driver.ybrid.v1.Factory();
 
         if (set.contains(ApiVersion.PLAIN))
             return new io.ybrid.api.driver.plain.Factory();

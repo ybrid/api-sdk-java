@@ -20,43 +20,14 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.ybrid.v1;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-final class Companion extends io.ybrid.api.driver.common.Companion {
-    private static String getString(@NotNull JSONObject json, @NotNull String key) {
-        String ret;
-
-        if (json.isNull(key))
-            return null;
-
-        ret = json.getString(key);
-        if (ret.isEmpty())
-            return null;
-
-        return ret;
-    }
-
-    private static URL getURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
-        String string = getString(json, key);
-        if (string == null)
-            return null;
-
-        return new URL(string);
-    }
-
-    Companion(@NotNull JSONObject json) throws MalformedURLException {
-        alternativeText = getString(json, "altText");
-        height = json.getInt("height");
-        width = json.getInt("width");
-        sequenceNumber = json.getInt("sequenceNumber");
-        staticResource = getURL(json, "staticResourceURL");
-        onClick = getURL(json, "onClickThroughURL");
-        onView = getURL(json, "onCreativeViewURL");
+public final class SwapInfo extends io.ybrid.api.driver.common.SwapInfo {
+    public SwapInfo(@NotNull JSONObject json) {
+        nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
+        swapsLeft = json.getInt("swapsLeft");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,41 +20,22 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v2;
+package io.ybrid.api.driver.ybrid.v1;
 
-import io.ybrid.api.*;
-import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.driver.common.Driver;
+import io.ybrid.api.driver.common.Service;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
+import java.time.Duration;
 
-public final class Factory extends io.ybrid.api.driver.common.Factory {
-    @Override
-    public @NotNull Driver getDriver(@NotNull Session session) {
-        return new io.ybrid.api.driver.v2.Driver(session);
-    }
+public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
+    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
+        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
+                json.has("timeToNextItemMillis") ? Duration.ofMillis(json.getLong("timeToNextItemMillis")) : null
+                );
 
-    @Override
-    public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
-        final Driver driver = getDriver(server.createSession(alias));
-        Bouquet bouquet = null;
-        IOException thrown = null;
-
-        driver.connect();
-        try {
-            if (!driver.hasChanged(SubInfo.BOUQUET))
-                driver.refresh(SubInfo.BOUQUET);
-
-            bouquet = driver.getBouquet();
-        } catch (IOException e) {
-            thrown = e;
-        }
-        driver.disconnect();
-
-        if (thrown != null)
-            throw thrown;
-
-        return bouquet;
+        if (service instanceof io.ybrid.api.driver.ybrid.v1.Service)
+            ((io.ybrid.api.driver.ybrid.v1.Service)service).updateStation(json.getJSONObject("station"));
     }
 }

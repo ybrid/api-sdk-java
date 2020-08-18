@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,41 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.ybrid.v2;
 
+import io.ybrid.api.*;
+import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
-public final class SwapInfo extends io.ybrid.api.driver.common.SwapInfo {
-    public SwapInfo(@NotNull JSONObject json) {
-        nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
-        swapsLeft = json.getInt("swapsLeft");
+import java.io.IOException;
+
+public final class Factory extends io.ybrid.api.driver.common.Factory {
+    @Override
+    public @NotNull Driver getDriver(@NotNull Session session) {
+        return new io.ybrid.api.driver.ybrid.v2.Driver(session);
+    }
+
+    @Override
+    public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
+        final Driver driver = getDriver(server.createSession(alias));
+        Bouquet bouquet = null;
+        IOException thrown = null;
+
+        driver.connect();
+        try {
+            if (!driver.hasChanged(SubInfo.BOUQUET))
+                driver.refresh(SubInfo.BOUQUET);
+
+            bouquet = driver.getBouquet();
+        } catch (IOException e) {
+            thrown = e;
+        }
+        driver.disconnect();
+
+        if (thrown != null)
+            throw thrown;
+
+        return bouquet;
     }
 }

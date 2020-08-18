@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.ybrid.v1;
 
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.SimpleItem;

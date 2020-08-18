@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v2;
+package io.ybrid.api.driver.ybrid.v2;
 
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;

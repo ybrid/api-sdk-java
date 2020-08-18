@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,20 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.ybrid.v2;
 
-import io.ybrid.api.driver.common.Service;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
-import java.time.Duration;
 
-public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
-                json.has("timeToNextItemMillis") ? Duration.ofMillis(json.getLong("timeToNextItemMillis")) : null
-                );
+final class Service extends io.ybrid.api.driver.common.Service {
+    public Service(@NotNull JSONObject json) throws MalformedURLException {
+        super(json);
+    }
 
-        if (service instanceof io.ybrid.api.driver.v1.Service)
-            ((io.ybrid.api.driver.v1.Service)service).updateStation(json.getJSONObject("station"));
+    @Override
+    public String getGenre() {
+        return null;
     }
 }

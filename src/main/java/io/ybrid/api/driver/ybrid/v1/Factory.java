@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v1;
+package io.ybrid.api.driver.ybrid.v1;
 
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
@@ -36,12 +36,12 @@ import java.util.ArrayList;
 public final class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
     public @NotNull Driver getDriver(@NotNull Session session) {
-        return new io.ybrid.api.driver.v1.Driver(session);
+        return new io.ybrid.api.driver.ybrid.v1.Driver(session);
     }
 
     @Override
     public @NotNull Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) {
-        final Service service = new io.ybrid.api.driver.v1.Service();
+        final Service service = new io.ybrid.api.driver.ybrid.v1.Service();
         final ArrayList<Service> services = new ArrayList<>();
 
         services.add(service);

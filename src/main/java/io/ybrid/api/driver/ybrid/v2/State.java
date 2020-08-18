@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.v2;
+package io.ybrid.api.driver.ybrid.v2;
 
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.driver.v1.SwapInfo;
+import io.ybrid.api.driver.ybrid.v1.SwapInfo;
 import io.ybrid.api.metadata.Metadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -101,7 +101,7 @@ final class State implements KnowsSubInfoState {
             return;
 
         try {
-            currentMetadata = new io.ybrid.api.driver.v1.Metadata(currentService, raw);
+            currentMetadata = new io.ybrid.api.driver.ybrid.v1.Metadata(currentService, raw);
         } catch (MalformedURLException ignored) {
         }
 
