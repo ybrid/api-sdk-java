@@ -45,6 +45,7 @@ import java.util.*;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
+    private final @NotNull MetadataMixer metadataMixer = new MetadataMixer();
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final @NotNull Driver driver;
     private final @NotNull Server server;
@@ -140,7 +141,8 @@ public class Session implements Connectable, SessionClient {
     @Override
     public @NotNull Metadata getMetadata() {
         driver.clearChanged(SubInfo.METADATA);
-        return driver.getMetadata();
+        metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+        return metadataMixer.getMetadata();
     }
 
     @Override
@@ -151,6 +153,9 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
+        if (what.equals(SubInfo.METADATA) && metadataMixer.hasChanged())
+            return true;
+
         return driver.hasChanged(what);
     }
 
