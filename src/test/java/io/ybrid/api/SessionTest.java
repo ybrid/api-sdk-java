@@ -26,16 +26,18 @@ import io.ybrid.api.metadata.Metadata;
 import junit.framework.TestCase;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 
 public class SessionTest extends TestCase {
-    public void testGetStreamURLPositive() throws IOException {
+    public void testGetStreamURLPositive() throws IOException, URISyntaxException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
             Alias alias;
             Session session;
-            URL url;
+            URI uri;
 
             alias = new Alias(aliasUrl);
             assertNotNull(alias);
@@ -45,14 +47,14 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            url = session.getStreamURL();
-            assertNotNull(url);
+            uri = session.getStreamURI();
+            assertNotNull(uri);
 
             session.close();
         }
     }
 
-    public void testSessionInfo() throws IOException, InterruptedException {
+    public void testSessionInfo() throws IOException, InterruptedException, URISyntaxException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
             Session session = new Alias(aliasUrl).createSession();
             Metadata oldMetadata = null;
@@ -62,7 +64,7 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            assertEquals(200, NetworkHelper.pingURL(session.getStreamURL()));
+            assertEquals(200, NetworkHelper.pingURI(session.getStreamURI()));
 
             for (int i = 0; i < 10; i++) {
                 Instant start;

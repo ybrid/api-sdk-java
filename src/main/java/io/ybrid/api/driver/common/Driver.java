@@ -35,6 +35,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -57,7 +59,7 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
 
     abstract public void swapItem(@NotNull SwapMode mode) throws IOException;
     abstract public @NotNull Metadata getMetadata();
-    abstract public URL getStreamURL() throws MalformedURLException;
+    abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
     abstract public @NotNull Bouquet getBouquet();
 
     protected Driver(Session session) {

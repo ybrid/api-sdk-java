@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 @SuppressWarnings("ConstantConditions")
@@ -99,5 +100,16 @@ public class NetworkHelper {
         connection.getInputStream().close();
         connection.disconnect();
         return connection.getResponseCode();
+    }
+
+    /**
+     * Make a HTTP GET request and discard returned document.
+     *
+     * @param uri The URI to ping
+     * @return The HTTP status code
+     * @throws IOException Thrown on any I/O-Error
+     */
+    public static int pingURI(URI uri) throws IOException {
+        return pingURL(uri.toURL());
     }
 }

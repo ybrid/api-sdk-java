@@ -32,6 +32,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -76,9 +78,9 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public URL getStreamURL() throws MalformedURLException {
+    public URI getStreamURI() throws MalformedURLException, URISyntaxException {
         assertConnected();
-        return getUrl("?session-id=" + token);
+        return getUrl("?session-id=" + token).toURI();
     }
 
     private void handleUpdates() {

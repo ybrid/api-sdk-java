@@ -30,7 +30,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Driver extends io.ybrid.api.driver.common.Driver {
     private final @NotNull Bouquet bouquet;
@@ -65,12 +66,12 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public URL getStreamURL() throws MalformedURLException {
+    public URI getStreamURI() throws MalformedURLException, URISyntaxException {
         Server server = session.getServer();
 
         assertConnected();
 
-        return new URL(server.getProtocol(), server.getHostname(), server.getPort(), getMountpoint());
+        return new URI(server.getProtocol(), null, server.getHostname(), server.getPort(), getMountpoint(), null, null);
     }
 
     @Override
