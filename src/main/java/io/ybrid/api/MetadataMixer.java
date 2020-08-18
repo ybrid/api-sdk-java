@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.bouquet.Service;
+import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Item;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.SimpleMetadata;
@@ -77,6 +78,7 @@ public class MetadataMixer {
     private boolean hasChanged = false;
 
     MetadataMixer() {
+        add(new InvalidMetadata(), Source.SESSION, Duration.ZERO, Instant.EPOCH);
     }
 
     private void setChanged() {

@@ -140,8 +140,10 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public @NotNull Metadata getMetadata() {
-        driver.clearChanged(SubInfo.METADATA);
-        metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+        if (driver.hasChanged(SubInfo.METADATA)) {
+            driver.clearChanged(SubInfo.METADATA);
+            metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+        }
         return metadataMixer.getMetadata();
     }
 
