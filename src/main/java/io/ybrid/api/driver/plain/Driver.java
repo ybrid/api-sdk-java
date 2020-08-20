@@ -61,7 +61,6 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void refresh(@NotNull SubInfo what) throws IOException {
-        setChanged(what);
         // no-op
     }
 

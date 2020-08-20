@@ -71,6 +71,12 @@ public class Session implements Connectable, SessionClient {
 
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
+
+        // get initial metadata if any.
+        if (driver.hasChanged(SubInfo.METADATA)) {
+            driver.clearChanged(SubInfo.METADATA);
+            metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+        }
     }
 
     /**
