@@ -80,6 +80,14 @@ public class Session implements Connectable, SessionClient {
     }
 
     /**
+     * Gets the {@link MetadataMixer} for this session.
+     * @return Gets the current {@link MetadataMixer}.
+     */
+    public @NotNull MetadataMixer getMetadataMixer() {
+        return metadataMixer;
+    }
+
+    /**
      * Gets the {@link Alias} used for this session.
      * @return Returns the {@link Alias}.
      */
