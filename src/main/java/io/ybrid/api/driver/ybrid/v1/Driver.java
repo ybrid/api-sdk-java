@@ -190,14 +190,10 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public URI getStreamURI() throws MalformedURLException, URISyntaxException {
         Server server = session.getServer();
-        String path = getMountpoint();
 
         assertConnected();
 
-        if (token != null)
-            path += "?sessionId=" + token;
-
-        return new URI(server.getProtocol(), null, hostname, server.getPort(), path, "sessionId=" + token, null);
+        return new URI(server.getProtocol(), null, hostname, server.getPort(), getMountpoint(), "sessionId=" + token, null);
     }
 
     @Override
