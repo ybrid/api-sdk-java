@@ -193,7 +193,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         assertConnected();
 
-        return new URI(server.getProtocol(), null, hostname, server.getPort(), getMountpoint(), "sessionId=" + token, null);
+        //noinspection SpellCheckingInspection
+        return new URI(server.isSecure() ? "icyxs" : "icyx", null, hostname, server.getPort(), getMountpoint(), "sessionId=" + token, null);
     }
 
     @Override
