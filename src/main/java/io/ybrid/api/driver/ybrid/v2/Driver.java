@@ -70,7 +70,8 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     private URL getUrl(@Nullable String suffix) throws MalformedURLException {
-        URL baseUrl = state.getBaseUrl();
+        final @NotNull URL baseUrl = state.getBaseUrl();
+
         if (suffix == null || suffix.isEmpty())
             return baseUrl;
 
