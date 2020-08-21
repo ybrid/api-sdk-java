@@ -31,6 +31,10 @@ public enum ApiVersion {
      */
     PLAIN,
     /**
+     * ICY Stream, used for legacy codecs only.
+     */
+    ICY,
+    /**
      * Version 1 of the Ybrid® API.
      */
     YBRID_V1,
