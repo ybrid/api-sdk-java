@@ -64,6 +64,20 @@ public class Session implements Connectable, SessionClient {
                 throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
     }
 
+    private void loadSessionToMixer() {
+        try {
+            // get initial metadata if any.
+            if (driver.hasChanged(SubInfo.METADATA)) {
+                driver.clearChanged(SubInfo.METADATA);
+                metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+            }
+            if (driver.hasChanged(SubInfo.BOUQUET)) {
+                metadataMixer.add(driver.getCurrentService(), MetadataMixer.Source.SESSION, MetadataMixer.Position.CURRENT, null, ClockManager.now());
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
     Session(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
         this.server = server;
         this.alias = alias;
@@ -72,11 +86,7 @@ public class Session implements Connectable, SessionClient {
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
 
-        // get initial metadata if any.
-        if (driver.hasChanged(SubInfo.METADATA)) {
-            driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
-        }
+        loadSessionToMixer();
     }
 
     /**
@@ -301,6 +311,7 @@ public class Session implements Connectable, SessionClient {
     @Override
     public void connect() throws IOException {
         driver.connect();
+        loadSessionToMixer();
     }
 
     @Override
