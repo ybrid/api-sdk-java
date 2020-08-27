@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.message.MessageBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +34,7 @@ import java.util.*;
 /**
  * This class implements a renderer for the {@code application/x-www-form-urlencoded} media type.
  */
-public class XWWWFormUrlEncodedBuilder {
+public class XWWWFormUrlEncodedBuilder implements MessageBody {
     private static final @NotNull String UTF_8_NAME = StandardCharsets.UTF_8.name();
 
     private final @NotNull List<Map.Entry<@NotNull String, @Nullable String>> list = new ArrayList<>();
