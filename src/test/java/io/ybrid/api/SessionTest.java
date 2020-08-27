@@ -64,7 +64,7 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            assertEquals(200, NetworkHelper.pingTransportDescription(session.getStreamTransportDescription()));
+            assertEquals(200, NetworkHelper.ping(session.getStreamTransportDescription()));
 
             for (int i = 0; i < 10; i++) {
                 Instant start;

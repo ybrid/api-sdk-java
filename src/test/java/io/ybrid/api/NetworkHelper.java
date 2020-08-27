@@ -93,7 +93,7 @@ public class NetworkHelper {
      * @return The HTTP status code
      * @throws IOException Thrown on any I/O-Error
      */
-    public static int pingURL(URL url) throws IOException {
+    public static int ping(URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setDoOutput(false);
@@ -111,8 +111,8 @@ public class NetworkHelper {
      * @return The HTTP status code
      * @throws IOException Thrown on any I/O-Error
      */
-    public static int pingURI(URI uri) throws IOException {
-        return pingURL(uri.toURL());
+    public static int ping(URI uri) throws IOException {
+        return ping(uri.toURL());
     }
 
     /**
@@ -122,7 +122,7 @@ public class NetworkHelper {
      * @return The HTTP status code
      * @throws IOException Thrown on any I/O-Error
      */
-    public static int pingTransportDescription(TransportDescription transportDescription) throws IOException {
-        return pingURI(((URITransportDescription) transportDescription).getURI());
+    public static int ping(TransportDescription transportDescription) throws IOException {
+        return ping(((URITransportDescription) transportDescription).getURI());
     }
 }
