@@ -22,8 +22,50 @@
 
 package io.ybrid.api.transport;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
+
 /**
  * This is the base class for all transport descriptions.
  */
 public abstract class TransportDescription {
+    protected @Nullable Map<String, Double> acceptedMediaFormats;
+    protected @Nullable Map<String, Double> acceptedLanguages;
+
+    /**
+     * Main constructor.
+     * @param acceptedMediaFormats List of accepted media formats or {@code null}.
+     * @param acceptedLanguages List of accepted languages or {@code null}.
+     * @see #getAcceptedMediaFormats()
+     * @see #getAcceptedLanguages()
+     */
+    protected TransportDescription(@Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages) {
+        this.acceptedMediaFormats = acceptedMediaFormats;
+        this.acceptedLanguages = acceptedLanguages;
+    }
+
+    /**
+     * Get the list of media formats accepted for this transport.
+     * <P>
+     * For HTTP based protocols:
+     * If this returns {@code null} no {@code Accept:}-header should be generated.
+     *
+     * @return List of accepted formats or {@code null}.
+     */
+    public @Nullable Map<String, Double> getAcceptedMediaFormats() {
+        return acceptedMediaFormats;
+    }
+
+    /**
+     * Get list of languages accepted for this transport.
+     * <P>
+     * For HTTP based protocols:
+     * If this returns {@code null} no {@code Accept-Language:}-header should be generated.
+     *
+     * @return List of languages accepted or {@code null}.
+     */
+    public @Nullable Map<String, Double> getAcceptedLanguages() {
+        return acceptedLanguages;
+    }
 }

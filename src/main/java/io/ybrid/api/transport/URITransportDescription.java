@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
+import java.util.Map;
 
 /**
  * This class implements {@link URI} based {@link TransportDescription}s.
@@ -42,7 +43,8 @@ public class URITransportDescription extends TransportDescription {
      * @param uri The URI to connect to.
      * @param requestBody The {@link MessageBody} to send alongside the request or {@code null}.
      */
-    public URITransportDescription(@NotNull URI uri, @Nullable MessageBody requestBody) {
+    public URITransportDescription(@Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull URI uri, @Nullable MessageBody requestBody) {
+        super(acceptedMediaFormats, acceptedLanguages);
         this.uri = uri;
         this.requestBody = requestBody;
     }
@@ -50,10 +52,10 @@ public class URITransportDescription extends TransportDescription {
     /**
      * Creates a new URITransportDescription based using only q {@link URI}.
      * @param uri The URI to connect to.
-     * @see #URITransportDescription(URI, MessageBody)
+     * @see #URITransportDescription(Map, Map, URI, MessageBody)
      */
     public URITransportDescription(@NotNull URI uri) {
-        this(uri, null);
+        this(null, null, uri, null);
     }
 
     /**
