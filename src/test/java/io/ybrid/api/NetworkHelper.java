@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.transport.TransportDescription;
+import io.ybrid.api.transport.URITransportDescription;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -111,5 +113,16 @@ public class NetworkHelper {
      */
     public static int pingURI(URI uri) throws IOException {
         return pingURL(uri.toURL());
+    }
+
+    /**
+     * Make a HTTP GET request and discard returned document.
+     *
+     * @param transportDescription The {@link TransportDescription} to ping
+     * @return The HTTP status code
+     * @throws IOException Thrown on any I/O-Error
+     */
+    public static int pingTransportDescription(TransportDescription transportDescription) throws IOException {
+        return pingURI(((URITransportDescription) transportDescription).getURI());
     }
 }

@@ -30,6 +30,8 @@ import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.transport.TransportDescription;
+import io.ybrid.api.transport.URITransportDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -290,10 +292,24 @@ public class Session implements Connectable, SessionClient {
     /**
      * gets the {@link URL} of the audio stream.
      * @return The {@link URL} of the stream.
+     * @deprecated Use {@link #getStreamTransportDescription()}.
      */
+    @Deprecated
     public URI getStreamURI() {
         try {
             return driver.getStreamURI();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets the {@link TransportDescription} that can be used to access the audio stream.
+     * @return The transport description for the audio stream.
+     */
+    public TransportDescription getStreamTransportDescription() {
+        try {
+            return new URITransportDescription(driver.getStreamURI());
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
