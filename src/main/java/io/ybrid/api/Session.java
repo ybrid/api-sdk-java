@@ -28,6 +28,7 @@ import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.source.Source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,10 +70,10 @@ public class Session implements Connectable, SessionClient {
             // get initial metadata if any.
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+                metadataMixer.add(driver.getMetadata(), Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
             }
             if (driver.hasChanged(SubInfo.BOUQUET)) {
-                metadataMixer.add(driver.getCurrentService(), MetadataMixer.Source.SESSION, MetadataMixer.Position.CURRENT, null, ClockManager.now());
+                metadataMixer.add(driver.getCurrentService(), Source.SESSION, MetadataMixer.Position.CURRENT, null, ClockManager.now());
             }
         } catch (Exception ignored) {
         }
@@ -168,7 +169,7 @@ public class Session implements Connectable, SessionClient {
     public @NotNull Metadata getMetadata() {
         if (driver.hasChanged(SubInfo.METADATA)) {
             driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+            metadataMixer.add(driver.getMetadata(), Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
         }
         return metadataMixer.getMetadata();
     }

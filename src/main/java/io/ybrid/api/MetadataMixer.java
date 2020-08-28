@@ -27,6 +27,7 @@ import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Item;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.SimpleMetadata;
+import io.ybrid.api.metadata.source.Source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,12 +60,6 @@ public class MetadataMixer {
         public @NotNull Instant getRequestTime() {
             return requestTime;
         }
-    }
-
-    public enum Source {
-        SESSION,
-        TRANSPORT,
-        FORMAT;
     }
 
     public enum Position {
