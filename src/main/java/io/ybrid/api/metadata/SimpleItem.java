@@ -74,14 +74,32 @@ public class SimpleItem implements Item {
 
     @Override
     public String getDisplayName() {
-        String artist = metadata.get(METADATA_ARTIST);
-        String title = metadata.get(METADATA_TITLE);
+        return getDisplayTitle();
+    }
 
-        if (artist != null && title != null) {
-            return artist + " - " + title;
-        }
+    @Override
+    public @Nullable String getComment() {
+        return metadata.get(METADATA_DESCRIPTION);
+    }
 
-        return title;
+    @Override
+    public @Nullable String getTitle() {
+        return metadata.get(METADATA_TITLE);
+    }
+
+    @Override
+    public @Nullable String getVersion() {
+        return metadata.get(METADATA_VERSION);
+    }
+
+    @Override
+    public @Nullable String getArtist() {
+        return metadata.get(METADATA_ARTIST);
+    }
+
+    @Override
+    public @Nullable String getAlbum() {
+        return metadata.get(METADATA_ALBUM);
     }
 
     @Override
