@@ -83,6 +83,18 @@ public final class TemporalValidity {
     }
 
     /**
+     * Creates a new temporal translated validity.
+     * @param translation The translation, positive to translate into the future.
+     * @return The new validity.
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull TemporalValidity translate(@NotNull Duration translation) {
+        return new TemporalValidity(
+                getNotBefore() != null ? getNotBefore().plus(translation) : null,
+                getNotAfter() != null ? getNotAfter().plus(translation) : null);
+    }
+
+    /**
      * Gets the start time of this validity.
      * @return The start time or {@code null}.
      */
