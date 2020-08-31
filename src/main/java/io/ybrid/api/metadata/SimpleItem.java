@@ -47,6 +47,25 @@ public class SimpleItem implements Item {
             metadata.put(METADATA_TITLE, title);
     }
 
+    private void addMetadata(final @NotNull String key, final @Nullable String value) {
+        if (value == null)
+            return;
+        metadata.put(key, value);
+    }
+
+    public SimpleItem(@NotNull String identifier, @NotNull TrackMetadata trackMetadata) {
+        this.identifier = identifier;
+        addMetadata(METADATA_DESCRIPTION, trackMetadata.getComment());
+        if (trackMetadata instanceof BasicTrackMetadata) {
+            addMetadata(METADATA_TITLE, ((BasicTrackMetadata) trackMetadata).getTitle());
+            addMetadata(METADATA_VERSION, ((BasicTrackMetadata) trackMetadata).getVersion());
+            addMetadata(METADATA_ARTIST, ((BasicTrackMetadata) trackMetadata).getArtist());
+            addMetadata(METADATA_ALBUM, ((BasicTrackMetadata) trackMetadata).getAlbum());
+        } else {
+            addMetadata(METADATA_TITLE, trackMetadata.getDisplayTitle());
+        }
+    }
+
     @Override
     public @NotNull String getIdentifier() {
         return identifier;
