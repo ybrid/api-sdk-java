@@ -70,10 +70,10 @@ public class Session implements Connectable, SessionClient {
             // get initial metadata if any.
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+                metadataMixer.add(driver.getMetadata(), Source.SESSION, getPlayoutInfo().getTemporalValidity());
             }
             if (driver.hasChanged(SubInfo.BOUQUET)) {
-                metadataMixer.add(driver.getCurrentService(), Source.SESSION, MetadataMixer.Position.CURRENT, null, ClockManager.now());
+                metadataMixer.add(driver.getCurrentService(), Source.SESSION, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
             }
         } catch (Exception ignored) {
         }
@@ -169,7 +169,7 @@ public class Session implements Connectable, SessionClient {
     public @NotNull Metadata getMetadata() {
         if (driver.hasChanged(SubInfo.METADATA)) {
             driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+            metadataMixer.add(driver.getMetadata(), Source.SESSION, getPlayoutInfo().getTemporalValidity());
         }
         return metadataMixer.getMetadata();
     }

@@ -30,8 +30,6 @@ import io.ybrid.api.metadata.source.SourceTrackMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,25 +38,19 @@ public class MetadataMixer {
 
     private static class ItemInfo {
         private final @NotNull Item item;
-        private final @Nullable Duration timeToNextItem;
-        private final @NotNull Instant requestTime;
+        private final @NotNull TemporalValidity temporalValidity;
 
-        public ItemInfo(@NotNull Item item, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+        public ItemInfo(@NotNull Item item, @NotNull TemporalValidity temporalValidity) {
             this.item = item;
-            this.timeToNextItem = timeToNextItem;
-            this.requestTime = requestTime;
+            this.temporalValidity = temporalValidity;
         }
 
         public @NotNull Item getItem() {
             return item;
         }
 
-        public @Nullable Duration getTimeToNextItem() {
-            return timeToNextItem;
-        }
-
-        public @NotNull Instant getRequestTime() {
-            return requestTime;
+        public @NotNull TemporalValidity getTemporalValidity() {
+            return temporalValidity;
         }
     }
 
@@ -73,7 +65,7 @@ public class MetadataMixer {
     private boolean hasChanged = false;
 
     MetadataMixer() {
-        add(new InvalidMetadata(), Source.SESSION, Duration.ZERO, Instant.EPOCH);
+        add(new InvalidMetadata(), Source.SESSION, TemporalValidity.INDEFINITELY_VALID);
     }
 
     private void setChanged() {
@@ -84,28 +76,28 @@ public class MetadataMixer {
         hasChanged = false;
     }
 
-    public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
-        items.put(position, new ItemInfo(item, timeToNextItem, requestTime));
+    public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+        items.put(position, new ItemInfo(item, temporalValidity));
         setChanged();
     }
 
-    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
         setChanged();
     }
 
-    public void add(@NotNull Metadata metadata, @NotNull Source source, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
-        add(metadata.getCurrentItem(), source, Position.CURRENT, timeToNextItem, requestTime);
+    public void add(@NotNull Metadata metadata, @NotNull Source source, @NotNull TemporalValidity temporalValidity) {
+        add(metadata.getCurrentItem(), source, Position.CURRENT, temporalValidity);
         if (metadata.getNextItem() != null)
-            add(metadata.getNextItem(), source, Position.NEXT, timeToNextItem, requestTime);
-        add(metadata.getService(), source, Position.CURRENT, timeToNextItem, requestTime);
+            add(metadata.getNextItem(), source, Position.NEXT, temporalValidity);
+        add(metadata.getService(), source, Position.CURRENT, temporalValidity);
     }
 
-    public void add(@NotNull SourceMetadata metadata, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+    public void add(@NotNull SourceMetadata metadata, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         if (metadata instanceof SourceTrackMetadata) {
             final @NotNull SourceTrackMetadata track = (SourceTrackMetadata) metadata;
             final @NotNull Item item = new SimpleItem(UUID.randomUUID().toString(), track);
-            add(item, metadata.getSource(), position, timeToNextItem, requestTime);
+            add(item, metadata.getSource(), position, temporalValidity);
         }
     }
 
@@ -113,7 +105,7 @@ public class MetadataMixer {
         final @NotNull ItemInfo current = items.get(Position.CURRENT);
         final @Nullable ItemInfo next = items.get(Position.CURRENT);
         clearChanged();
-        return new SimpleMetadata(current.getItem(), next != null ? next.getItem() : null, services.get(Position.CURRENT), current.getTimeToNextItem(), current.getRequestTime());
+        return new SimpleMetadata(current.getItem(), next != null ? next.getItem() : null, services.get(Position.CURRENT), current.getTemporalValidity());
     }
 
     public void removeNext() {

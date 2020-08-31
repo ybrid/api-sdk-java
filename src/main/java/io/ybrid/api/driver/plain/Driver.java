@@ -46,7 +46,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
             throw new RuntimeException(e);
         }
         this.currentService = bouquet.getDefaultService();
-        metadata = new SimpleMetadata(new Item(), null, this.currentService, null);
+        metadata = new SimpleMetadata(new Item(), null, this.currentService, TemporalValidity.INDEFINITELY_VALID);
         capabilities.add(Capability.PLAYBACK_URL);
         setChanged(SubInfo.CAPABILITIES);
         setChanged(SubInfo.BOUQUET);

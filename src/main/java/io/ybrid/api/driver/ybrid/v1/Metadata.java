@@ -22,6 +22,7 @@
 
 package io.ybrid.api.driver.ybrid.v1;
 
+import io.ybrid.api.TemporalValidity;
 import io.ybrid.api.driver.common.Service;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -32,7 +33,7 @@ import java.time.Duration;
 public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
     public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
         super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
-                json.has("timeToNextItemMillis") ? Duration.ofMillis(json.getLong("timeToNextItemMillis")) : null
+                json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
                 );
 
         if (service instanceof io.ybrid.api.driver.ybrid.v1.Service)

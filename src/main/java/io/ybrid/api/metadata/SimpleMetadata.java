@@ -22,31 +22,22 @@
 
 package io.ybrid.api.metadata;
 
-import io.ybrid.api.ClockManager;
+import io.ybrid.api.TemporalValidity;
 import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.Duration;
-import java.time.Instant;
 
 public class SimpleMetadata implements Metadata {
     protected final @NotNull Item currentItem;
     protected final @Nullable Item nextItem;
     protected final @NotNull Service service;
-    protected final @Nullable Duration timeToNextItem;
-    protected final @NotNull Instant requestTime;
+    protected final @NotNull TemporalValidity temporalValidity;
 
-    public SimpleMetadata(@NotNull Item currentItem, @Nullable Item nextItem, @NotNull Service service, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+    public SimpleMetadata(@NotNull Item currentItem, @Nullable Item nextItem, @NotNull Service service, @NotNull TemporalValidity temporalValidity) {
         this.currentItem = currentItem;
         this.nextItem = nextItem;
         this.service = service;
-        this.timeToNextItem = timeToNextItem;
-        this.requestTime = requestTime;
-    }
-
-    public SimpleMetadata(@NotNull Item currentItem, @Nullable Item nextItem, @NotNull Service service, @Nullable Duration timeToNextItem) {
-        this(currentItem, nextItem, service, timeToNextItem, ClockManager.now());
+        this.temporalValidity = temporalValidity;
     }
 
     @Override
@@ -66,8 +57,6 @@ public class SimpleMetadata implements Metadata {
 
     @Override
     public boolean isValid() {
-        if (timeToNextItem == null)
-            return true;
-        return !timeToNextItem.minus(Duration.between(requestTime, ClockManager.now())).isNegative();
+        return temporalValidity.isValid();
     }
 }
