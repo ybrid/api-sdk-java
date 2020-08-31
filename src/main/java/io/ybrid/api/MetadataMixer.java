@@ -23,11 +23,10 @@
 package io.ybrid.api;
 
 import io.ybrid.api.bouquet.Service;
-import io.ybrid.api.metadata.InvalidMetadata;
-import io.ybrid.api.metadata.Item;
-import io.ybrid.api.metadata.Metadata;
-import io.ybrid.api.metadata.SimpleMetadata;
+import io.ybrid.api.metadata.*;
 import io.ybrid.api.metadata.source.Source;
+import io.ybrid.api.metadata.source.SourceMetadata;
+import io.ybrid.api.metadata.source.SourceTrackMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +34,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MetadataMixer {
 
@@ -99,6 +99,14 @@ public class MetadataMixer {
         if (metadata.getNextItem() != null)
             add(metadata.getNextItem(), source, Position.NEXT, timeToNextItem, requestTime);
         add(metadata.getService(), source, Position.CURRENT, timeToNextItem, requestTime);
+    }
+
+    public void add(@NotNull SourceMetadata metadata, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+        if (metadata instanceof SourceTrackMetadata) {
+            final @NotNull SourceTrackMetadata track = (SourceTrackMetadata) metadata;
+            final @NotNull Item item = new SimpleItem(UUID.randomUUID().toString(), track);
+            add(item, metadata.getSource(), position, timeToNextItem, requestTime);
+        }
     }
 
     public @NotNull Metadata getMetadata() {
