@@ -37,6 +37,10 @@ public final class TemporalValidity {
      * Represents a indefinite validity.
      */
     public static final @NotNull TemporalValidity INDEFINITELY_VALID = new TemporalValidity(null, null);
+    /**
+     * Represents a invalid validity.
+     */
+    public static final @NotNull TemporalValidity INVALID = new TemporalValidity(Instant.EPOCH, Instant.EPOCH);
 
     private final @Nullable Instant notBefore;
     private final @Nullable Instant notAfter;
