@@ -64,7 +64,6 @@ public class MetadataMixer implements KnowsSubInfoState {
     private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
-    private boolean hasChanged = false;
 
     MetadataMixer() {
         add(new InvalidMetadata(), SourceType.SESSION, TemporalValidity.INDEFINITELY_VALID);
