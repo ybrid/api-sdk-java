@@ -75,6 +75,7 @@ public class Session implements Connectable, SessionClient {
                 metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
             }
             if (driver.hasChanged(SubInfo.BOUQUET)) {
+                metadataMixer.add(driver.getBouquet(), source);
                 metadataMixer.add(driver.getCurrentService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
             }
         } catch (Exception ignored) {
@@ -123,8 +124,12 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public @NotNull Bouquet getBouquet() {
-        driver.clearChanged(SubInfo.BOUQUET);
-        return driver.getBouquet();
+        if (driver.hasChanged(SubInfo.BOUQUET)) {
+            driver.clearChanged(SubInfo.BOUQUET);
+            metadataMixer.add(driver.getBouquet(), source);
+        }
+
+        return metadataMixer.getBouquet();
     }
 
     @Override

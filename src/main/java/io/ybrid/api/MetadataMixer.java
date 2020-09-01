@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.*;
 import io.ybrid.api.metadata.source.Source;
@@ -65,9 +66,21 @@ public class MetadataMixer implements KnowsSubInfoState {
     private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
+    private final @NotNull Map<@NotNull String, Service> bouquetContent = new HashMap<>();
+    private Service bouquetDefaultService;
 
     MetadataMixer() {
         add(new InvalidMetadata(), new Source(SourceType.SESSION), TemporalValidity.INDEFINITELY_VALID);
+    }
+
+    public synchronized void add(@NotNull Bouquet bouquet, @NotNull Source source) {
+        bouquetContent.clear();
+        for (final @NotNull Service service : bouquet.getServices()) {
+            bouquetContent.put(service.getIdentifier(), service);
+        }
+
+        bouquetDefaultService = bouquet.getDefaultService();
+        changed.add(SubInfo.BOUQUET);
     }
 
     public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
@@ -93,6 +106,11 @@ public class MetadataMixer implements KnowsSubInfoState {
             final @NotNull Item item = new SimpleItem(UUID.randomUUID().toString(), track);
             add(item, metadata.getSource(), position, temporalValidity);
         }
+    }
+
+    public synchronized @NotNull Bouquet getBouquet() {
+        changed.remove(SubInfo.BOUQUET);
+        return new Bouquet(bouquetDefaultService, bouquetContent.values());
     }
 
     public @NotNull Metadata getMetadata() {
