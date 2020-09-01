@@ -70,13 +70,13 @@ public class Session implements Connectable, SessionClient {
     private void loadSessionToMixer() {
         try {
             // get initial metadata if any.
-            if (driver.hasChanged(SubInfo.METADATA)) {
-                driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
-            }
             if (driver.hasChanged(SubInfo.BOUQUET)) {
                 metadataMixer.add(driver.getBouquet(), source);
                 metadataMixer.add(driver.getCurrentService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
+            }
+            if (driver.hasChanged(SubInfo.METADATA)) {
+                driver.clearChanged(SubInfo.METADATA);
+                metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
             }
         } catch (Exception ignored) {
         }

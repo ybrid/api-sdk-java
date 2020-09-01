@@ -32,10 +32,7 @@ import io.ybrid.api.metadata.source.SourceType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MetadataMixer implements KnowsSubInfoState {
 
@@ -70,7 +67,36 @@ public class MetadataMixer implements KnowsSubInfoState {
     private Service bouquetDefaultService;
 
     MetadataMixer() {
-        add(new InvalidMetadata(), new Source(SourceType.SESSION), TemporalValidity.INDEFINITELY_VALID);
+        final @NotNull Metadata metadata = new InvalidMetadata();
+        final @NotNull Source source = new Source(SourceType.SESSION);
+        final @NotNull List<Service> services = new ArrayList<>(1);
+        services.add(metadata.getService());
+        add(new Bouquet(metadata.getService(), services), source);
+        add(metadata, source, TemporalValidity.INDEFINITELY_VALID);
+    }
+
+    private void updatedCurrentService() {
+        final @NotNull Service currentService = services.get(Position.CURRENT);
+
+        if (!bouquetContent.containsKey(currentService.getIdentifier())) {
+            try {
+                throw new IllegalArgumentException("Service not part of bouquet: " + currentService + ", " + bouquetContent.values());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        // No-op if we are on the same object still.
+        if (currentService == bouquetContent.get(currentService.getIdentifier()))
+            return;
+
+        bouquetContent.put(currentService.getIdentifier(), currentService);
+
+        if (bouquetDefaultService.getIdentifier().equals(currentService.getIdentifier()))
+            bouquetDefaultService = currentService;
+
+        changed.add(SubInfo.BOUQUET);
     }
 
     public synchronized void add(@NotNull Bouquet bouquet, @NotNull Source source) {
@@ -91,6 +117,8 @@ public class MetadataMixer implements KnowsSubInfoState {
     public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
         changed.add(SubInfo.METADATA);
+        if (position.equals(Position.CURRENT))
+            updatedCurrentService();
     }
 
     public void add(@NotNull Metadata metadata, @NotNull Source source, @NotNull TemporalValidity temporalValidity) {
@@ -135,8 +163,10 @@ public class MetadataMixer implements KnowsSubInfoState {
             items.put(Position.CURRENT, nextItem);
 
         services.put(Position.PREVIOUS, services.get(Position.CURRENT));
-        if (nextService != null)
+        if (nextService != null) {
             services.put(Position.CURRENT, nextService);
+            updatedCurrentService();
+        }
 
         removeNext();
         changed.add(SubInfo.METADATA);
