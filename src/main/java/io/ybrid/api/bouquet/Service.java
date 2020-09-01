@@ -26,6 +26,7 @@ import io.ybrid.api.hasDisplayName;
 import io.ybrid.api.hasIdentifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -45,4 +46,25 @@ public interface Service extends hasIdentifier, hasDisplayName {
      */
     @Nullable
     String getGenre();
+
+    /**
+     * Gets a description of the service and it's program.
+     *
+     * @return The description or {@code null}.
+     */
+    default @Nullable String getDescription() {
+        return null;
+    }
+
+    /**
+     * A {@link URI} that the user can navigate to in order to find more information
+     * about the service. This is normally the service's webpage.
+     *
+     * @return A URI to more information about the service or {@code null}.
+     */
+    default @Nullable URI getInfoURI() {
+        return null;
+    }
+
+
 }
