@@ -133,6 +133,8 @@ public class MetadataMixer implements KnowsSubInfoState {
             final @NotNull SourceTrackMetadata track = (SourceTrackMetadata) metadata;
             final @NotNull Item item = new SimpleItem(UUID.randomUUID().toString(), track);
             add(item, metadata.getSource(), position, temporalValidity);
+        } else if (metadata instanceof Service) {
+            add((Service)metadata, metadata.getSource(), position, temporalValidity);
         }
     }
 
