@@ -30,11 +30,12 @@ import io.ybrid.api.metadata.source.SourceTrackMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MetadataMixer {
+public class MetadataMixer implements KnowsSubInfoState {
 
     private static class ItemInfo {
         private final @NotNull Item item;
@@ -60,6 +61,7 @@ public class MetadataMixer {
         NEXT;
     }
 
+    private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
     private boolean hasChanged = false;
@@ -68,22 +70,14 @@ public class MetadataMixer {
         add(new InvalidMetadata(), Source.SESSION, TemporalValidity.INDEFINITELY_VALID);
     }
 
-    private void setChanged() {
-        hasChanged = true;
-    }
-
-    private void clearChanged() {
-        hasChanged = false;
-    }
-
     public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         items.put(position, new ItemInfo(item, temporalValidity));
-        setChanged();
+        changed.add(SubInfo.METADATA);
     }
 
     public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
-        setChanged();
+        changed.add(SubInfo.METADATA);
     }
 
     public void add(@NotNull Metadata metadata, @NotNull Source source, @NotNull TemporalValidity temporalValidity) {
@@ -104,14 +98,14 @@ public class MetadataMixer {
     public @NotNull Metadata getMetadata() {
         final @NotNull ItemInfo current = items.get(Position.CURRENT);
         final @Nullable ItemInfo next = items.get(Position.CURRENT);
-        clearChanged();
+        changed.remove(SubInfo.METADATA);
         return new SimpleMetadata(current.getItem(), next != null ? next.getItem() : null, services.get(Position.CURRENT), current.getTemporalValidity());
     }
 
     public void removeNext() {
         items.remove(Position.NEXT);
         services.remove(Position.NEXT);
-        setChanged();
+        changed.add(SubInfo.METADATA);
     }
 
     public void forwardToNextItem() {
@@ -127,10 +121,13 @@ public class MetadataMixer {
             services.put(Position.CURRENT, nextService);
 
         removeNext();
-        setChanged();
+        changed.add(SubInfo.METADATA);
     }
 
-    public boolean hasChanged() {
-        return hasChanged;
+    @Override
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return changed.contains(what);
     }
+
+
 }

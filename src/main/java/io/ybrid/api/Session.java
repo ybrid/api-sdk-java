@@ -182,10 +182,7 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
-        if (what.equals(SubInfo.METADATA) && metadataMixer.hasChanged())
-            return true;
-
-        return driver.hasChanged(what);
+        return metadataMixer.hasChanged(what) || driver.hasChanged(what);
     }
 
     @Override
