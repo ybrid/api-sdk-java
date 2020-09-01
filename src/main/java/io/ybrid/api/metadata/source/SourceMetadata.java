@@ -32,9 +32,9 @@ public interface SourceMetadata {
     /**
      * Gets the source of this metadata.
      * @return The source.
-     * @see Source
+     * @see SourceType
      */
-    @NotNull Source getSource();
+    @NotNull SourceType getSource();
 
     /**
      * Gets a session specific object that was transmitted alongside the metadata.

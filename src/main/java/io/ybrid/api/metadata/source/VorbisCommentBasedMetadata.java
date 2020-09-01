@@ -58,7 +58,7 @@ public class VorbisCommentBasedMetadata implements SourceTrackMetadata, BasicTra
 
     protected final @NotNull Map<String, List<String>> comments = new HashMap<>();
     protected final @NotNull String vendor;
-    protected final @NotNull Source source;
+    protected final @NotNull SourceType source;
 
     private static void assertValidKey(String key) {
         /* A case-insensitive field name that may consist of ASCII 0x20 through 0x7D, 0x3D ('=') excluded.
@@ -74,11 +74,11 @@ public class VorbisCommentBasedMetadata implements SourceTrackMetadata, BasicTra
     /**
      * Main constructor.
      *
-     * @param source The {@link Source} this metadata originates from.
+     * @param source The {@link SourceType} this metadata originates from.
      * @param vendor The vendor string.
      * @param comments A map of comments.
      */
-    public VorbisCommentBasedMetadata(@NotNull Source source, @NotNull String vendor, @NotNull Map<String, ? extends Collection<String>> comments) {
+    public VorbisCommentBasedMetadata(@NotNull SourceType source, @NotNull String vendor, @NotNull Map<String, ? extends Collection<String>> comments) {
         this.vendor = vendor;
         this.source = source;
 
@@ -177,7 +177,7 @@ public class VorbisCommentBasedMetadata implements SourceTrackMetadata, BasicTra
     }
 
     @Override
-    public @NotNull Source getSource() {
+    public @NotNull SourceType getSource() {
         return source;
     }
 }

@@ -27,7 +27,7 @@ import io.ybrid.api.Session;
 /**
  * This enum lists all possible source of metadata that can be handled by the {@link Session}.
  */
-public enum Source {
+public enum SourceType {
     /**
      * Metadata that originates from the session itself (e.g. by some session API).
      */
