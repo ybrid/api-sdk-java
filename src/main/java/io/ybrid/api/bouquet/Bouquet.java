@@ -30,7 +30,7 @@ import java.util.Collection;
  * This class represents a Bouquet. A Bouquet is a collection of {@link Service Services} provided
  * to the user by the server.
  */
-public class Bouquet {
+public final class Bouquet {
     private final @NotNull Service defaultService;
     private final @NotNull Collection<Service> services;
 
