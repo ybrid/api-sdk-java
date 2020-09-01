@@ -68,4 +68,14 @@ public class SimpleService implements Service {
     public @NotNull String getIdentifier() {
         return identifier;
     }
+
+    @Override
+    public String toString() {
+        return "SimpleService{" +
+                "displayName='" + displayName + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", icon=" + icon +
+                ", genre='" + genre + '\'' +
+                '}';
+    }
 }
