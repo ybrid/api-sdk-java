@@ -24,9 +24,10 @@ package io.ybrid.api;
 
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.*;
-import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.metadata.source.SourceTrackMetadata;
+import io.ybrid.api.metadata.source.SourceType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,20 +67,20 @@ public class MetadataMixer implements KnowsSubInfoState {
     private final @NotNull Map<Position, Service> services = new HashMap<>();
 
     MetadataMixer() {
-        add(new InvalidMetadata(), SourceType.SESSION, TemporalValidity.INDEFINITELY_VALID);
+        add(new InvalidMetadata(), new Source(SourceType.SESSION), TemporalValidity.INDEFINITELY_VALID);
     }
 
-    public void add(@NotNull Item item, @NotNull SourceType source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+    public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         items.put(position, new ItemInfo(item, temporalValidity));
         changed.add(SubInfo.METADATA);
     }
 
-    public void add(@NotNull Service service, @NotNull SourceType source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
         changed.add(SubInfo.METADATA);
     }
 
-    public void add(@NotNull Metadata metadata, @NotNull SourceType source, @NotNull TemporalValidity temporalValidity) {
+    public void add(@NotNull Metadata metadata, @NotNull Source source, @NotNull TemporalValidity temporalValidity) {
         add(metadata.getCurrentItem(), source, Position.CURRENT, temporalValidity);
         if (metadata.getNextItem() != null)
             add(metadata.getNextItem(), source, Position.NEXT, temporalValidity);

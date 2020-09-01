@@ -28,6 +28,7 @@ import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +49,7 @@ import java.util.*;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
+    private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull MetadataMixer metadataMixer = new MetadataMixer();
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final @NotNull Driver driver;
@@ -70,10 +72,10 @@ public class Session implements Connectable, SessionClient {
             // get initial metadata if any.
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), SourceType.SESSION, getPlayoutInfo().getTemporalValidity());
+                metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
             }
             if (driver.hasChanged(SubInfo.BOUQUET)) {
-                metadataMixer.add(driver.getCurrentService(), SourceType.SESSION, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
+                metadataMixer.add(driver.getCurrentService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
             }
         } catch (Exception ignored) {
         }
@@ -169,7 +171,7 @@ public class Session implements Connectable, SessionClient {
     public @NotNull Metadata getMetadata() {
         if (driver.hasChanged(SubInfo.METADATA)) {
             driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), SourceType.SESSION, getPlayoutInfo().getTemporalValidity());
+            metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
         }
         return metadataMixer.getMetadata();
     }
