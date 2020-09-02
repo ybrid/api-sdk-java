@@ -24,10 +24,13 @@ package io.ybrid.api.bouquet;
 
 import io.ybrid.api.hasDisplayName;
 import io.ybrid.api.hasIdentifier;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * This interface is implemented by objects representing a service or "program".
@@ -67,4 +70,34 @@ public interface Service extends hasIdentifier, hasDisplayName {
     }
 
 
+    /**
+     * This implements a equality check for services to be used for overriding {@link Object#equals(Object)} in
+     * implementing classes. This method works the same as {@link Objects#equals(Object, Object)}.
+     *
+     * @param a First service for equality check.
+     * @param b Second services for equality check.
+     * @return Whether the services are equal.
+     * @see #hashCode(Service)
+     */
+    @Contract(value = "null, null -> true; null, !null -> false; !null, null -> false; _, _ -> _", pure = true)
+    static boolean equals(@Nullable Service a, @Nullable Service b) {
+        if (a == b)
+            return true;
+        if (a == null || b == null)
+            return false;
+        return a.getIdentifier().equals(b.getIdentifier());
+    }
+
+    /**
+     * This implements a hashcode generation for services to be used for overriding {@link Object#hashCode()}
+     * in implementing classes.
+     *
+     * @param o The service to obtain the hashcode of.
+     * @return The hashcode of the services.
+     * @see #equals(Service, Service)
+     */
+    @Contract(pure = true)
+    static int hashCode(@NotNull Service o) {
+        return Objects.hash(2053, o.getIdentifier());
+    }
 }

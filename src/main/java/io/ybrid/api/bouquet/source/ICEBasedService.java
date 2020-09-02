@@ -22,7 +22,9 @@
 
 package io.ybrid.api.bouquet.source;
 
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.source.Source;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -120,6 +122,19 @@ public class ICEBasedService implements SourceServiceMetadata {
     @Override
     public @NotNull Source getSource() {
         return source;
+    }
+
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object o) {
+        return Service.equals(this, (Service)o);
+    }
+
+    @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return Service.hashCode(this);
     }
 
     @Override
