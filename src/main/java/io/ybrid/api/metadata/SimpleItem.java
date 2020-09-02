@@ -47,6 +47,25 @@ public class SimpleItem implements Item {
             metadata.put(METADATA_TITLE, title);
     }
 
+    private void addMetadata(final @NotNull String key, final @Nullable String value) {
+        if (value == null)
+            return;
+        metadata.put(key, value);
+    }
+
+    public SimpleItem(@NotNull String identifier, @NotNull TrackMetadata trackMetadata) {
+        this.identifier = identifier;
+        addMetadata(METADATA_DESCRIPTION, trackMetadata.getComment());
+        if (trackMetadata instanceof BasicTrackMetadata) {
+            addMetadata(METADATA_TITLE, ((BasicTrackMetadata) trackMetadata).getTitle());
+            addMetadata(METADATA_VERSION, ((BasicTrackMetadata) trackMetadata).getVersion());
+            addMetadata(METADATA_ARTIST, ((BasicTrackMetadata) trackMetadata).getArtist());
+            addMetadata(METADATA_ALBUM, ((BasicTrackMetadata) trackMetadata).getAlbum());
+        } else {
+            addMetadata(METADATA_TITLE, trackMetadata.getDisplayTitle());
+        }
+    }
+
     @Override
     public @NotNull String getIdentifier() {
         return identifier;
@@ -74,14 +93,32 @@ public class SimpleItem implements Item {
 
     @Override
     public String getDisplayName() {
-        String artist = metadata.get(METADATA_ARTIST);
-        String title = metadata.get(METADATA_TITLE);
+        return getDisplayTitle();
+    }
 
-        if (artist != null && title != null) {
-            return artist + " - " + title;
-        }
+    @Override
+    public @Nullable String getComment() {
+        return metadata.get(METADATA_DESCRIPTION);
+    }
 
-        return title;
+    @Override
+    public @Nullable String getTitle() {
+        return metadata.get(METADATA_TITLE);
+    }
+
+    @Override
+    public @Nullable String getVersion() {
+        return metadata.get(METADATA_VERSION);
+    }
+
+    @Override
+    public @Nullable String getArtist() {
+        return metadata.get(METADATA_ARTIST);
+    }
+
+    @Override
+    public @Nullable String getAlbum() {
+        return metadata.get(METADATA_ALBUM);
     }
 
     @Override

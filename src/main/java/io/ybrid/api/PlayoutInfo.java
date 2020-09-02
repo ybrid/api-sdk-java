@@ -47,6 +47,22 @@ public interface PlayoutInfo extends Serializable {
     Duration getTimeToNextItem();
 
     /**
+     * Returns the temporal validity of the current Item.
+     * This is based on {@link #getTimeToNextItem()}.
+     *
+     * @return The temporal validity.
+     * @see #getTimeToNextItem()
+     */
+    default @NotNull TemporalValidity getTemporalValidity() {
+        final @Nullable Duration timeToNextItem = getTimeToNextItem();
+        if (timeToNextItem == null) {
+            return TemporalValidity.INDEFINITELY_VALID;
+        } else {
+            return TemporalValidity.makeFromNow(timeToNextItem);
+        }
+    }
+
+    /**
      * This returns time the the server side clock for the current client is behind
      * live playback. This is zero for live playback, positive for delayed playback,
      * and can be negative if the current client is ahead of live playback.

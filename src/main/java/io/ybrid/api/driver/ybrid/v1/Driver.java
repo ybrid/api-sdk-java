@@ -112,7 +112,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         if (json == null)
             throw new IOException("No valid reply from server");
 
-        metadata = new Metadata((Service) getCurrentService(), json);
+        metadata = new Metadata((Service) session.getMetadataMixer().getCurrentService(), json);
         setChanged(SubInfo.METADATA);
         setChanged(SubInfo.BOUQUET);
 

@@ -218,11 +218,6 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public @NotNull Service getCurrentService() {
-        return state.getCurrentService();
-    }
-
-    @Override
     public @NotNull Bouquet getBouquet() {
         return state.getBouquet();
     }

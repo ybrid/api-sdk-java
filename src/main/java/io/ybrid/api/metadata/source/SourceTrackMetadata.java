@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,15 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.ybrid.v1;
+package io.ybrid.api.metadata.source;
 
-import io.ybrid.api.TemporalValidity;
-import io.ybrid.api.driver.common.Service;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
+import io.ybrid.api.metadata.Item;
+import io.ybrid.api.metadata.TrackMetadata;
 
-import java.net.MalformedURLException;
-import java.time.Duration;
-
-public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
-                json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
-                );
-
-        if (service instanceof io.ybrid.api.driver.ybrid.v1.Service)
-            ((io.ybrid.api.driver.ybrid.v1.Service)service).updateStation(json.getJSONObject("station"));
-    }
+/**
+ * This interface is implemented by classes that allow access to metadata of tracks as provided by sources.
+ * In contrast to {@link Item} instances of this interface are not processed or normalised in any way but
+ * meant as the input for such processing.
+ */
+public interface SourceTrackMetadata extends SourceMetadata, TrackMetadata {
 }

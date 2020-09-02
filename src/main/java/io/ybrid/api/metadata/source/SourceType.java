@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,24 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.ybrid.v1;
+package io.ybrid.api.metadata.source;
 
-import io.ybrid.api.TemporalValidity;
-import io.ybrid.api.driver.common.Service;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
+import io.ybrid.api.Session;
 
-import java.net.MalformedURLException;
-import java.time.Duration;
-
-public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
-                json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
-                );
-
-        if (service instanceof io.ybrid.api.driver.ybrid.v1.Service)
-            ((io.ybrid.api.driver.ybrid.v1.Service)service).updateStation(json.getJSONObject("station"));
-    }
+/**
+ * This enum lists all possible source of metadata that can be handled by the {@link Session}.
+ */
+public enum SourceType {
+    /**
+     * Metadata that originates from the session itself (e.g. by some session API).
+     */
+    SESSION,
+    /**
+     * Metadata that originates from a transport (e.g. protocol metadata).
+     */
+    TRANSPORT,
+    /**
+     * Metadata that originates from the playback format (e.g. Vorbis Comments or Matroska tags).
+     */
+    FORMAT;
 }

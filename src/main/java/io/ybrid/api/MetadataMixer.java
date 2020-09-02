@@ -22,49 +22,37 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
-import io.ybrid.api.metadata.InvalidMetadata;
-import io.ybrid.api.metadata.Item;
-import io.ybrid.api.metadata.Metadata;
-import io.ybrid.api.metadata.SimpleMetadata;
+import io.ybrid.api.metadata.*;
+import io.ybrid.api.metadata.source.Source;
+import io.ybrid.api.metadata.source.SourceMetadata;
+import io.ybrid.api.metadata.source.SourceTrackMetadata;
+import io.ybrid.api.metadata.source.SourceType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class MetadataMixer {
+public class MetadataMixer implements KnowsSubInfoState {
 
     private static class ItemInfo {
         private final @NotNull Item item;
-        private final @Nullable Duration timeToNextItem;
-        private final @NotNull Instant requestTime;
+        private final @NotNull TemporalValidity temporalValidity;
 
-        public ItemInfo(@NotNull Item item, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+        public ItemInfo(@NotNull Item item, @NotNull TemporalValidity temporalValidity) {
             this.item = item;
-            this.timeToNextItem = timeToNextItem;
-            this.requestTime = requestTime;
+            this.temporalValidity = temporalValidity;
         }
 
         public @NotNull Item getItem() {
             return item;
         }
 
-        public @Nullable Duration getTimeToNextItem() {
-            return timeToNextItem;
+        public @NotNull TemporalValidity getTemporalValidity() {
+            return temporalValidity;
         }
-
-        public @NotNull Instant getRequestTime() {
-            return requestTime;
-        }
-    }
-
-    public enum Source {
-        SESSION,
-        TRANSPORT,
-        FORMAT;
     }
 
     public enum Position {
@@ -73,50 +61,111 @@ public class MetadataMixer {
         NEXT;
     }
 
+    private final @Nullable Consumer<SourceMetadata> sessionSpecificConsumer;
+    private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
-    private boolean hasChanged = false;
+    private final @NotNull Map<@NotNull String, Service> bouquetContent = new HashMap<>();
+    private Service bouquetDefaultService;
 
-    MetadataMixer() {
-        add(new InvalidMetadata(), Source.SESSION, Duration.ZERO, Instant.EPOCH);
+    MetadataMixer(@Nullable Consumer<SourceMetadata> sessionSpecificConsumer) {
+        final @NotNull Metadata metadata = new InvalidMetadata();
+        final @NotNull Source source = new Source(SourceType.SESSION);
+        final @NotNull List<Service> services = new ArrayList<>(1);
+
+        this.sessionSpecificConsumer = sessionSpecificConsumer;
+
+        services.add(metadata.getService());
+        add(new Bouquet(metadata.getService(), services), source);
+        add(metadata, source, TemporalValidity.INDEFINITELY_VALID);
     }
 
-    private void setChanged() {
-        hasChanged = true;
+    private void updatedCurrentService() {
+        final @NotNull Service currentService = services.get(Position.CURRENT);
+
+        if (!bouquetContent.containsKey(currentService.getIdentifier())) {
+            try {
+                throw new IllegalArgumentException("Service not part of bouquet: " + currentService + ", " + bouquetContent.values());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        // No-op if we are on the same object still.
+        if (currentService == bouquetContent.get(currentService.getIdentifier()))
+            return;
+
+        bouquetContent.put(currentService.getIdentifier(), currentService);
+
+        if (bouquetDefaultService.getIdentifier().equals(currentService.getIdentifier()))
+            bouquetDefaultService = currentService;
+
+        changed.add(SubInfo.BOUQUET);
     }
 
-    private void clearChanged() {
-        hasChanged = false;
+    public synchronized void add(@NotNull Bouquet bouquet, @NotNull Source source) {
+        bouquetContent.clear();
+        for (final @NotNull Service service : bouquet.getServices()) {
+            bouquetContent.put(service.getIdentifier(), service);
+        }
+
+        bouquetDefaultService = bouquet.getDefaultService();
+        changed.add(SubInfo.BOUQUET);
     }
 
-    public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
-        items.put(position, new ItemInfo(item, timeToNextItem, requestTime));
-        setChanged();
+    public void add(@NotNull Item item, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+        items.put(position, new ItemInfo(item, temporalValidity));
+        changed.add(SubInfo.METADATA);
     }
 
-    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
+    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
-        setChanged();
+        changed.add(SubInfo.METADATA);
+        if (position.equals(Position.CURRENT))
+            updatedCurrentService();
     }
 
-    public void add(@NotNull Metadata metadata, @NotNull Source source, @Nullable Duration timeToNextItem, @NotNull Instant requestTime) {
-        add(metadata.getCurrentItem(), source, Position.CURRENT, timeToNextItem, requestTime);
+    public void add(@NotNull Metadata metadata, @NotNull Source source, @NotNull TemporalValidity temporalValidity) {
+        add(metadata.getCurrentItem(), source, Position.CURRENT, temporalValidity);
         if (metadata.getNextItem() != null)
-            add(metadata.getNextItem(), source, Position.NEXT, timeToNextItem, requestTime);
-        add(metadata.getService(), source, Position.CURRENT, timeToNextItem, requestTime);
+            add(metadata.getNextItem(), source, Position.NEXT, temporalValidity);
+        add(metadata.getService(), source, Position.CURRENT, temporalValidity);
+    }
+
+    public void add(@NotNull SourceMetadata metadata, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+        if (metadata instanceof SourceTrackMetadata) {
+            final @NotNull SourceTrackMetadata track = (SourceTrackMetadata) metadata;
+            final @NotNull Item item = new SimpleItem(UUID.randomUUID().toString(), track);
+            add(item, metadata.getSource(), position, temporalValidity);
+        } else if (metadata instanceof Service) {
+            add((Service)metadata, metadata.getSource(), position, temporalValidity);
+        }
+
+        if (sessionSpecificConsumer != null && metadata.getSessionSpecific() != null)
+            sessionSpecificConsumer.accept(metadata);
+    }
+
+    public synchronized @NotNull Bouquet getBouquet() {
+        changed.remove(SubInfo.BOUQUET);
+        return new Bouquet(bouquetDefaultService, bouquetContent.values());
+    }
+
+    public @NotNull Service getCurrentService() {
+        return services.get(Position.CURRENT);
     }
 
     public @NotNull Metadata getMetadata() {
         final @NotNull ItemInfo current = items.get(Position.CURRENT);
         final @Nullable ItemInfo next = items.get(Position.CURRENT);
-        clearChanged();
-        return new SimpleMetadata(current.getItem(), next != null ? next.getItem() : null, services.get(Position.CURRENT), current.getTimeToNextItem(), current.getRequestTime());
+        changed.remove(SubInfo.METADATA);
+        return new SimpleMetadata(current.getItem(), next != null ? next.getItem() : null, services.get(Position.CURRENT), current.getTemporalValidity());
     }
 
     public void removeNext() {
         items.remove(Position.NEXT);
         services.remove(Position.NEXT);
-        setChanged();
+        changed.add(SubInfo.METADATA);
     }
 
     public void forwardToNextItem() {
@@ -128,14 +177,19 @@ public class MetadataMixer {
             items.put(Position.CURRENT, nextItem);
 
         services.put(Position.PREVIOUS, services.get(Position.CURRENT));
-        if (nextService != null)
+        if (nextService != null) {
             services.put(Position.CURRENT, nextService);
+            updatedCurrentService();
+        }
 
         removeNext();
-        setChanged();
+        changed.add(SubInfo.METADATA);
     }
 
-    public boolean hasChanged() {
-        return hasChanged;
+    @Override
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return changed.contains(what);
     }
+
+
 }

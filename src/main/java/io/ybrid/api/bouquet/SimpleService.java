@@ -22,6 +22,7 @@
 
 package io.ybrid.api.bouquet;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,5 +68,28 @@ public class SimpleService implements Service {
     @Override
     public @NotNull String getIdentifier() {
         return identifier;
+    }
+
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object o) {
+        return Service.equals(this, (Service)o);
+    }
+
+    @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return Service.hashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleService{" +
+                "displayName='" + displayName + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", icon=" + icon +
+                ", genre='" + genre + '\'' +
+                '}';
     }
 }

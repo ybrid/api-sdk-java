@@ -28,6 +28,8 @@ import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.source.Source;
+import io.ybrid.api.metadata.source.SourceType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,8 +49,9 @@ import java.util.*;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
-    private final @NotNull MetadataMixer metadataMixer = new MetadataMixer();
+    private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
+    private final @NotNull MetadataMixer metadataMixer;
     private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull Alias alias;
@@ -67,12 +70,13 @@ public class Session implements Connectable, SessionClient {
     private void loadSessionToMixer() {
         try {
             // get initial metadata if any.
+            if (driver.hasChanged(SubInfo.BOUQUET)) {
+                metadataMixer.add(driver.getBouquet(), source);
+                metadataMixer.add(driver.getMetadata().getService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
+            }
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
-            }
-            if (driver.hasChanged(SubInfo.BOUQUET)) {
-                metadataMixer.add(driver.getCurrentService(), MetadataMixer.Source.SESSION, MetadataMixer.Position.CURRENT, null, ClockManager.now());
+                metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
             }
         } catch (Exception ignored) {
         }
@@ -82,6 +86,7 @@ public class Session implements Connectable, SessionClient {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
+        this.metadataMixer = new MetadataMixer(this.driver::acceptSessionSpecific);
 
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
@@ -120,8 +125,12 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public @NotNull Bouquet getBouquet() {
-        driver.clearChanged(SubInfo.BOUQUET);
-        return driver.getBouquet();
+        if (driver.hasChanged(SubInfo.BOUQUET)) {
+            driver.clearChanged(SubInfo.BOUQUET);
+            metadataMixer.add(driver.getBouquet(), source);
+        }
+
+        return metadataMixer.getBouquet();
     }
 
     @Override
@@ -168,7 +177,7 @@ public class Session implements Connectable, SessionClient {
     public @NotNull Metadata getMetadata() {
         if (driver.hasChanged(SubInfo.METADATA)) {
             driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), MetadataMixer.Source.SESSION, getPlayoutInfo().getTimeToNextItem(), ClockManager.now());
+            metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
         }
         return metadataMixer.getMetadata();
     }
@@ -181,10 +190,7 @@ public class Session implements Connectable, SessionClient {
 
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
-        if (what.equals(SubInfo.METADATA) && metadataMixer.hasChanged())
-            return true;
-
-        return driver.hasChanged(what);
+        return metadataMixer.hasChanged(what) || driver.hasChanged(what);
     }
 
     @Override
@@ -291,11 +297,6 @@ public class Session implements Connectable, SessionClient {
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public @NotNull Service getCurrentService() {
-        return driver.getCurrentService();
     }
 
     @Override

@@ -34,10 +34,12 @@ import java.util.Map;
 /**
  * This interface is implemented by objects representing an Item. A item roughly corresponds to a track.
  */
-public interface Item extends hasIdentifier, hasDisplayName {
+public interface Item extends hasIdentifier, hasDisplayName, BasicTrackMetadata {
     String METADATA_TITLE = "title";
     String METADATA_ARTIST = "artist";
     String METADATA_DESCRIPTION = "description";
+    String METADATA_VERSION = "version";
+    String METADATA_ALBUM = "album";
 
     /**
      * This allows access to the items Metadata.

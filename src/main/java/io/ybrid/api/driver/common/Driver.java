@@ -29,6 +29,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
 import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.source.SourceMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -109,15 +110,8 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         return changed.contains(what);
     }
 
-    @Override
-    public @NotNull Service getCurrentService() {
-        assertConnected();
-
-        return currentService;
-    }
-
     public void swapService(@NotNull Service service) throws IOException {
-        if (service.equals(getCurrentService()))
+        if (service.equals(session.getMetadataMixer().getCurrentService()))
             return;
 
         throw new UnsupportedOperationException("Can not swap to given Service");
@@ -163,6 +157,10 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         if (LOGGER.isLoggable(Level.FINE))
             LOGGER.fine("request: url=" + request.getUrl() + ", jsonObject=" + jsonObject);
         return jsonObject;
+    }
+
+    public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
+        // no-op
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,28 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.ybrid.v1;
+package io.ybrid.api.metadata.source;
 
-import io.ybrid.api.TemporalValidity;
-import io.ybrid.api.driver.common.Service;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
+import org.jetbrains.annotations.Nullable;
 
-import java.net.MalformedURLException;
-import java.time.Duration;
+/**
+ * This interface is implemented by classes that provide metadata as obtained from a source.
+ */
+public interface SourceMetadata {
+    /**
+     * Gets the source of this metadata.
+     * @return The source.
+     * @see Source
+     */
+    @NotNull Source getSource();
 
-public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
-                json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
-                );
-
-        if (service instanceof io.ybrid.api.driver.ybrid.v1.Service)
-            ((io.ybrid.api.driver.ybrid.v1.Service)service).updateStation(json.getJSONObject("station"));
+    /**
+     * Gets a session specific object that was transmitted alongside the metadata.
+     * @return A session specific object.
+     */
+    @Nullable
+    default Object getSessionSpecific() {
+        return null;
     }
 }
