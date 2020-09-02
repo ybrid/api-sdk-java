@@ -79,13 +79,6 @@ public interface SessionClient extends KnowsSubInfoState {
     Metadata getMetadata();
 
     /**
-     * Returns the current Service the session is connected to.
-     * @return This returns the current Service.
-     */
-    @NotNull
-    Service getCurrentService();
-
-    /**
      * Get the current {@link PlayoutInfo} for the session.
      *
      * Calling this resets the flag returned by {@link KnowsSubInfoState#hasChanged(SubInfo)}

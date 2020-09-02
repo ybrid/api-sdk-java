@@ -109,15 +109,8 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         return changed.contains(what);
     }
 
-    @Override
-    public @NotNull Service getCurrentService() {
-        assertConnected();
-
-        return currentService;
-    }
-
     public void swapService(@NotNull Service service) throws IOException {
-        if (service.equals(getCurrentService()))
+        if (service.equals(session.getMetadataMixer().getCurrentService()))
             return;
 
         throw new UnsupportedOperationException("Can not swap to given Service");

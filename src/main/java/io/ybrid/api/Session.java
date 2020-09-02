@@ -72,7 +72,7 @@ public class Session implements Connectable, SessionClient {
             // get initial metadata if any.
             if (driver.hasChanged(SubInfo.BOUQUET)) {
                 metadataMixer.add(driver.getBouquet(), source);
-                metadataMixer.add(driver.getCurrentService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
+                metadataMixer.add(driver.getMetadata().getService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
             }
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
@@ -296,11 +296,6 @@ public class Session implements Connectable, SessionClient {
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public @NotNull Service getCurrentService() {
-        return driver.getCurrentService();
     }
 
     @Override
