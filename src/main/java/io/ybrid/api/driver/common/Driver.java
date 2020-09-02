@@ -29,6 +29,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
 import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.source.SourceMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -156,6 +157,10 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         if (LOGGER.isLoggable(Level.FINE))
             LOGGER.fine("request: url=" + request.getUrl() + ", jsonObject=" + jsonObject);
         return jsonObject;
+    }
+
+    public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
+        // no-op
     }
 
     @Override

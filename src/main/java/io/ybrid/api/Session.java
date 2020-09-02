@@ -50,8 +50,8 @@ import java.util.*;
  */
 public class Session implements Connectable, SessionClient {
     private final @NotNull Source source = new Source(SourceType.SESSION);
-    private final @NotNull MetadataMixer metadataMixer = new MetadataMixer();
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
+    private final @NotNull MetadataMixer metadataMixer;
     private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull Alias alias;
@@ -86,6 +86,7 @@ public class Session implements Connectable, SessionClient {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
+        this.metadataMixer = new MetadataMixer(this.driver::acceptSessionSpecific);
 
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());

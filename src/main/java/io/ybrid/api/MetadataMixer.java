@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class MetadataMixer implements KnowsSubInfoState {
 
@@ -60,16 +61,20 @@ public class MetadataMixer implements KnowsSubInfoState {
         NEXT;
     }
 
+    private final @Nullable Consumer<SourceMetadata> sessionSpecificConsumer;
     private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
     private final @NotNull Map<@NotNull String, Service> bouquetContent = new HashMap<>();
     private Service bouquetDefaultService;
 
-    MetadataMixer() {
+    MetadataMixer(@Nullable Consumer<SourceMetadata> sessionSpecificConsumer) {
         final @NotNull Metadata metadata = new InvalidMetadata();
         final @NotNull Source source = new Source(SourceType.SESSION);
         final @NotNull List<Service> services = new ArrayList<>(1);
+
+        this.sessionSpecificConsumer = sessionSpecificConsumer;
+
         services.add(metadata.getService());
         add(new Bouquet(metadata.getService(), services), source);
         add(metadata, source, TemporalValidity.INDEFINITELY_VALID);
@@ -136,6 +141,9 @@ public class MetadataMixer implements KnowsSubInfoState {
         } else if (metadata instanceof Service) {
             add((Service)metadata, metadata.getSource(), position, temporalValidity);
         }
+
+        if (sessionSpecificConsumer != null && metadata.getSessionSpecific() != null)
+            sessionSpecificConsumer.accept(metadata);
     }
 
     public synchronized @NotNull Bouquet getBouquet() {
