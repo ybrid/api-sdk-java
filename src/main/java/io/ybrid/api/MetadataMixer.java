@@ -143,6 +143,10 @@ public class MetadataMixer implements KnowsSubInfoState {
         return new Bouquet(bouquetDefaultService, bouquetContent.values());
     }
 
+    public @NotNull Service getCurrentService() {
+        return services.get(Position.CURRENT);
+    }
+
     public @NotNull Metadata getMetadata() {
         final @NotNull ItemInfo current = items.get(Position.CURRENT);
         final @Nullable ItemInfo next = items.get(Position.CURRENT);
