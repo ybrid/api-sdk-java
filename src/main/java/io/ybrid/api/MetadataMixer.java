@@ -120,7 +120,7 @@ public class MetadataMixer implements KnowsSubInfoState {
         changed.add(SubInfo.METADATA);
     }
 
-    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+    public synchronized void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
         changed.add(SubInfo.METADATA);
         if (position.equals(Position.CURRENT))
