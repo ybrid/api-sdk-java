@@ -25,6 +25,8 @@ package io.ybrid.api.bouquet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class represents a Bouquet. A Bouquet is a collection of {@link Service Services} provided
@@ -45,6 +47,19 @@ public final class Bouquet {
 
         this.defaultService = defaultService;
         this.services = services;
+    }
+
+    /**
+     * Creates a new Bouquet object that contains only a single {@link Service}.
+     * The given service is also used as default service.
+     *
+     * @param service The service to include.
+     */
+    public Bouquet(@NotNull Service service) {
+        final @NotNull Set<Service> services = new HashSet<>();
+        services.add(service);
+        this.services = services;
+        this.defaultService = service;
     }
 
     /**

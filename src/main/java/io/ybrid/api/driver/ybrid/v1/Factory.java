@@ -22,13 +22,13 @@
 
 package io.ybrid.api.driver.ybrid.v1;
 
+import io.ybrid.api.Alias;
+import io.ybrid.api.Server;
+import io.ybrid.api.Session;
 import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.bouquet.Service;
-import io.ybrid.api.*;
+import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 /**
  * This implements the {@link io.ybrid.api.driver.common.Factory} for version 1 API.
@@ -41,11 +41,6 @@ public final class Factory extends io.ybrid.api.driver.common.Factory {
 
     @Override
     public @NotNull Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) {
-        final Service service = new io.ybrid.api.driver.ybrid.v1.Service();
-        final ArrayList<Service> services = new ArrayList<>();
-
-        services.add(service);
-
-        return new Bouquet(service, services);
+        return new Bouquet(new SimpleService());
     }
 }

@@ -24,6 +24,7 @@ package io.ybrid.api.driver.ybrid.v1;
 
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.SimpleService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -44,7 +45,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     private static final Capability[] initialCapabilities = {Capability.PLAYBACK_URL};
-    private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
     private Metadata metadata;
     private PlayoutInfo playoutInfo;
 
@@ -53,7 +53,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
 
-        this.currentService = bouquet.getDefaultService();
+        this.currentService = new SimpleService();
 
         capabilities.add(initialCapabilities);
 
@@ -88,7 +88,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull Bouquet getBouquet() {
-        return bouquet;
+        return new Bouquet(session.getMetadataMixer().getCurrentService());
     }
 
     @Override
