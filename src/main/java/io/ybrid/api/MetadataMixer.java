@@ -96,6 +96,7 @@ public class MetadataMixer implements KnowsSubInfoState {
         if (currentService == bouquetContent.get(currentService.getIdentifier()))
             return;
 
+        bouquetContent.remove(currentService.getIdentifier());
         bouquetContent.put(currentService.getIdentifier(), currentService);
 
         if (bouquetDefaultService.getIdentifier().equals(currentService.getIdentifier()))
