@@ -309,7 +309,7 @@ public class Session implements Connectable, SessionClient {
      */
     public TransportDescription getStreamTransportDescription() {
         try {
-            return new URITransportDescription(getAcceptedMediaFormats(), getAcceptedLanguages(), driver.getStreamURI(), null);
+            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, getAcceptedMediaFormats(), getAcceptedLanguages(), driver.getStreamURI(), null);
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

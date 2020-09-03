@@ -22,7 +22,10 @@
 
 package io.ybrid.api.transport;
 
+import io.ybrid.api.MetadataMixer;
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.message.MessageBody;
+import io.ybrid.api.metadata.source.Source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,22 +43,27 @@ public class URITransportDescription extends TransportDescription {
 
     /**
      * Main constructor.
+     * @param source The source that shall represent the new transport.
+     * @param initialService The initial service to connect to.
+     * @param metadataMixer The Metadata mixer the new transport should send updates to.
      * @param uri The URI to connect to.
      * @param requestBody The {@link MessageBody} to send alongside the request or {@code null}.
      */
-    public URITransportDescription(@Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull URI uri, @Nullable MessageBody requestBody) {
-        super(acceptedMediaFormats, acceptedLanguages);
+    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull URI uri, @Nullable MessageBody requestBody) {
+        super(source, initialService, metadataMixer, acceptedMediaFormats, acceptedLanguages);
         this.uri = uri;
         this.requestBody = requestBody;
     }
 
     /**
      * Creates a new URITransportDescription based using only q {@link URI}.
+     * @param source The source that shall represent the new transport.
+     * @param initialService The initial service to connect to.
      * @param uri The URI to connect to.
-     * @see #URITransportDescription(Map, Map, URI, MessageBody)
+     * @see #URITransportDescription(Source, Service, MetadataMixer, Map, Map, URI, MessageBody)
      */
-    public URITransportDescription(@NotNull URI uri) {
-        this(null, null, uri, null);
+    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @NotNull URI uri) {
+        this(source, initialService, metadataMixer,null, null, uri, null);
     }
 
     /**
