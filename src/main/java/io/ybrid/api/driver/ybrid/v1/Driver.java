@@ -155,6 +155,9 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void refresh(@NotNull SubInfo what) throws IOException {
+        if (what == SubInfo.BOUQUET)
+            return;
+
         if (what == SubInfo.VALIDITY) {
             updateValidity();
         } else {
