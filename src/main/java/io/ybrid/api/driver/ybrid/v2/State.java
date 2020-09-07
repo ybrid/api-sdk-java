@@ -25,6 +25,7 @@ package io.ybrid.api.driver.ybrid.v2;
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.ybrid.v1.SwapInfo;
+import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Metadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -186,6 +187,9 @@ final class State implements KnowsSubInfoState {
             currentService = null;
         } else {
             currentService = services.get(active);
+            if (currentMetadata == null) {
+                currentMetadata = new InvalidMetadata(currentService);
+            }
         }
 
         setChanged(SubInfo.BOUQUET);
