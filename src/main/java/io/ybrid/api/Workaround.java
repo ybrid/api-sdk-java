@@ -37,5 +37,9 @@ public enum Workaround {
     /**
      * Workaround used for servers that send invalidly packed response to some commands.
      */
-    WORKAROUND_BAD_PACKED_RESPONSE;
+    WORKAROUND_BAD_PACKED_RESPONSE,
+    /**
+     * Workaround used for server sending negative time to next item.
+     */
+    WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM;
 }

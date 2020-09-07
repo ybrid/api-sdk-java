@@ -121,10 +121,19 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         if (json.has("swapInfo")) {
             final SwapInfo swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
-            final long timeToNextItem;
+            long timeToNextItem;
 
             if (json.has("timeToNextItemMillis")) {
                 timeToNextItem = json.getLong("timeToNextItemMillis");
+                if (timeToNextItem < -1) {
+                    if (session.getActiveWorkarounds().get(Workaround.WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM).toBool(true)) {
+                        LOGGER.warning("Invalid \"timeToNextItemMillis\" from server: " + timeToNextItem + ", working around by arbitrarily assuming 512ms");
+                        session.getActiveWorkarounds().enable(Workaround.WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM);
+                        timeToNextItem = 512;
+                    } else {
+                        LOGGER.warning("Invalid \"timeToNextItemMillis\" from server: " + timeToNextItem + ", workaround disabled");
+                    }
+                }
             } else {
                 timeToNextItem = -1;
             }
