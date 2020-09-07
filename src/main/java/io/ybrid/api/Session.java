@@ -37,9 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -292,20 +290,6 @@ public class Session implements Connectable, SessionClient {
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
-    }
-
-    /**
-     * gets the {@link URL} of the audio stream.
-     * @return The {@link URL} of the stream.
-     * @deprecated Use {@link #getStreamTransportDescription()}.
-     */
-    @Deprecated
-    public URI getStreamURI() {
-        try {
-            return driver.getStreamURI();
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
