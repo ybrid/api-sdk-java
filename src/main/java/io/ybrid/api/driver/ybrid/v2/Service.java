@@ -23,13 +23,42 @@
 package io.ybrid.api.driver.ybrid.v2;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
-final class Service extends io.ybrid.api.driver.common.Service {
+final class Service implements io.ybrid.api.bouquet.Service {
+    private final @NotNull String identifier;
+    private final @Nullable URL icon;
+
     public Service(@NotNull JSONObject json) throws MalformedURLException {
-        super(json);
+        String value;
+
+        identifier = json.getString("id");
+
+        value = json.getString("iconURL");
+        if (value != null && !value.isEmpty()) {
+            icon = new URL(value);
+        } else {
+            icon = null;
+        }
+    }
+
+    @Override
+    public @NotNull String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public @Nullable URL getIcon() {
+        return icon;
+    }
+
+    @Override
+    public @NotNull String getDisplayName() {
+        return identifier;
     }
 
     @Override
