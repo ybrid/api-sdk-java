@@ -24,6 +24,8 @@ package io.ybrid.api.driver.ybrid.v1;
 
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.SimpleService;
+import io.ybrid.api.metadata.InvalidMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -44,8 +46,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     private static final Capability[] initialCapabilities = {Capability.PLAYBACK_URL};
-    private final Bouquet bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
-    private Metadata metadata;
+    private io.ybrid.api.metadata.Metadata metadata;
     private PlayoutInfo playoutInfo;
 
     public Driver(Session session) {
@@ -53,11 +54,13 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
 
-        this.currentService = bouquet.getDefaultService();
+        this.currentService = new SimpleService();
+        metadata = new InvalidMetadata(this.currentService);
 
         capabilities.add(initialCapabilities);
 
         setChanged(SubInfo.BOUQUET);
+        setChanged(SubInfo.METADATA);
     }
 
     protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
@@ -88,7 +91,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull Bouquet getBouquet() {
-        return bouquet;
+        return new Bouquet(session.getMetadataMixer().getCurrentService());
     }
 
     @Override
@@ -112,16 +115,25 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         if (json == null)
             throw new IOException("No valid reply from server");
 
-        metadata = new Metadata((Service) session.getMetadataMixer().getCurrentService(), json);
+        metadata = new Metadata(session.getMetadataMixer().getCurrentService(), json);
         setChanged(SubInfo.METADATA);
         setChanged(SubInfo.BOUQUET);
 
         if (json.has("swapInfo")) {
             final SwapInfo swapInfo = new SwapInfo(json.getJSONObject("swapInfo"));
-            final long timeToNextItem;
+            long timeToNextItem;
 
             if (json.has("timeToNextItemMillis")) {
                 timeToNextItem = json.getLong("timeToNextItemMillis");
+                if (timeToNextItem < -1) {
+                    if (session.getActiveWorkarounds().get(Workaround.WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM).toBool(true)) {
+                        LOGGER.warning("Invalid \"timeToNextItemMillis\" from server: " + timeToNextItem + ", working around by arbitrarily assuming 512ms");
+                        session.getActiveWorkarounds().enable(Workaround.WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM);
+                        timeToNextItem = 512;
+                    } else {
+                        LOGGER.warning("Invalid \"timeToNextItemMillis\" from server: " + timeToNextItem + ", workaround disabled");
+                    }
+                }
             } else {
                 timeToNextItem = -1;
             }
@@ -155,6 +167,9 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public void refresh(@NotNull SubInfo what) throws IOException {
+        if (what == SubInfo.BOUQUET)
+            return;
+
         if (what == SubInfo.VALIDITY) {
             updateValidity();
         } else {

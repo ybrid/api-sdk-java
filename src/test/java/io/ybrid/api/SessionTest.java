@@ -23,10 +23,10 @@
 package io.ybrid.api;
 
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.transport.TransportDescription;
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
@@ -37,7 +37,7 @@ public class SessionTest extends TestCase {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
             Alias alias;
             Session session;
-            URI uri;
+            TransportDescription transportDescription;
 
             alias = new Alias(aliasUrl);
             assertNotNull(alias);
@@ -47,8 +47,8 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            uri = session.getStreamURI();
-            assertNotNull(uri);
+            transportDescription = session.getStreamTransportDescription();
+            assertNotNull(transportDescription);
 
             session.close();
         }
@@ -64,7 +64,7 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            assertEquals(200, NetworkHelper.pingURI(session.getStreamURI()));
+            assertEquals(200, NetworkHelper.ping(session.getStreamTransportDescription()));
 
             for (int i = 0; i < 10; i++) {
                 Instant start;

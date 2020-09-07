@@ -30,17 +30,18 @@ import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.transport.TransportDescription;
+import io.ybrid.api.transport.URITransportDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * This class implements an actual session with a Ybrid server.
@@ -49,6 +50,8 @@ import java.util.*;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
+    static final Logger LOGGER = Logger.getLogger(Session.class.getName());
+
     private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final @NotNull MetadataMixer metadataMixer;
@@ -73,10 +76,12 @@ public class Session implements Connectable, SessionClient {
             if (driver.hasChanged(SubInfo.BOUQUET)) {
                 metadataMixer.add(driver.getBouquet(), source);
                 metadataMixer.add(driver.getMetadata().getService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
+                LOGGER.info("Loaded initial bouquet");
             }
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
                 metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
+                LOGGER.info("Loaded initial metadata");
             }
         } catch (Exception ignored) {
         }
@@ -288,12 +293,12 @@ public class Session implements Connectable, SessionClient {
     }
 
     /**
-     * gets the {@link URL} of the audio stream.
-     * @return The {@link URL} of the stream.
+     * Gets the {@link TransportDescription} that can be used to access the audio stream.
+     * @return The transport description for the audio stream.
      */
-    public URI getStreamURI() {
+    public TransportDescription getStreamTransportDescription() {
         try {
-            return driver.getStreamURI();
+            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, getAcceptedMediaFormats(), getAcceptedLanguages(), driver.getStreamURI(), null);
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

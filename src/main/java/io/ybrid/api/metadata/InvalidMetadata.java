@@ -40,8 +40,26 @@ import java.util.UUID;
  * changes of metadata even if the change is from one invalid state to another.
  */
 public final class InvalidMetadata implements Metadata {
-    private static final @NotNull Service service = new SimpleService();
+    private final @NotNull Service service;
     private final @NotNull Item currentItem = new SimpleItem(UUID.randomUUID().toString());
+
+    /**
+     * Main constructor.
+     *
+     * @param service The service to use for this metadata.
+     */
+    public InvalidMetadata(@NotNull Service service) {
+        this.service = service;
+    }
+
+    /**
+     * This constructs a new instance with a random service.
+     *
+     * @see #InvalidMetadata(Service)
+     */
+    public InvalidMetadata() {
+        this(new SimpleService());
+    }
 
     @Contract(pure = true)
     @Override

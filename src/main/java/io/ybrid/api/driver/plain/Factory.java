@@ -22,15 +22,15 @@
 
 package io.ybrid.api.driver.plain;
 
-import io.ybrid.api.*;
+import io.ybrid.api.Alias;
+import io.ybrid.api.Server;
+import io.ybrid.api.Session;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
-import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
@@ -40,11 +40,6 @@ public class Factory extends io.ybrid.api.driver.common.Factory {
 
     @Override
     public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
-        final SimpleService service = new SimpleService();
-        final ArrayList<Service> services = new ArrayList<>();
-
-        services.add(service);
-
-        return new Bouquet(service, services);
+        return new Bouquet(new SimpleService());
     }
 }

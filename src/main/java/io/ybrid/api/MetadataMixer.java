@@ -71,12 +71,10 @@ public class MetadataMixer implements KnowsSubInfoState {
     MetadataMixer(@Nullable Consumer<SourceMetadata> sessionSpecificConsumer) {
         final @NotNull Metadata metadata = new InvalidMetadata();
         final @NotNull Source source = new Source(SourceType.SESSION);
-        final @NotNull List<Service> services = new ArrayList<>(1);
 
         this.sessionSpecificConsumer = sessionSpecificConsumer;
 
-        services.add(metadata.getService());
-        add(new Bouquet(metadata.getService(), services), source);
+        add(new Bouquet(metadata.getService()), source);
         add(metadata, source, TemporalValidity.INDEFINITELY_VALID);
     }
 
@@ -96,6 +94,7 @@ public class MetadataMixer implements KnowsSubInfoState {
         if (currentService == bouquetContent.get(currentService.getIdentifier()))
             return;
 
+        bouquetContent.remove(currentService.getIdentifier());
         bouquetContent.put(currentService.getIdentifier(), currentService);
 
         if (bouquetDefaultService.getIdentifier().equals(currentService.getIdentifier()))
@@ -119,7 +118,7 @@ public class MetadataMixer implements KnowsSubInfoState {
         changed.add(SubInfo.METADATA);
     }
 
-    public void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
+    public synchronized void add(@NotNull Service service, @NotNull Source source, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         services.put(position, service);
         changed.add(SubInfo.METADATA);
         if (position.equals(Position.CURRENT))

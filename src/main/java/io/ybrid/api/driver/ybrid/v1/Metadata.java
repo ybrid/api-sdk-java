@@ -23,7 +23,7 @@
 package io.ybrid.api.driver.ybrid.v1;
 
 import io.ybrid.api.TemporalValidity;
-import io.ybrid.api.driver.common.Service;
+import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -35,8 +35,5 @@ public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
         super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
                 json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
                 );
-
-        if (service instanceof io.ybrid.api.driver.ybrid.v1.Service)
-            ((io.ybrid.api.driver.ybrid.v1.Service)service).updateStation(json.getJSONObject("station"));
     }
 }
