@@ -43,6 +43,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * This class implements an actual session with a Ybrid server.
@@ -51,6 +52,8 @@ import java.util.*;
  * It is also used to control the stream.
  */
 public class Session implements Connectable, SessionClient {
+    static final Logger LOGGER = Logger.getLogger(Session.class.getName());
+
     private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final @NotNull MetadataMixer metadataMixer;
@@ -75,10 +78,12 @@ public class Session implements Connectable, SessionClient {
             if (driver.hasChanged(SubInfo.BOUQUET)) {
                 metadataMixer.add(driver.getBouquet(), source);
                 metadataMixer.add(driver.getMetadata().getService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
+                LOGGER.info("Loaded initial bouquet");
             }
             if (driver.hasChanged(SubInfo.METADATA)) {
                 driver.clearChanged(SubInfo.METADATA);
                 metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
+                LOGGER.info("Loaded initial metadata");
             }
         } catch (Exception ignored) {
         }
