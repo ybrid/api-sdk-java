@@ -24,6 +24,8 @@ package io.ybrid.api.driver.ybrid.v2;
 
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.Service;
+import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.driver.ybrid.v1.SwapInfo;
 import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Metadata;
@@ -136,6 +138,15 @@ final class State implements KnowsSubInfoState {
             baseUrl = newURL;
     }
 
+    private @Nullable URL jsonToURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
+        final @Nullable String value = json.getString(key);
+        if (value != null && !value.isEmpty()) {
+            return new URL(value);
+        } else {
+            return null;
+        }
+    }
+
     private void updateBouquet(@Nullable JSONObject raw) {
         JSONArray list;
         String primary;
@@ -152,7 +163,9 @@ final class State implements KnowsSubInfoState {
 
         for (int i = 0; i < list.length(); i++) {
             try {
-                Service service = new Service(list.optJSONObject(i));
+                final @NotNull JSONObject json = list.optJSONObject(i);
+                final @NotNull String identifier = json.getString("id");
+                final @NotNull Service service = new SimpleService(identifier, identifier, jsonToURL(json, "iconURL"), null);
                 services.put(service.getIdentifier(), service);
             } catch (MalformedURLException ignored) {
             }
