@@ -65,7 +65,7 @@ public class MetadataMixer implements KnowsSubInfoState {
     private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final @NotNull Map<Position, ItemInfo> items = new HashMap<>();
     private final @NotNull Map<Position, Service> services = new HashMap<>();
-    private final @NotNull Map<@NotNull String, Service> bouquetContent = new HashMap<>();
+    private final @NotNull Map<@NotNull Identifier, Service> bouquetContent = new HashMap<>();
     private Service bouquetDefaultService;
 
     MetadataMixer(@Nullable Consumer<SourceMetadata> sessionSpecificConsumer) {
@@ -135,7 +135,7 @@ public class MetadataMixer implements KnowsSubInfoState {
     public void add(@NotNull SourceMetadata metadata, @NotNull Position position, @NotNull TemporalValidity temporalValidity) {
         if (metadata instanceof SourceTrackMetadata) {
             final @NotNull SourceTrackMetadata track = (SourceTrackMetadata) metadata;
-            final @NotNull Item item = new SimpleItem(UUID.randomUUID().toString(), track);
+            final @NotNull Item item = new SimpleItem(new Identifier(), track);
             add(item, metadata.getSource(), position, temporalValidity);
         } else if (metadata instanceof Service) {
             add((Service)metadata, metadata.getSource(), position, temporalValidity);

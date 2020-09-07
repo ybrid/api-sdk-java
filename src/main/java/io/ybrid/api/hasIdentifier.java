@@ -32,6 +32,5 @@ public interface hasIdentifier {
      * This returns a identifier for the object.
      * @return the identifier of the object.
      */
-    @NotNull
-    String getIdentifier();
+    @NotNull Identifier getIdentifier();
 }

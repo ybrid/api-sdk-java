@@ -22,18 +22,18 @@
 
 package io.ybrid.api.metadata.source;
 
+import io.ybrid.api.Identifier;
 import io.ybrid.api.hasIdentifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * This class is used to identify a specific source.
  */
 public final class Source implements hasIdentifier {
     private final @NotNull SourceType type;
-    private final @NotNull String identifier;
+    private final @NotNull Identifier identifier;
 
     /**
      * Main constructor.
@@ -41,9 +41,9 @@ public final class Source implements hasIdentifier {
      * @param type The type of the Source.
      * @param identifier The identifier of the Source.
      */
-    public Source(@NotNull SourceType type, @NotNull UUID identifier) {
+    public Source(@NotNull SourceType type, @NotNull Identifier identifier) {
         this.type = type;
-        this.identifier = identifier.toString();
+        this.identifier = identifier;
     }
 
     /**
@@ -52,7 +52,7 @@ public final class Source implements hasIdentifier {
      * @param type The type of the Source.
      */
     public Source(@NotNull SourceType type) {
-        this(type, UUID.randomUUID());
+        this(type, new Identifier());
     }
 
     /**
@@ -65,7 +65,7 @@ public final class Source implements hasIdentifier {
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public @NotNull Identifier getIdentifier() {
         return identifier;
     }
 

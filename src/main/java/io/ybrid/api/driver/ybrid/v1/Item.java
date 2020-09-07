@@ -22,6 +22,7 @@
 
 package io.ybrid.api.driver.ybrid.v1;
 
+import io.ybrid.api.Identifier;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.SimpleItem;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ final class Item extends SimpleItem {
 
 
     Item(@NotNull JSONObject json) throws MalformedURLException {
-        super(json.getString("id"));
+        super(new Identifier(json.getString("id")));
 
         JSONArray array;
         String type;

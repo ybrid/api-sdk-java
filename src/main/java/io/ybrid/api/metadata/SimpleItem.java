@@ -22,6 +22,7 @@
 
 package io.ybrid.api.metadata;
 
+import io.ybrid.api.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,15 +32,15 @@ import java.util.*;
 public class SimpleItem implements Item {
     protected final @NotNull HashMap<@NotNull String, @NotNull String> metadata = new HashMap<>();
     protected final @NotNull ArrayList<Companion> companions = new ArrayList<>();
-    protected final @NotNull String identifier;
+    protected final @NotNull Identifier identifier;
     protected @Nullable ItemType type;
     protected @Nullable Duration playbackLength;
 
-    public SimpleItem(@NotNull String identifier) {
+    public SimpleItem(@NotNull Identifier identifier) {
         this.identifier = identifier;
     }
 
-    public SimpleItem(@NotNull String identifier, @Nullable String artist, @Nullable String title) {
+    public SimpleItem(@NotNull Identifier identifier, @Nullable String artist, @Nullable String title) {
         this(identifier);
         if (artist != null)
             metadata.put(METADATA_ARTIST, artist);
@@ -53,7 +54,7 @@ public class SimpleItem implements Item {
         metadata.put(key, value);
     }
 
-    public SimpleItem(@NotNull String identifier, @NotNull TrackMetadata trackMetadata) {
+    public SimpleItem(@NotNull Identifier identifier, @NotNull TrackMetadata trackMetadata) {
         this.identifier = identifier;
         addMetadata(METADATA_DESCRIPTION, trackMetadata.getComment());
         if (trackMetadata instanceof BasicTrackMetadata) {
@@ -67,7 +68,7 @@ public class SimpleItem implements Item {
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public @NotNull Identifier getIdentifier() {
         return identifier;
     }
 

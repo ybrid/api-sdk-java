@@ -22,32 +22,32 @@
 
 package io.ybrid.api.bouquet;
 
+import io.ybrid.api.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;
-import java.util.UUID;
 
 public class SimpleService implements Service {
     final @NotNull String displayName;
-    final @NotNull String identifier;
+    final @NotNull Identifier identifier;
     final @Nullable URL icon;
     final @Nullable String genre;
 
-    public SimpleService(@NotNull String displayName, @NotNull String identifier, @Nullable URL icon, @Nullable String genre) {
+    public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URL icon, @Nullable String genre) {
         this.displayName = displayName;
         this.identifier = identifier;
         this.icon = icon;
         this.genre = genre;
     }
 
-    public SimpleService(@NotNull String displayName, @NotNull String identifier) {
+    public SimpleService(@NotNull String displayName, @NotNull Identifier identifier) {
         this(displayName, identifier, null, null);
     }
 
     public SimpleService() {
-        this("default", UUID.randomUUID().toString());
+        this("default", new Identifier());
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SimpleService implements Service {
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public @NotNull Identifier getIdentifier() {
         return identifier;
     }
 
