@@ -25,6 +25,7 @@ package io.ybrid.api.driver.ybrid.v1;
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
+import io.ybrid.api.metadata.InvalidMetadata;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     private static final Capability[] initialCapabilities = {Capability.PLAYBACK_URL};
-    private Metadata metadata;
+    private io.ybrid.api.metadata.Metadata metadata;
     private PlayoutInfo playoutInfo;
 
     public Driver(Session session) {
@@ -54,10 +55,12 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
 
         this.currentService = new SimpleService();
+        metadata = new InvalidMetadata(this.currentService);
 
         capabilities.add(initialCapabilities);
 
         setChanged(SubInfo.BOUQUET);
+        setChanged(SubInfo.METADATA);
     }
 
     protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
@@ -112,7 +115,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         if (json == null)
             throw new IOException("No valid reply from server");
 
-        metadata = new Metadata((Service) session.getMetadataMixer().getCurrentService(), json);
+        metadata = new Metadata(session.getMetadataMixer().getCurrentService(), json);
         setChanged(SubInfo.METADATA);
         setChanged(SubInfo.BOUQUET);
 

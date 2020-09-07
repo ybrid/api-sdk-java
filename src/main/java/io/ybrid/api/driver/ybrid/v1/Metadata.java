@@ -23,7 +23,7 @@
 package io.ybrid.api.driver.ybrid.v1;
 
 import io.ybrid.api.TemporalValidity;
-import io.ybrid.api.driver.common.Service;
+import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
