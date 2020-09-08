@@ -38,6 +38,8 @@ public final class Identifier {
      * @param identifier The identifier to use as string.
      */
     public Identifier(@NotNull String identifier) {
+        if (identifier.isEmpty())
+            throw new IllegalArgumentException("Empty string passed as identifier");
         this.identifier = identifier;
     }
 
