@@ -24,13 +24,16 @@ package io.ybrid.api;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
 /**
  * This class abstracts identifiers as used in metadata.
  */
-public final class Identifier {
+public final class Identifier implements Serializable {
+    private static final long serialVersionUID = -3059154610234338954L;
+
     private final @NotNull String identifier;
 
     /**
