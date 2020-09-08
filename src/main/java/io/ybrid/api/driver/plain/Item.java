@@ -22,12 +22,11 @@
 
 package io.ybrid.api.driver.plain;
 
+import io.ybrid.api.Identifier;
 import io.ybrid.api.metadata.SimpleItem;
-
-import java.util.UUID;
 
 public class Item extends SimpleItem {
     public Item() {
-        super(UUID.randomUUID().toString());
+        super(new Identifier());
     }
 }

@@ -253,7 +253,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public void swapService(@NotNull Service service) throws IOException {
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("service-id", service.getIdentifier());
+        parameters.put("service-id", service.getIdentifier().toString());
         v2request(COMMAND_PLAYOUT_SWAP_SERVICE, parameters);
     }
 

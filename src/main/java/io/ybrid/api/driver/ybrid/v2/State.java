@@ -41,7 +41,7 @@ import java.time.Instant;
 import java.util.*;
 
 final class State implements KnowsSubInfoState {
-    private final Map<String, Service> services = new HashMap<>();
+    private final Map<Identifier, Service> services = new HashMap<>();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final EnumMap<SubInfo, Instant> lastUpdated = new EnumMap<>(SubInfo.class);
     private final @NotNull Session session;
@@ -165,7 +165,7 @@ final class State implements KnowsSubInfoState {
             try {
                 final @NotNull JSONObject json = list.optJSONObject(i);
                 final @NotNull String identifier = json.getString("id");
-                final @NotNull Service service = new SimpleService(identifier, identifier, jsonToURL(json, "iconURL"), null);
+                final @NotNull Service service = new SimpleService(identifier, new Identifier(identifier), jsonToURL(json, "iconURL"), null);
                 services.put(service.getIdentifier(), service);
             } catch (MalformedURLException ignored) {
             }
@@ -181,7 +181,7 @@ final class State implements KnowsSubInfoState {
             if (primary == null) {
                 defaultService = null;
             } else {
-                defaultService = services.get(primary);
+                defaultService = services.get(new Identifier(primary));
             }
         } else {
             // No default service provided. Try to reuse the old one.
@@ -199,7 +199,7 @@ final class State implements KnowsSubInfoState {
         if (active == null) {
             currentService = null;
         } else {
-            currentService = services.get(active);
+            currentService = services.get(new Identifier(active));
             if (currentMetadata == null) {
                 currentMetadata = new InvalidMetadata(currentService);
             }

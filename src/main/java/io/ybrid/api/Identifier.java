@@ -20,65 +20,54 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.metadata.source;
+package io.ybrid.api;
 
-import io.ybrid.api.Identifier;
-import io.ybrid.api.hasIdentifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
- * This class is used to identify a specific source.
+ * This class abstracts identifiers as used in metadata.
  */
-public final class Source implements hasIdentifier {
-    private final @NotNull SourceType type;
-    private final @NotNull Identifier identifier;
+public final class Identifier implements Serializable {
+    private static final long serialVersionUID = -3059154610234338954L;
+
+    private final @NotNull String identifier;
 
     /**
      * Main constructor.
-     *
-     * @param type The type of the Source.
-     * @param identifier The identifier of the Source.
+     * @param identifier The identifier to use as string.
      */
-    public Source(@NotNull SourceType type, @NotNull Identifier identifier) {
-        this.type = type;
+    public Identifier(@NotNull String identifier) {
+        if (identifier.isEmpty())
+            throw new IllegalArgumentException("Empty string passed as identifier");
         this.identifier = identifier;
     }
 
     /**
-     * Create a new Source with a random identifier.
-     *
-     * @param type The type of the Source.
+     * Constructs a new random identifier.
      */
-    public Source(@NotNull SourceType type) {
-        this(type, new Identifier());
-    }
-
-    /**
-     * Gets the type of this source.
-     *
-     * @return The type.
-     */
-    @NotNull SourceType getType() {
-        return type;
-    }
-
-    @Override
-    public @NotNull Identifier getIdentifier() {
-        return identifier;
+    public Identifier() {
+        this(UUID.randomUUID().toString());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Source source = (Source) o;
-        return identifier.equals(source.identifier);
+        Identifier that = (Identifier) o;
+        return identifier.equals(that.identifier);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(identifier);
+    }
+
+    @Override
+    public String toString() {
+        return identifier;
     }
 }

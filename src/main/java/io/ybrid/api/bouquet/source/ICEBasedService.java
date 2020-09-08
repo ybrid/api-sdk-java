@@ -22,6 +22,7 @@
 
 package io.ybrid.api.bouquet.source;
 
+import io.ybrid.api.Identifier;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.source.Source;
 import org.jetbrains.annotations.Contract;
@@ -51,7 +52,7 @@ public class ICEBasedService implements SourceServiceMetadata {
     private static final @NotNull String KEY_URL = "url";
 
     private final @NotNull Source source;
-    private final @NotNull String identifier;
+    private final @NotNull Identifier identifier;
     private final @NotNull Map<String, String> values = new HashMap<>();
 
     /**
@@ -61,7 +62,7 @@ public class ICEBasedService implements SourceServiceMetadata {
      * @param headers A map of the headers to include. Non-supported headers are automatically stripped.
      *                This allows to pass all headers unfiltered.
      */
-    public ICEBasedService(@NotNull Source source, @NotNull String identifier, @NotNull Map<String, String> headers) {
+    public ICEBasedService(@NotNull Source source, @NotNull Identifier identifier, @NotNull Map<String, String> headers) {
         this.source = source;
         this.identifier = identifier;
 
@@ -111,11 +112,11 @@ public class ICEBasedService implements SourceServiceMetadata {
         if (ret != null)
             return ret;
 
-        return getIdentifier();
+        return getIdentifier().toString();
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public @NotNull Identifier getIdentifier() {
         return identifier;
     }
 

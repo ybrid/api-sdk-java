@@ -22,13 +22,12 @@
 
 package io.ybrid.api.metadata;
 
+import io.ybrid.api.Identifier;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.bouquet.SimpleService;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 /**
  * This implements a invalid metadata class.
@@ -41,7 +40,7 @@ import java.util.UUID;
  */
 public final class InvalidMetadata implements Metadata {
     private final @NotNull Service service;
-    private final @NotNull Item currentItem = new SimpleItem(UUID.randomUUID().toString());
+    private final @NotNull Item currentItem = new SimpleItem(new Identifier());
 
     /**
      * Main constructor.
