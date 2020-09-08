@@ -40,7 +40,7 @@ final class Item extends SimpleItem {
 
 
     Item(@NotNull JSONObject json) throws MalformedURLException {
-        super(new Identifier(json.getString("id")));
+        super(json.has("id") && !json.getString("id").isEmpty() ? new Identifier(json.getString("id")) : new Identifier());
 
         JSONArray array;
         String type;
