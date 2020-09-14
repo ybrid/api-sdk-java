@@ -33,7 +33,7 @@ import java.net.URL;
  *
  * Objects of this class can be reused for several sessions.
  */
-public class Server implements Connectable, ApiUser {
+public final class Server implements Connectable, ApiUser {
     /**
      * The default port used for Ybrid servers.
      */

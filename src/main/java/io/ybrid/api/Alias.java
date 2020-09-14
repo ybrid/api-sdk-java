@@ -35,7 +35,7 @@ import java.net.URL;
  * An Alias represents a entry point on a {@link Server}.
  * The alias can be used to open a {@link Session} and a stream.
  */
-public class Alias implements ApiUser {
+public final class Alias implements ApiUser {
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull URL url;
     private final @NotNull Server server;

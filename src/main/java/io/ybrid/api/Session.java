@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  * The session can be used to request an audio stream from the server.
  * It is also used to control the stream.
  */
-public class Session implements Connectable, SessionClient {
+public final class Session implements Connectable, SessionClient {
     static final Logger LOGGER = Logger.getLogger(Session.class.getName());
 
     private final @NotNull Source source = new Source(SourceType.SESSION);
