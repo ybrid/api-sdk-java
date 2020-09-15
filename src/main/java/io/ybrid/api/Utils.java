@@ -22,12 +22,14 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * This is a utility class used internally by the Ybrid client.
@@ -80,5 +82,19 @@ public final class Utils {
      */
     public static JSONObject slurpToJSONObject(InputStream inputStream) throws IOException {
         return new JSONObject(slurpToString(inputStream));
+    }
+
+    /**
+     * Asserts a Accept:-style list is valid.
+     * @param list The list to check or {@code null}.
+     * @throws IllegalArgumentException Thrown if the list is not valid.
+     */
+    public static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
+        if (list == null)
+            return;
+
+        for (double weight : list.values())
+            if (weight < 0 || weight > 1)
+                throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
     }
 }

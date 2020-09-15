@@ -64,15 +64,6 @@ public final class Session extends ProtoSession {
     private Map<String, Double> acceptedMediaFormats = null;
     private Map<String, Double> acceptedLanguages = null;
 
-    private static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
-        if (list == null)
-            return;
-
-        for (double weight : list.values())
-            if (weight < 0 || weight > 1)
-                throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
-    }
-
     private void loadSessionToMixer() {
         try {
             // get initial metadata if any.
@@ -201,7 +192,7 @@ public final class Session extends ProtoSession {
      * @param acceptedMediaFormats List of supported formats or null.
      */
     public void setAcceptedMediaFormats(@Nullable Map<String, Double> acceptedMediaFormats) {
-        assertValidAcceptList(acceptedMediaFormats);
+        Utils.assertValidAcceptList(acceptedMediaFormats);
         this.acceptedMediaFormats = acceptedMediaFormats;
     }
 
@@ -228,7 +219,7 @@ public final class Session extends ProtoSession {
      */
     @Deprecated
     public void setAcceptedLanguages(@Nullable Map<String, Double> acceptedLanguages) {
-        assertValidAcceptList(acceptedLanguages);
+        Utils.assertValidAcceptList(acceptedLanguages);
         this.acceptedLanguages = acceptedLanguages;
     }
 
@@ -249,7 +240,7 @@ public final class Session extends ProtoSession {
         for (Locale.LanguageRange range : list)
             newList.put(range.getRange(), range.getWeight());
 
-        assertValidAcceptList(newList);
+        Utils.assertValidAcceptList(newList);
         this.acceptedLanguages = newList;
     }
 
