@@ -28,14 +28,18 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.logging.Logger;
 
 /**
  * This class provides a monotonous clock for use with session timings.
  * The clock is initially synchronized to the system time.
  */
 public final class ClockManager {
+    static final Logger LOGGER = Logger.getLogger(ClockManager.class.getName());
+
     private static final @NotNull Clock clock = new Clock() {
         private final long offset = System.currentTimeMillis() - System.nanoTime() / 1_000_000;
+        private long last = Long.MIN_VALUE;
 
         @Override
         public ZoneId getZone() {
@@ -49,7 +53,13 @@ public final class ClockManager {
 
         @Override
         public Instant instant() {
-            return Instant.ofEpochMilli(System.nanoTime() / 1_000_000 + offset);
+            long now = System.nanoTime() / 1_000_000 + offset;
+            if (now < last) {
+                LOGGER.info("Clock jumped backwards: past was " + last + " and now is " + now + " jump by " + (now - last));
+                now = last;
+            }
+            last = now;
+            return Instant.ofEpochMilli(now);
         }
     };
 
