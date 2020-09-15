@@ -30,6 +30,8 @@ import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Request;
 import io.ybrid.api.transport.TransportDescription;
 import io.ybrid.api.transport.URITransportDescription;
 import org.jetbrains.annotations.NotNull;
@@ -138,44 +140,58 @@ public final class Session implements Connectable, SessionClient {
         return metadataMixer.getBouquet();
     }
 
+    public void executeRequest(@NotNull Request request) throws IOException {
+        try {
+            driver.executeRequest(request);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+
+        switch (request.getCommand()) {
+            case CONNECT:
+                loadSessionToMixer();
+                break;
+        }
+    }
+
     @Override
     public void windToLive() throws IOException {
-        driver.windToLive();
+        executeRequest(Command.WIND_TO_LIVE.makeRequest());
     }
 
     @Override
     public void windTo(@NotNull Instant timestamp) throws IOException {
-        driver.windTo(timestamp);
+        executeRequest(Command.WIND_TO.makeRequest(timestamp));
     }
 
     @Override
     public void wind(@NotNull Duration duration) throws IOException {
-        driver.wind(duration);
+        executeRequest(Command.WIND_BY.makeRequest(duration));
     }
 
     @Override
     public void skipForwards(ItemType itemType) throws IOException {
-        driver.skipForwards(itemType);
+        executeRequest(Command.SKIP_FORWARD.makeRequest(itemType));
     }
 
     @Override
     public void skipBackwards(ItemType itemType) throws IOException {
-        driver.skipBackwards(itemType);
+        executeRequest(Command.SKIP_BACKWARD.makeRequest(itemType));
     }
 
     @Override
     public void swapItem(SwapMode mode) throws IOException {
-        driver.swapItem(mode);
+        executeRequest(Command.SWAP_ITEM.makeRequest(mode));
     }
 
     @Override
     public void swapService(@NotNull Service service) throws IOException {
-        driver.swapService(service);
+        executeRequest(Command.SWAP_SERVICE.makeRequest(service));
     }
 
     @Override
     public void swapToMain() throws IOException {
-        driver.swapToMain();
+        executeRequest(Command.SWAP_TO_MAIN_SERVICE.makeRequest());
     }
 
     @Override
@@ -200,12 +216,12 @@ public final class Session implements Connectable, SessionClient {
 
     @Override
     public void refresh(@NotNull SubInfo what) throws IOException {
-        driver.refresh(what);
+        refresh(EnumSet.of(what));
     }
 
     @Override
     public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
-        driver.refresh(what);
+        executeRequest(Command.REFRESH.makeRequest(what));
     }
 
     /**
@@ -306,7 +322,11 @@ public final class Session implements Connectable, SessionClient {
 
     @Override
     public void disconnect() {
-        driver.disconnect();
+        try {
+            executeRequest(Command.DISCONNECT.makeRequest());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -316,8 +336,7 @@ public final class Session implements Connectable, SessionClient {
 
     @Override
     public void connect() throws IOException {
-        driver.connect();
-        loadSessionToMixer();
+        executeRequest(Command.CONNECT.makeRequest());
     }
 
     @Override

@@ -26,6 +26,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.SimpleMetadata;
+import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -55,13 +56,17 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void swapItem(@NotNull SwapMode mode) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void refresh(@NotNull SubInfo what) throws IOException {
-        // no-op
+    public void executeRequest(@NotNull Request request) throws Exception {
+        switch (request.getCommand()) {
+            case CONNECT:
+                connected = true;
+                break;
+            case REFRESH:
+                // no-op.
+                break;
+            default:
+                super.executeRequest(request);
+        }
     }
 
     @Override
@@ -86,10 +91,5 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public @NotNull Bouquet getBouquet() {
         return bouquet;
-    }
-
-    @Override
-    public void connect() throws IOException {
-        connected = true;
     }
 }

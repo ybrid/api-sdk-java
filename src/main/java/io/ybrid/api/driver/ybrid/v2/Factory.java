@@ -25,9 +25,11 @@ package io.ybrid.api.driver.ybrid.v2;
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.common.Driver;
+import io.ybrid.api.session.Command;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.EnumSet;
 
 public final class Factory extends io.ybrid.api.driver.common.Factory {
     @Override
@@ -37,20 +39,24 @@ public final class Factory extends io.ybrid.api.driver.common.Factory {
 
     @Override
     public Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException {
-        final Driver driver = getDriver(server.createSession(alias));
         Bouquet bouquet = null;
         IOException thrown = null;
 
-        driver.connect();
         try {
+            final @NotNull Driver driver = getDriver(server.createSession(alias));
+
+            driver.executeRequest(Command.CONNECT.makeRequest());
+
             if (!driver.hasChanged(SubInfo.BOUQUET))
-                driver.refresh(SubInfo.BOUQUET);
+                driver.executeRequest(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.BOUQUET)));
 
             bouquet = driver.getBouquet();
+            driver.executeRequest(Command.DISCONNECT.makeRequest());
         } catch (IOException e) {
             thrown = e;
+        } catch (Exception e) {
+            thrown = new IOException(e);
         }
-        driver.disconnect();
 
         if (thrown != null)
             throw thrown;

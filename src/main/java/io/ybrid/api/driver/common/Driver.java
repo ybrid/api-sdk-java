@@ -23,14 +23,15 @@
 package io.ybrid.api.driver.common;
 
 import io.ybrid.api.PlayoutInfo;
-import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.metadata.Metadata;
-import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.*;
+import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
-import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.SourceMetadata;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -41,8 +42,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Level;
@@ -60,25 +59,18 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     protected String token;
     protected Service currentService;
 
-    abstract public void swapItem(@NotNull SwapMode mode) throws IOException;
     abstract public @NotNull Metadata getMetadata();
-    abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
     abstract public @NotNull Bouquet getBouquet();
-
-    abstract public void refresh(@NotNull SubInfo what) throws IOException;
-    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
-        for (SubInfo subInfo : what)
-            refresh(subInfo);
-    }
     abstract public @NotNull PlayoutInfo getPlayoutInfo();
-    abstract public void connect() throws IOException;
-    public void swapToMain() throws IOException {
-        swapService(getBouquet().getDefaultService());
-    }
+    abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
 
     @Override
     public void close() throws IOException {
-        disconnect();
+        try {
+            executeRequest(Command.DISCONNECT.makeRequest());
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     protected Driver(Session session) {
@@ -127,13 +119,6 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         return changed.contains(what);
     }
 
-    public void swapService(@NotNull Service service) throws IOException {
-        if (service.equals(session.getMetadataMixer().getCurrentService()))
-            return;
-
-        throw new UnsupportedOperationException("Can not swap to given Service");
-    }
-
     protected void assertConnected() {
         if (!isConnected())
             throw new IllegalStateException("Not connected");
@@ -176,12 +161,23 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         return jsonObject;
     }
 
-    public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
-        // no-op
+    public void executeRequest(@NotNull Request request) throws Exception {
+        switch (request.getCommand()) {
+            case DISCONNECT:
+                connected = false;
+                break;
+            case SWAP_SERVICE:
+                if (request.getArgumentNotNull(0).equals(session.getMetadataMixer().getCurrentService()))
+                    return;
+
+                throw new UnsupportedOperationException("Can not swap to given Service");
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
-    public void disconnect() {
-        connected = false;
+    public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
+        // no-op
     }
 
     public boolean isConnected() {
@@ -196,25 +192,5 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         if (valid)
             setChanged(SubInfo.VALIDITY);
         valid = false;
-    }
-
-    public void windToLive() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void windTo(@NotNull Instant timestamp) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void wind(@NotNull Duration duration) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void skipForwards(ItemType itemType) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    public void skipBackwards(ItemType itemType) throws IOException {
-        throw new UnsupportedOperationException();
     }
 }
