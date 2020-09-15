@@ -126,7 +126,7 @@ public final class TemporalValidity {
             return true;
         } else {
             final @NotNull Instant now = ClockManager.now();
-            if (notBefore != null && !Duration.between(now, notBefore).isNegative()) {
+            if (notBefore != null && Duration.between(notBefore, now).isNegative()) {
                 return false;
             }
 
