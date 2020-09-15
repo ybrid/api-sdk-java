@@ -35,7 +35,7 @@ public class ClockManagerTest {
         final long al = expected.toEpochMilli();
         final long bl = actual.toEpochMilli();
 
-        if (al < (bl - 2) || al > (bl + 2))
+        if (al < (bl - 10) || al > (bl + 10))
             org.junit.Assert.assertEquals(expected, actual);
     }
 
