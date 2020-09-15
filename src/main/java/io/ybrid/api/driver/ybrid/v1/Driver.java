@@ -26,6 +26,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.metadata.InvalidMetadata;
+import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -89,23 +90,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
 
-    @Override
-    public @NotNull Bouquet getBouquet() {
-        return new Bouquet(session.getMetadataMixer().getCurrentService());
-    }
-
-    @Override
-    public void swapItem(@NotNull SwapMode mode) throws IOException {
-        final Map<String, String> parameters;
-
-        assertConnected();
-
-        parameters = new HashMap<>();
-        parameters.put("mode", mode.getOnWire());
-
-        request("swap", parameters);
-    }
-
     private void updateMetadata() throws IOException {
         final JSONObject json;
 
@@ -166,30 +150,47 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void refresh(@NotNull SubInfo what) throws IOException {
-        if (what == SubInfo.BOUQUET)
-            return;
+    public void executeRequest(@NotNull Request request) throws Exception {
+        switch (request.getCommand()) {
+            case CONNECT:
+                connect();
+                break;
+            case REFRESH:
+                //noinspection unchecked
+                final @NotNull EnumSet<SubInfo> localSet = EnumSet.copyOf((EnumSet<SubInfo>)request.getArgumentNotNull(0));
 
-        if (what == SubInfo.VALIDITY) {
-            updateValidity();
-        } else {
-            updateMetadata();
+                localSet.remove(SubInfo.BOUQUET);
+
+                if (localSet.isEmpty())
+                    return;
+
+                if (localSet.contains(SubInfo.VALIDITY)) {
+                    updateValidity();
+                    if (localSet.size() > 1) {
+                        updateMetadata();
+                    }
+                } else {
+                    updateMetadata();
+                }
+                break;
+            case SWAP_ITEM:
+                final Map<String, String> parameters;
+
+                assertConnected();
+
+                parameters = new HashMap<>();
+                parameters.put("mode", ((SwapMode)request.getArgumentNotNull(0)).getOnWire());
+
+                request("swap", parameters);
+            break;
+            default:
+                super.executeRequest(request);
         }
     }
 
     @Override
-    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
-        if (what.isEmpty())
-            return;
-
-        if (what.contains(SubInfo.VALIDITY)) {
-            updateValidity();
-            if (what.size() > 1) {
-                updateMetadata();
-            }
-        } else {
-            updateMetadata();
-        }
+    public @NotNull Bouquet getBouquet() {
+        return new Bouquet(session.getMetadataMixer().getCurrentService());
     }
 
     @Override
@@ -212,7 +213,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         return new URI(server.isSecure() ? "icyxs" : "icyx", null, hostname, server.getPort(), getMountpoint(), "sessionId=" + token, null);
     }
 
-    @Override
     public void connect() throws IOException {
         final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
         JSONObject response;

@@ -23,24 +23,27 @@
 package io.ybrid.api;
 
 import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
-import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.session.ProtoSession;
+import io.ybrid.api.session.Request;
+import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transport.TransportDescription;
 import io.ybrid.api.transport.URITransportDescription;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -49,7 +52,7 @@ import java.util.logging.Logger;
  * The session can be used to request an audio stream from the server.
  * It is also used to control the stream.
  */
-public final class Session implements Connectable, SessionClient {
+public final class Session extends ProtoSession {
     static final Logger LOGGER = Logger.getLogger(Session.class.getName());
 
     private final @NotNull Source source = new Source(SourceType.SESSION);
@@ -138,44 +141,28 @@ public final class Session implements Connectable, SessionClient {
         return metadataMixer.getBouquet();
     }
 
-    @Override
-    public void windToLive() throws IOException {
-        driver.windToLive();
+    /**
+     * Creates a transaction for this session.
+     * @param request The request for the transaction.
+     * @return The newly created transaction.
+     */
+    @Contract("_ -> new")
+    public @NotNull SessionTransaction createTransaction(@NotNull Request request) {
+        return new SessionTransaction(this, request, this::executeRequest);
     }
 
-    @Override
-    public void windTo(@NotNull Instant timestamp) throws IOException {
-        driver.windTo(timestamp);
-    }
+    private void executeRequest(@NotNull Request request) throws IOException {
+        try {
+            driver.executeRequest(request);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
 
-    @Override
-    public void wind(@NotNull Duration duration) throws IOException {
-        driver.wind(duration);
-    }
-
-    @Override
-    public void skipForwards(ItemType itemType) throws IOException {
-        driver.skipForwards(itemType);
-    }
-
-    @Override
-    public void skipBackwards(ItemType itemType) throws IOException {
-        driver.skipBackwards(itemType);
-    }
-
-    @Override
-    public void swapItem(SwapMode mode) throws IOException {
-        driver.swapItem(mode);
-    }
-
-    @Override
-    public void swapService(@NotNull Service service) throws IOException {
-        driver.swapService(service);
-    }
-
-    @Override
-    public void swapToMain() throws IOException {
-        driver.swapToMain();
+        switch (request.getCommand()) {
+            case CONNECT:
+                loadSessionToMixer();
+                break;
+        }
     }
 
     @Override
@@ -196,16 +183,6 @@ public final class Session implements Connectable, SessionClient {
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
         return metadataMixer.hasChanged(what) || driver.hasChanged(what);
-    }
-
-    @Override
-    public void refresh(@NotNull SubInfo what) throws IOException {
-        driver.refresh(what);
-    }
-
-    @Override
-    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
-        driver.refresh(what);
     }
 
     /**
@@ -305,19 +282,8 @@ public final class Session implements Connectable, SessionClient {
     }
 
     @Override
-    public void disconnect() {
-        driver.disconnect();
-    }
-
-    @Override
     public boolean isConnected() {
         return driver.isConnected();
-    }
-
-    @Override
-    public void connect() throws IOException {
-        driver.connect();
-        loadSessionToMixer();
     }
 
     @Override

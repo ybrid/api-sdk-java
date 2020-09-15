@@ -22,31 +22,32 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.metadata.Metadata;
-import io.ybrid.api.bouquet.Service;
+import io.ybrid.api.PlayoutInfo;
 import io.ybrid.api.*;
+import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
-import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.SourceMetadata;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Driver implements Connectable, SessionClient, KnowsSubInfoState {
+public abstract class Driver implements Closeable, KnowsSubInfoState {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     protected final Session session;
@@ -58,10 +59,19 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     protected String token;
     protected Service currentService;
 
-    abstract public void swapItem(@NotNull SwapMode mode) throws IOException;
     abstract public @NotNull Metadata getMetadata();
-    abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
     abstract public @NotNull Bouquet getBouquet();
+    abstract public @NotNull PlayoutInfo getPlayoutInfo();
+    abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
+
+    @Override
+    public void close() throws IOException {
+        try {
+            executeRequest(Command.DISCONNECT.makeRequest());
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
 
     protected Driver(Session session) {
         this.session = session;
@@ -91,7 +101,6 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         return mountpoint;
     }
 
-    @Override
     public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
         clearChanged(SubInfo.CAPABILITIES);
         return capabilities;
@@ -108,13 +117,6 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
         return changed.contains(what);
-    }
-
-    public void swapService(@NotNull Service service) throws IOException {
-        if (service.equals(session.getMetadataMixer().getCurrentService()))
-            return;
-
-        throw new UnsupportedOperationException("Can not swap to given Service");
     }
 
     protected void assertConnected() {
@@ -159,21 +161,29 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         return jsonObject;
     }
 
+    public void executeRequest(@NotNull Request request) throws Exception {
+        switch (request.getCommand()) {
+            case DISCONNECT:
+                connected = false;
+                break;
+            case SWAP_SERVICE:
+                if (request.getArgumentNotNull(0).equals(session.getMetadataMixer().getCurrentService()))
+                    return;
+
+                throw new UnsupportedOperationException("Can not swap to given Service");
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
     public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
         // no-op
     }
 
-    @Override
-    public void disconnect() {
-        connected = false;
-    }
-
-    @Override
     public boolean isConnected() {
         return connected;
     }
 
-    @Override
     public boolean isValid() {
         return valid;
     }
@@ -182,30 +192,5 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         if (valid)
             setChanged(SubInfo.VALIDITY);
         valid = false;
-    }
-
-    @Override
-    public void windToLive() throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void windTo(@NotNull Instant timestamp) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void wind(@NotNull Duration duration) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void skipForwards(ItemType itemType) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void skipBackwards(ItemType itemType) throws IOException {
-        throw new UnsupportedOperationException();
     }
 }

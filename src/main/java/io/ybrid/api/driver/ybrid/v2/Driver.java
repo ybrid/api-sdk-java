@@ -27,6 +27,7 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.*;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -175,21 +176,6 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         return lastUpdate == null || !lastUpdate.plus(MINIMUM_BETWEEN_SESSION_INFO).isAfter(ClockManager.now());
     }
 
-    @Override
-    public void disconnect() {
-        capabilities.remove(Capability.SKIP_BACKWARDS);
-        capabilities.remove(Capability.PLAYBACK_URL);
-        setChanged(SubInfo.CAPABILITIES);
-
-        try {
-            v2request(COMMAND_SESSION_CLOSE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        super.disconnect();
-    }
-
-    @Override
     public void connect() throws IOException {
         Response response;
 
@@ -228,74 +214,83 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void refresh(@NotNull SubInfo what) throws IOException {
-        if (shouldRequestSessionInfo(what))
-            v2request(COMMAND_SESSION_INFO);
-    }
+    public void executeRequest(@NotNull Request request) throws Exception {
+        switch (request.getCommand()) {
+            case CONNECT:
+                connect();
+                break;
+            case DISCONNECT:
+                capabilities.remove(Capability.SKIP_BACKWARDS);
+                capabilities.remove(Capability.PLAYBACK_URL);
+                setChanged(SubInfo.CAPABILITIES);
 
-    @Override
-    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
-        for (SubInfo subInfo : what) {
-            if (shouldRequestSessionInfo(subInfo)) {
-                v2request(COMMAND_SESSION_INFO);
-                return;
+                try {
+                    v2request(COMMAND_SESSION_CLOSE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case REFRESH:
+                //noinspection unchecked
+                for (SubInfo subInfo : (EnumSet<SubInfo>)request.getArgumentNotNull(0)) {
+                    if (shouldRequestSessionInfo(subInfo)) {
+                        v2request(COMMAND_SESSION_INFO);
+                        return;
+                    }
+                }
+                break;
+            case WIND_TO_LIVE:
+                v2request(COMMAND_PLAYOUT_WIND_BACK_TO_LIVE);
+                break;
+            case WIND_TO: {
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put("ts", String.valueOf(((Instant)request.getArgumentNotNull(0)).toEpochMilli()));
+                v2request(COMMAND_PLAYOUT_WIND, parameters);
+                break;
             }
+            case WIND_BY: {
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put("duration", String.valueOf(((Duration)request.getArgumentNotNull(0)).toMillis()));
+                v2request(COMMAND_PLAYOUT_WIND, parameters);
+                break;
+            }
+            case SKIP_FORWARD: {
+                HashMap<String, String> parameters = new HashMap<>();
+                final @Nullable ItemType itemType = (ItemType) request.getArgumentNullable(0);
+
+                if (itemType != null) {
+                    parameters.put("item-type", itemType.name());
+                }
+                v2request(COMMAND_PLAYOUT_SKIP_FORWARDS, parameters);
+                break;
+            }
+            case SKIP_BACKWARD: {
+                HashMap<String, String> parameters = new HashMap<>();
+                final @Nullable ItemType itemType = (ItemType) request.getArgumentNullable(0);
+
+                if (itemType != null) {
+                    parameters.put("item-type", itemType.name());
+                }
+                v2request(COMMAND_PLAYOUT_SKIP_BACKWARDS, parameters);
+                break;
+            }
+            case SWAP_ITEM: {
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put("mode", ((SwapMode)request.getArgumentNotNull(0)).getOnWire());
+                v2request(COMMAND_PLAYOUT_SWAP_ITEM, parameters);
+                break;
+            }
+            case SWAP_SERVICE: {
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put("service-id", ((Service)request.getArgumentNotNull(0)).getIdentifier().toString());
+                v2request(COMMAND_PLAYOUT_SWAP_SERVICE, parameters);
+                break;
+            }
+            case SWAP_TO_MAIN_SERVICE:
+                v2request(COMMAND_PLAYOUT_BACK_TO_MAIN);
+                break;
+            default:
+                super.executeRequest(request);
         }
-    }
-
-    @Override
-    public void swapItem(@NotNull SwapMode mode) throws IOException {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("mode", mode.getOnWire());
-        v2request(COMMAND_PLAYOUT_SWAP_ITEM, parameters);
-    }
-
-    @Override
-    public void swapService(@NotNull Service service) throws IOException {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("service-id", service.getIdentifier().toString());
-        v2request(COMMAND_PLAYOUT_SWAP_SERVICE, parameters);
-    }
-
-    @Override
-    public void windToLive() throws IOException {
-        v2request(COMMAND_PLAYOUT_WIND_BACK_TO_LIVE);
-    }
-
-    @Override
-    public void windTo(@NotNull Instant timestamp) throws IOException {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("ts", String.valueOf(timestamp.toEpochMilli()));
-        v2request(COMMAND_PLAYOUT_WIND, parameters);
-    }
-
-    @Override
-    public void wind(@NotNull Duration duration) throws IOException {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("duration", String.valueOf(duration.toMillis()));
-        v2request(COMMAND_PLAYOUT_WIND, parameters);
-    }
-
-    @Override
-    public void skipForwards(ItemType itemType) throws IOException {
-        HashMap<String, String> parameters = new HashMap<>();
-        if (itemType != null) {
-            parameters.put("item-type", itemType.name());
-        }
-        v2request(COMMAND_PLAYOUT_SKIP_FORWARDS, parameters);
-    }
-
-    @Override
-    public void skipBackwards(ItemType itemType) throws IOException {
-        HashMap<String, String> parameters = new HashMap<>();
-        if (itemType != null) {
-            parameters.put("item-type", itemType.name());
-        }
-        v2request(COMMAND_PLAYOUT_SKIP_BACKWARDS, parameters);
-    }
-
-    @Override
-    public void swapToMain() throws IOException {
-        v2request(COMMAND_PLAYOUT_BACK_TO_MAIN);
     }
 }
