@@ -22,6 +22,7 @@
 
 package io.ybrid.api.driver.common;
 
+import io.ybrid.api.PlayoutInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.bouquet.Service;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -46,7 +48,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Driver implements Connectable, SessionClient, KnowsSubInfoState {
+public abstract class Driver implements Closeable, KnowsSubInfoState {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     protected final Session session;
@@ -62,6 +64,22 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
     abstract public @NotNull Metadata getMetadata();
     abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
     abstract public @NotNull Bouquet getBouquet();
+
+    abstract public void refresh(@NotNull SubInfo what) throws IOException;
+    public void refresh(@NotNull EnumSet<SubInfo> what) throws IOException {
+        for (SubInfo subInfo : what)
+            refresh(subInfo);
+    }
+    abstract public @NotNull PlayoutInfo getPlayoutInfo();
+    abstract public void connect() throws IOException;
+    public void swapToMain() throws IOException {
+        swapService(getBouquet().getDefaultService());
+    }
+
+    @Override
+    public void close() throws IOException {
+        disconnect();
+    }
 
     protected Driver(Session session) {
         this.session = session;
@@ -91,7 +109,6 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         return mountpoint;
     }
 
-    @Override
     public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
         clearChanged(SubInfo.CAPABILITIES);
         return capabilities;
@@ -163,17 +180,14 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         // no-op
     }
 
-    @Override
     public void disconnect() {
         connected = false;
     }
 
-    @Override
     public boolean isConnected() {
         return connected;
     }
 
-    @Override
     public boolean isValid() {
         return valid;
     }
@@ -184,27 +198,22 @@ public abstract class Driver implements Connectable, SessionClient, KnowsSubInfo
         valid = false;
     }
 
-    @Override
     public void windToLive() throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void windTo(@NotNull Instant timestamp) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void wind(@NotNull Duration duration) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void skipForwards(ItemType itemType) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void skipBackwards(ItemType itemType) throws IOException {
         throw new UnsupportedOperationException();
     }
