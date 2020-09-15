@@ -69,6 +69,16 @@ public final class Request {
     }
 
     /**
+     * Gets the n-th argument.
+     * @param index The index of the argument starting with 0.
+     * @return The argument.
+     */
+    @Contract(pure = true)
+    public @Nullable Object getArgumentNullable(int index) {
+        return getArguments()[index];
+    }
+
+    /**
      * Gets the n-th argument and requires it to be non-null.
      * @param index The index of the argument starting with 0.
      * @return The argument.
