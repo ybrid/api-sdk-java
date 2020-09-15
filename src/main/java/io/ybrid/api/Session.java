@@ -32,8 +32,10 @@ import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
+import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transport.TransportDescription;
 import io.ybrid.api.transport.URITransportDescription;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -138,6 +140,16 @@ public final class Session implements Connectable, SessionClient {
         }
 
         return metadataMixer.getBouquet();
+    }
+
+    /**
+     * Creates a transaction for this session.
+     * @param request The request for the transaction.
+     * @return The newly created transaction.
+     */
+    @Contract("_ -> new")
+    public @NotNull SessionTransaction createTransaction(@NotNull Request request) {
+        return new SessionTransaction(this, request, this::executeRequest);
     }
 
     public void executeRequest(@NotNull Request request) throws IOException {
