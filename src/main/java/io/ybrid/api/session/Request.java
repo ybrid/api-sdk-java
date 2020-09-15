@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * This class represents a single request to the {@link io.ybrid.api.Session} or it's driver.
  * It provides a uniform way to make API requests.
@@ -62,7 +64,17 @@ public final class Request {
      * @return The argument list or {@code null}.
      */
     @Contract(pure = true)
-    public @Nullable Object getArguments() {
+    public @Nullable Object[] getArguments() {
         return arguments;
+    }
+
+    /**
+     * Gets the n-th argument and requires it to be non-null.
+     * @param index The index of the argument starting with 0.
+     * @return The argument.
+     */
+    @Contract(pure = true)
+    public @NotNull Object getArgumentNotNull(int index) {
+        return Objects.requireNonNull(getArguments()[index]);
     }
 }
