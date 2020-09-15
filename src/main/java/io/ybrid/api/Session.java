@@ -40,9 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -62,7 +59,6 @@ public final class Session extends ProtoSession {
     private final @NotNull Server server;
     private final @NotNull Alias alias;
     private Map<String, Double> acceptedMediaFormats = null;
-    private Map<String, Double> acceptedLanguages = null;
 
     private void loadSessionToMixer() {
         try {
@@ -197,54 +193,6 @@ public final class Session extends ProtoSession {
     }
 
     /**
-     * Get list of languages requested by the user.
-     *
-     * If this returns null no {@code Accept-Language:}-header should be generated.
-     * @return List of languages requested by the user or null.
-     */
-    @Nullable
-    public Map<String, Double> getAcceptedLanguages() {
-        return acceptedLanguages;
-    }
-
-    /**
-     * Sets the list of languages requested by the user.
-     *
-     * This function is only still included for older versions of Android
-     * (before {@code android.os.Build.VERSION_CODES.O})
-     * and might be removed at any time.
-     *
-     * @param acceptedLanguages List of languages to set or null.
-     * @deprecated Use {@link #setAcceptedLanguages(List)} instead.
-     */
-    @Deprecated
-    public void setAcceptedLanguages(@Nullable Map<String, Double> acceptedLanguages) {
-        Utils.assertValidAcceptList(acceptedLanguages);
-        this.acceptedLanguages = acceptedLanguages;
-    }
-
-    /**
-     * Sets the list of languages requested by the user and their corresponding weights.
-     * @param list The list of languages or null.
-     */
-    public void setAcceptedLanguages(@Nullable List<Locale.LanguageRange> list) {
-        Map<String, Double> newList;
-
-        if (list == null) {
-            this.acceptedLanguages = null;
-            return;
-        }
-
-        newList = new HashMap<>();
-
-        for (Locale.LanguageRange range : list)
-            newList.put(range.getRange(), range.getWeight());
-
-        Utils.assertValidAcceptList(newList);
-        this.acceptedLanguages = newList;
-    }
-
-    /**
      * Gets the map of currently active workarounds.
      * This map can be updated by the caller if needed.
      * However special care must be taken when doing so to avoid data corruption.
@@ -266,7 +214,7 @@ public final class Session extends ProtoSession {
      */
     public TransportDescription getStreamTransportDescription() {
         try {
-            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, getAcceptedMediaFormats(), getAcceptedLanguages(), driver.getStreamURI(), null);
+            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, getAcceptedMediaFormats(), alias.getAcceptedLanguages(), driver.getStreamURI(), null);
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
