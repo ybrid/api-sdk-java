@@ -204,8 +204,8 @@ public final class Session implements Connectable, KnowsSubInfoState {
     public void detachPlayer(@NotNull PlayerControl playerControl) {
         if (this.playerControl == playerControl) {
             LOGGER.info("Detaching current player");
-            this.playerControl.onDetach(this);
             this.playerControl = null;
+            playerControl.onDetach(this);
         } else {
             LOGGER.info("Detach of not-attached player ignored");
         }
