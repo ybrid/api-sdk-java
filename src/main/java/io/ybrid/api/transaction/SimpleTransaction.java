@@ -23,7 +23,6 @@
 package io.ybrid.api.transaction;
 
 import io.ybrid.api.Identifier;
-import io.ybrid.api.hasIdentifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +31,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-abstract class SimpleTransaction implements hasIdentifier, Runnable {
+abstract class SimpleTransaction implements Transaction {
     private final @NotNull Identifier identifier = new Identifier();
     private final @NotNull Set<@NotNull Runnable> onControlComplete = new HashSet<>();
     private final @NotNull Set<@NotNull Runnable> onAudioComplete = new HashSet<>();
@@ -75,60 +74,38 @@ abstract class SimpleTransaction implements hasIdentifier, Runnable {
         signal(onAudioComplete);
     }
 
-    /**
-     * Adds a callback to be notified once the transaction has completed the control phase.
-     * @param runnable The callback.
-     */
+    @Override
     public void onControlComplete(@NotNull Runnable runnable) {
         onControlComplete.add(runnable);
     }
 
-    /**
-     * Adds a callback to be notified once the transaction has completed and the result is audible.
-     * @param runnable The callback.
-     */
+    @Override
     public void onAudioComplete(@NotNull Runnable runnable) {
         onAudioComplete.add(runnable);
     }
 
-    /**
-     * Queries whether the transaction has completed the control phase.
-     * @return Whether the transaction completed the control phase.
-     */
+    @Override
     public boolean isControlComplete() {
         return controlComplete;
     }
 
-    /**
-     * Queries whether the transaction has completed and the result is audible.
-     * @return Whether the transaction completed and is audible.
-     */
+    @Override
     public boolean isAudioComplete() {
         return audioComplete;
     }
 
-    /**
-     * Informs the transaction that the change is now audible.
-     * This is to be called by the player when the audio reached the point the result of of this transaction is audible.
-     */
+    @Override
     public void setAudioComplete() {
         audioComplete = true;
         signalControlComplete();
     }
 
-    /**
-     * Queries whether the current transaction is running.
-     * @return Whether the transaction is running.
-     */
+    @Override
     public boolean isRunning() {
         return running;
     }
 
-    /**
-     * Gets the the error thrown by running the transaction.
-     * This returns {@code null} if no error has been thrown yet.
-     * @return The error or {@code null}.
-     */
+    @Override
     public @Nullable Throwable getError() {
         return error;
     }
@@ -138,12 +115,6 @@ abstract class SimpleTransaction implements hasIdentifier, Runnable {
         return identifier;
     }
 
-    /**
-     * This runs the actual transaction.
-     * This method will block as long as the transaction is running.
-     *
-     * @see #runInBackground()
-     */
     @Override
     public void run() {
         synchronized (this) {
@@ -162,11 +133,7 @@ abstract class SimpleTransaction implements hasIdentifier, Runnable {
         signalControlComplete();
     }
 
-    /**
-     * This is a helper method. It runs {@link #run()} in a thread.
-     * This method returns once the thread has been started and does not block
-     * until the transaction has been completed.
-     */
+    @Override
     public synchronized void runInBackground() {
         if (controlComplete || running || error != null)
             return;
