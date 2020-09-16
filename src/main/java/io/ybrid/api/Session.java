@@ -135,16 +135,17 @@ public final class Session implements Connectable, KnowsSubInfoState {
      */
     @Contract("_ -> new")
     public @NotNull SessionTransaction createTransaction(@NotNull Request request) {
-        return new SessionTransaction(this, request, this::executeRequest);
+        return new SessionTransaction(this, request, this::executeTransaction);
     }
 
-    private void executeRequest(@NotNull Request request) throws IOException {
+    private void executeTransaction(@NotNull Transaction transaction) throws IOException {
+        final @NotNull Request request = ((SessionTransaction)transaction).getRequest();
         try {
             switch (request.getCommand()) {
                 case CONNECT_INITIAL_TRANSPORT:
                 case RECONNECT_TRANSPORT: {
                     final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), driver.getStreamURI(), null);
+                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), transaction, driver.getStreamURI(), null);
 
                     Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                     break;

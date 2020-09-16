@@ -25,6 +25,7 @@ package io.ybrid.api.transport;
 import io.ybrid.api.MetadataMixer;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.source.Source;
+import io.ybrid.api.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +40,7 @@ public abstract class TransportDescription {
     protected @NotNull final MetadataMixer metadataMixer;
     protected @Nullable Map<String, Double> acceptedMediaFormats;
     protected @Nullable Map<String, Double> acceptedLanguages;
+    protected @NotNull final Transaction transaction;
 
     /**
      * Main constructor.
@@ -48,15 +50,17 @@ public abstract class TransportDescription {
      * @param metadataMixer The Metadata mixer the new transport should send updates to.
      * @param acceptedMediaFormats List of accepted media formats or {@code null}.
      * @param acceptedLanguages List of accepted languages or {@code null}.
+     * @param transaction The {@link Transaction} causing the creation of this transport description.
      * @see #getAcceptedMediaFormats()
      * @see #getAcceptedLanguages()
      */
-    protected TransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages) {
+    protected TransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction) {
         this.source = source;
         this.initialService = initialService;
         this.metadataMixer = metadataMixer;
         this.acceptedMediaFormats = acceptedMediaFormats;
         this.acceptedLanguages = acceptedLanguages;
+        this.transaction = transaction;
     }
 
     /**
@@ -105,5 +109,14 @@ public abstract class TransportDescription {
      */
     public @Nullable Map<String, Double> getAcceptedLanguages() {
         return acceptedLanguages;
+    }
+
+    /**
+     * Gets the {@link Transaction} that caused the creation of this transport description.
+     *
+     * @return The Corresponding {@link Transaction}.
+     */
+    public @NotNull Transaction getTransaction() {
+        return transaction;
     }
 }
