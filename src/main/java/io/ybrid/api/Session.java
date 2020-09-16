@@ -28,7 +28,7 @@ import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
-import io.ybrid.api.session.ProtoSession;
+import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transport.TransportDescription;
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  * The session can be used to request an audio stream from the server.
  * It is also used to control the stream.
  */
-public final class Session extends ProtoSession {
+public final class Session implements Connectable, KnowsSubInfoState {
     static final Logger LOGGER = Logger.getLogger(Session.class.getName());
 
     private final @NotNull Source source = new Source(SourceType.SESSION);
@@ -113,12 +113,10 @@ public final class Session extends ProtoSession {
         return server;
     }
 
-    @Override
     public @NotNull CapabilitySet getCapabilities() {
         return driver.getCapabilities();
     }
 
-    @Override
     public @NotNull Bouquet getBouquet() {
         if (driver.hasChanged(SubInfo.BOUQUET)) {
             driver.clearChanged(SubInfo.BOUQUET);
@@ -152,7 +150,6 @@ public final class Session extends ProtoSession {
         }
     }
 
-    @Override
     public @NotNull Metadata getMetadata() {
         if (driver.hasChanged(SubInfo.METADATA)) {
             driver.clearChanged(SubInfo.METADATA);
@@ -161,7 +158,6 @@ public final class Session extends ProtoSession {
         return metadataMixer.getMetadata();
     }
 
-    @Override
     public @NotNull PlayoutInfo getPlayoutInfo() {
         driver.clearChanged(SubInfo.PLAYOUT);
         return driver.getPlayoutInfo();
@@ -226,6 +222,31 @@ public final class Session extends ProtoSession {
     }
 
     @Override
+    public void connect() throws IOException {
+        final @NotNull SessionTransaction transaction = createTransaction(Command.CONNECT.makeRequest());
+        final @Nullable Throwable error;
+
+        transaction.run();
+        error = transaction.getError();
+
+        if (error == null)
+            return;
+
+        if (error instanceof IOException)
+            throw (IOException)error;
+
+        throw new IOException(error);
+    }
+
+    @Override
+    public void disconnect() {
+        try {
+            createTransaction(Command.DISCONNECT.makeRequest()).run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isValid() {
         driver.clearChanged(SubInfo.VALIDITY);
         return driver.isValid();

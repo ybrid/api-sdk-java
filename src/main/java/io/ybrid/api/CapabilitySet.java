@@ -30,7 +30,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 
 /**
- * The CapabilitySet contains a set of {@link Capability Capabilities} supported by a {@link SessionClient}.
+ * The CapabilitySet contains a set of {@link Capability Capabilities} supported by a {@link Session}.
  */
 public interface CapabilitySet extends Iterable<Capability> {
     /**

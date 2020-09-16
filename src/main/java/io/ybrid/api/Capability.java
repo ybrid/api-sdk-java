@@ -25,44 +25,44 @@ package io.ybrid.api;
 import io.ybrid.api.metadata.Item;
 
 /**
- * This enum contains all possible capabilities which might be supported by a {@link SessionClient}.
+ * This enum contains all possible capabilities which might be supported by a {@link Session}.
  */
 public enum Capability {
     /**
-     * The {@link SessionClient} supports accessing an URL for playback.
+     * The {@link Session} supports accessing an URL for playback.
      */
     PLAYBACK_URL,
     /**
-     * The {@link SessionClient} supports playback.
-     * This is not a feature of the Session itself but may be used by classes that implement {@link SessionClient}.
+     * The {@link Session} supports playback.
+     * This is not a feature of the Session itself but may be used by classes that implement {@link Session}.
      */
     PLAYBACK,
     /**
-     * The {@link SessionClient} supports swapping items.
+     * The {@link Session} supports swapping items.
      */
     SWAP_ITEM,
     /**
-     * The {@link SessionClient} supports swapping services.
+     * The {@link Session} supports swapping services.
      */
     SWAP_SERVICE,
     /**
-     * The {@link SessionClient} supports winding back to the live portion of the content.
+     * The {@link Session} supports winding back to the live portion of the content.
      */
     WIND_TO_LIVE,
     /**
-     * The {@link SessionClient} supports winding to a specific point in time.
+     * The {@link Session} supports winding to a specific point in time.
      */
     WIND_TO,
     /**
-     * The {@link SessionClient} supports winding relative to the current position.
+     * The {@link Session} supports winding relative to the current position.
      */
     WIND,
     /**
-     * The {@link SessionClient} supports skipping forward to the next {@link Item}.
+     * The {@link Session} supports skipping forward to the next {@link Item}.
      */
     SKIP_FORWARDS,
     /**
-     * The {@link SessionClient} supports skipping backwards to the previous {@link Item}.
+     * The {@link Session} supports skipping backwards to the previous {@link Item}.
      */
     SKIP_BACKWARDS;
 }
