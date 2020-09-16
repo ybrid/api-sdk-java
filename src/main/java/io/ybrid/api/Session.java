@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -143,9 +142,13 @@ public final class Session implements Connectable, KnowsSubInfoState {
         try {
             switch (request.getCommand()) {
                 case CONNECT_INITIAL_TRANSPORT:
-                case RECONNECT_TRANSPORT:
-                    Objects.requireNonNull(playerControl).connectTransport(getStreamTransportDescription());
+                case RECONNECT_TRANSPORT: {
+                    final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
+                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), driver.getStreamURI(), null);
+
+                    Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                     break;
+                }
                 default:
                     driver.executeRequest(request);
             }
@@ -226,20 +229,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
-    }
-
-    /**
-     * Gets the {@link TransportDescription} that can be used to access the audio stream.
-     * @return The transport description for the audio stream.
-     */
-    public TransportDescription getStreamTransportDescription() {
-        try {
-            final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-
-            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), driver.getStreamURI(), null);
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

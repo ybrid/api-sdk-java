@@ -37,9 +37,9 @@ import java.util.EnumSet;
 public class SessionTest extends TestCase {
     public void testGetStreamURLPositive() throws IOException, URISyntaxException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
-            Alias alias;
-            Session session;
-            TransportDescription transportDescription;
+            final Alias alias;
+            final Session session;
+            final TransportDescription[] transportDescription = new TransportDescription[1];
 
             alias = new Alias(aliasUrl);
             assertNotNull(alias);
@@ -49,8 +49,9 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            transportDescription = session.getStreamTransportDescription();
-            assertNotNull(transportDescription);
+            session.attachPlayer(newTransportDescription -> transportDescription[0] = newTransportDescription);
+            session.createTransaction(Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
+            assertNotNull(transportDescription[0]);
 
             session.close();
         }
@@ -66,7 +67,12 @@ public class SessionTest extends TestCase {
 
             session.connect();
 
-            assertEquals(200, NetworkHelper.ping(session.getStreamTransportDescription()));
+            {
+                final TransportDescription[] transportDescription = new TransportDescription[1];
+                session.attachPlayer(newTransportDescription -> transportDescription[0] = newTransportDescription);
+                session.createTransaction(Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
+                assertEquals(200, NetworkHelper.ping(transportDescription[0]));
+            }
 
             for (int i = 0; i < 10; i++) {
                 Instant start;
