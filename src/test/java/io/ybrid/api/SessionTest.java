@@ -32,6 +32,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
 
 public class SessionTest extends TestCase {
     public void testGetStreamURLPositive() throws IOException, URISyntaxException {
@@ -72,7 +73,7 @@ public class SessionTest extends TestCase {
                 Instant end;
 
                 start = ClockManager.now();
-                session.createTransaction(Command.REFRESH.makeRequest(SubInfo.METADATA));
+                session.createTransaction(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.METADATA)));
                 newMetadata = session.getMetadata();
                 end = ClockManager.now();
 
