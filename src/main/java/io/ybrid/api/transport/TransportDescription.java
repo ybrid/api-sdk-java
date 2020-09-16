@@ -38,8 +38,8 @@ public abstract class TransportDescription {
     protected @NotNull final Source source;
     protected @NotNull final Service initialService;
     protected @NotNull final MetadataMixer metadataMixer;
-    protected @Nullable Map<String, Double> acceptedMediaFormats;
-    protected @Nullable Map<String, Double> acceptedLanguages;
+    protected @Nullable final Map<String, Double> acceptedMediaFormats;
+    protected @Nullable final Map<String, Double> acceptedLanguages;
     protected @NotNull final Transaction transaction;
 
     /**
