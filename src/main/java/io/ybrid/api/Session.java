@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -140,7 +141,13 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     private void executeRequest(@NotNull Request request) throws IOException {
         try {
-            driver.executeRequest(request);
+            switch (request.getCommand()) {
+                case CONNECT_INITIAL_TRANSPORT:
+                    Objects.requireNonNull(playerControl).connectTransport(getStreamTransportDescription());
+                    break;
+                default:
+                    driver.executeRequest(request);
+            }
         } catch (Exception e) {
             throw new IOException(e);
         }

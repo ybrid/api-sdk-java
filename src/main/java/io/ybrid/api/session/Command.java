@@ -45,6 +45,10 @@ public enum Command {
      */
     DISCONNECT,
     /**
+     * Requests a initial transport being connected.
+     */
+    CONNECT_INITIAL_TRANSPORT,
+    /**
      * Requests the refresh of a set of {@link SubInfo}.
      */
     REFRESH(true, EnumSet.class),
