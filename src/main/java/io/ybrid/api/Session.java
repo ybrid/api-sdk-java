@@ -29,6 +29,7 @@ import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
+import io.ybrid.api.session.PlayerControl;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
@@ -40,8 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -59,7 +60,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull Alias alias;
-    private Map<String, Double> acceptedMediaFormats = null;
+    private @Nullable PlayerControl playerControl = null;
 
     private void loadSessionToMixer() {
         try {
@@ -139,7 +140,18 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     private void executeRequest(@NotNull Request request) throws IOException {
         try {
-            driver.executeRequest(request);
+            switch (request.getCommand()) {
+                case CONNECT_INITIAL_TRANSPORT:
+                case RECONNECT_TRANSPORT: {
+                    final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
+                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), driver.getStreamURI(), null);
+
+                    Objects.requireNonNull(playerControl).connectTransport(transportDescription);
+                    break;
+                }
+                default:
+                    driver.executeRequest(request);
+            }
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -170,23 +182,37 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     /**
-     * Get the list of media formats supported by the player.
+     * Attaches a new player by setting the player's {@link PlayerControl} interface.
      *
-     * If this returns null no {@code Accept:}-header should be generated.
-     * @return List of supported formats or null.
+     * @param playerControl The player's {@link PlayerControl} interface.
      */
-    @Nullable
-    public Map<String, Double> getAcceptedMediaFormats() {
-        return acceptedMediaFormats;
+    public void attachPlayer(@NotNull PlayerControl playerControl) {
+        if (this.playerControl == playerControl)
+            return;
+
+        if (this.playerControl != null) {
+            detachPlayer(this.playerControl);
+        }
+
+        this.playerControl = playerControl;
+
+        LOGGER.info("Attaching new player");
+        this.playerControl.onAttach(this);
     }
 
     /**
-     * Set the list of formats supported by the player and their corresponding weights.
-     * @param acceptedMediaFormats List of supported formats or null.
+     * Detaches a player by using the player's {@link PlayerControl} interface.
+     *
+     * @param playerControl The player's {@link PlayerControl} interface.
      */
-    public void setAcceptedMediaFormats(@Nullable Map<String, Double> acceptedMediaFormats) {
-        Utils.assertValidAcceptList(acceptedMediaFormats);
-        this.acceptedMediaFormats = acceptedMediaFormats;
+    public void detachPlayer(@NotNull PlayerControl playerControl) {
+        if (this.playerControl == playerControl) {
+            LOGGER.info("Detaching current player");
+            this.playerControl = null;
+            playerControl.onDetach(this);
+        } else {
+            LOGGER.info("Detach of not-attached player ignored");
+        }
     }
 
     /**
@@ -203,18 +229,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
-    }
-
-    /**
-     * Gets the {@link TransportDescription} that can be used to access the audio stream.
-     * @return The transport description for the audio stream.
-     */
-    public TransportDescription getStreamTransportDescription() {
-        try {
-            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, getAcceptedMediaFormats(), alias.getAcceptedLanguages(), driver.getStreamURI(), null);
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
