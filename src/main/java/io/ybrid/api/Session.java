@@ -61,7 +61,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull Server server;
     private final @NotNull Alias alias;
     private @Nullable PlayerControl playerControl = null;
-    private Map<String, Double> acceptedMediaFormats = null;
 
     private void loadSessionToMixer() {
         try {
@@ -206,26 +205,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     /**
-     * Get the list of media formats supported by the player.
-     *
-     * If this returns null no {@code Accept:}-header should be generated.
-     * @return List of supported formats or null.
-     */
-    @Nullable
-    public Map<String, Double> getAcceptedMediaFormats() {
-        return acceptedMediaFormats;
-    }
-
-    /**
-     * Set the list of formats supported by the player and their corresponding weights.
-     * @param acceptedMediaFormats List of supported formats or null.
-     */
-    public void setAcceptedMediaFormats(@Nullable Map<String, Double> acceptedMediaFormats) {
-        Utils.assertValidAcceptList(acceptedMediaFormats);
-        this.acceptedMediaFormats = acceptedMediaFormats;
-    }
-
-    /**
      * Gets the map of currently active workarounds.
      * This map can be updated by the caller if needed.
      * However special care must be taken when doing so to avoid data corruption.
@@ -247,7 +226,9 @@ public final class Session implements Connectable, KnowsSubInfoState {
      */
     public TransportDescription getStreamTransportDescription() {
         try {
-            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, getAcceptedMediaFormats(), alias.getAcceptedLanguages(), driver.getStreamURI(), null);
+            final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
+
+            return new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), driver.getStreamURI(), null);
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

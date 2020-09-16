@@ -24,6 +24,9 @@ package io.ybrid.api.session;
 
 import io.ybrid.api.Session;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * This interface defines the communication channel from the {@link Session} to the player.
@@ -47,4 +50,12 @@ public interface PlayerControl {
     default void onDetach(@NotNull Session session) {
         // no-op
     }
+
+    /**
+     * Get the list of media formats supported by the player.
+     *
+     * If this returns null no {@code Accept:}-header should be generated.
+     * @return List of supported formats or null.
+     */
+    @Nullable Map<String, Double> getAcceptedMediaFormats();
 }
