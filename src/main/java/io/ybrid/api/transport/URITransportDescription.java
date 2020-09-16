@@ -47,6 +47,8 @@ public class URITransportDescription extends TransportDescription {
      * @param source The source that shall represent the new transport.
      * @param initialService The initial service to connect to.
      * @param metadataMixer The Metadata mixer the new transport should send updates to.
+     * @param acceptedMediaFormats List of accepted media formats or {@code null}.
+     * @param acceptedLanguages List of accepted languages or {@code null}.
      * @param transaction The {@link Transaction} causing the creation of this transport description.
      * @param uri The URI to connect to.
      * @param requestBody The {@link MessageBody} to send alongside the request or {@code null}.
