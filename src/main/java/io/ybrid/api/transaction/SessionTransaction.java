@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * This class implements transactions on {@link Session}s.
  */
-public final class SessionTransaction extends Transaction {
+public final class SessionTransaction extends SimpleTransaction {
     private final @NotNull Session session;
     private final @NotNull Request request;
     private final @NotNull Executor executor;

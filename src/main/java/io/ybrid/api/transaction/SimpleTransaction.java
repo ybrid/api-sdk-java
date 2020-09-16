@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-abstract class Transaction implements hasIdentifier, Runnable {
+abstract class SimpleTransaction implements hasIdentifier, Runnable {
     private final @NotNull Identifier identifier = new Identifier();
     private final @NotNull Set<@NotNull Runnable> onControlComplete = new HashSet<>();
     private final @NotNull Set<@NotNull Runnable> onAudioComplete = new HashSet<>();
