@@ -143,6 +143,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
         try {
             switch (request.getCommand()) {
                 case CONNECT_INITIAL_TRANSPORT:
+                case RECONNECT_TRANSPORT:
                     Objects.requireNonNull(playerControl).connectTransport(getStreamTransportDescription());
                     break;
                 default:

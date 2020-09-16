@@ -49,6 +49,11 @@ public enum Command {
      */
     CONNECT_INITIAL_TRANSPORT,
     /**
+     * Requests a new transport to be connected. This can be used
+     * e.g. when the connection to the current transport was lost.
+     */
+    RECONNECT_TRANSPORT,
+    /**
      * Requests the refresh of a set of {@link SubInfo}.
      */
     REFRESH(true, EnumSet.class),
