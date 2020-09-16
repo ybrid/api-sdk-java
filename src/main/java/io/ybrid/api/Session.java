@@ -29,6 +29,7 @@ import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
+import io.ybrid.api.session.PlayerControl;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
@@ -59,6 +60,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull Alias alias;
+    private @Nullable PlayerControl playerControl = null;
     private Map<String, Double> acceptedMediaFormats = null;
 
     private void loadSessionToMixer() {
@@ -167,6 +169,40 @@ public final class Session implements Connectable, KnowsSubInfoState {
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
         return metadataMixer.hasChanged(what) || driver.hasChanged(what);
+    }
+
+    /**
+     * Attaches a new player by setting the player's {@link PlayerControl} interface.
+     *
+     * @param playerControl The player's {@link PlayerControl} interface.
+     */
+    public void attachPlayer(@NotNull PlayerControl playerControl) {
+        if (this.playerControl == playerControl)
+            return;
+
+        if (this.playerControl != null) {
+            detachPlayer(this.playerControl);
+        }
+
+        this.playerControl = playerControl;
+
+        LOGGER.info("Attaching new player");
+        this.playerControl.onAttach(this);
+    }
+
+    /**
+     * Detaches a player by using the player's {@link PlayerControl} interface.
+     *
+     * @param playerControl The player's {@link PlayerControl} interface.
+     */
+    public void detachPlayer(@NotNull PlayerControl playerControl) {
+        if (this.playerControl == playerControl) {
+            LOGGER.info("Detaching current player");
+            this.playerControl.onDetach(this);
+            this.playerControl = null;
+        } else {
+            LOGGER.info("Detach of not-attached player ignored");
+        }
     }
 
     /**
