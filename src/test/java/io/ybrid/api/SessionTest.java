@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.session.Command;
 import io.ybrid.api.transport.TransportDescription;
 import junit.framework.TestCase;
 
@@ -71,7 +72,7 @@ public class SessionTest extends TestCase {
                 Instant end;
 
                 start = ClockManager.now();
-                session.refresh(SubInfo.METADATA);
+                session.createTransaction(Command.REFRESH.makeRequest(SubInfo.METADATA));
                 newMetadata = session.getMetadata();
                 end = ClockManager.now();
 
