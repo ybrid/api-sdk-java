@@ -31,6 +31,7 @@ import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.transaction.SessionTransaction;
+import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.TransportDescription;
 import io.ybrid.api.transport.URITransportDescription;
 import org.jetbrains.annotations.Contract;
@@ -223,7 +224,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     @Override
     public void connect() throws IOException {
-        final @NotNull SessionTransaction transaction = createTransaction(Command.CONNECT.makeRequest());
+        final @NotNull Transaction transaction = createTransaction(Command.CONNECT.makeRequest());
         final @Nullable Throwable error;
 
         transaction.run();
