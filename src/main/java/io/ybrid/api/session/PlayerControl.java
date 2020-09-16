@@ -57,5 +57,7 @@ public interface PlayerControl {
      * If this returns null no {@code Accept:}-header should be generated.
      * @return List of supported formats or null.
      */
-    @Nullable Map<String, Double> getAcceptedMediaFormats();
+    default @Nullable Map<String, Double> getAcceptedMediaFormats() {
+        return null;
+    }
 }
