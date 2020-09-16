@@ -112,7 +112,13 @@ public class NetworkHelper {
      * @throws IOException Thrown on any I/O-Error
      */
     public static int ping(URI uri) throws IOException {
-        return ping(uri.toURL());
+        switch (uri.getScheme()) {
+            case "icyx":
+            case "icyxs":
+                return ping(new URL(uri.toASCIIString().replaceFirst("icyx", "http")));
+            default:
+                return ping(uri.toURL());
+        }
     }
 
     /**
