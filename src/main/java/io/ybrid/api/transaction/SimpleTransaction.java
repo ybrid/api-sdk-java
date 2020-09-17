@@ -95,9 +95,11 @@ abstract class SimpleTransaction implements Transaction {
     }
 
     @Override
-    public void setAudioComplete() {
+    public synchronized void setAudioComplete() {
+        if (audioComplete)
+            return;
         audioComplete = true;
-        signalControlComplete();
+        signalAudioComplete();
     }
 
     @Override
