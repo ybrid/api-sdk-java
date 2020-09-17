@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public final class Bouquet {
     private final @NotNull Service defaultService;
-    private final @NotNull Collection<Service> services;
+    private final @NotNull Set<Service> services;
 
     /**
      * Creates a new Bouquet object.
@@ -46,7 +46,7 @@ public final class Bouquet {
             throw new IllegalArgumentException("Default Service not part of Services");
 
         this.defaultService = defaultService;
-        this.services = services;
+        this.services = new HashSet<>(services);
     }
 
     /**

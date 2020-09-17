@@ -87,7 +87,7 @@ final class State implements KnowsSubInfoState {
 
     public Bouquet getBouquet() {
         clearChanged(SubInfo.BOUQUET);
-        return new Bouquet(defaultService, new ArrayList<>(services.values()));
+        return new Bouquet(defaultService, services.values());
     }
 
     public PlayoutInfo getPlayoutInfo() {
