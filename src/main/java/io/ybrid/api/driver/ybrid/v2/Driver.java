@@ -141,7 +141,15 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
 
         try {
-            response = new Response(Objects.requireNonNull(request(getUrl("/ctrl/v2/" + command), parameters)));
+            final @NotNull URL url;
+
+            if (command.startsWith("http://") || command.startsWith("https://")) {
+                url = new URL(command);
+            } else {
+                url = getUrl("/ctrl/v2/" + command);
+            }
+
+            response = new Response(Objects.requireNonNull(request(url, parameters)));
             state.accept(response);
 
             try {
@@ -177,7 +185,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     public void connect() throws IOException {
-        Response response;
+        final @Nullable Response response;
 
         if (isConnected())
             return;
@@ -185,7 +193,12 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         if (!isValid())
             throw new IOException("Session is not valid.");
 
-        response = v2request(COMMAND_SESSION_CREATE);
+        if (state.getBaseUrl().getPath().contains("/ctrl/v2/session/info")) {
+            response = v2request(state.getBaseUrl().toString());
+        } else {
+            response = v2request(COMMAND_SESSION_CREATE);
+        }
+
         if (response == null)
             throw new IOException("No valid response from server. BAD.");
 
