@@ -41,5 +41,12 @@ public enum Workaround {
     /**
      * Workaround used for server sending negative time to next item.
      */
-    WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM;
+    WORKAROUND_NEGATIVE_TIME_TO_NEXT_ITEM,
+    /**
+     * Workaround used for servers that start audio transport with silence.
+     * <P>
+     * Note MP3 streams always start with silence. For servers only supporting this legacy codec
+     * this workaround should be in the automatic or enabled state.
+     */
+    WORKAROUND_SKIP_SILENCE;
 }
