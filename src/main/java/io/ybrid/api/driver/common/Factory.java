@@ -22,13 +22,8 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.Alias;
-import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.Server;
 import io.ybrid.api.Session;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 /**
  * This implements a Factory for drivers. This should not be used directly.
@@ -41,12 +36,4 @@ abstract public class Factory {
      */
     @NotNull
     public abstract Driver getDriver(@NotNull Session session);
-
-    /**
-     * Get the current {@link Bouquet} from the server.
-     * @param server The {@link Server} to use.
-     * @param alias The {@link Alias} to use.
-     * @return Returns the {@link Bouquet} as returned by the server.
-     */
-    public abstract Bouquet getBouquet(@NotNull Server server, @NotNull Alias alias) throws IOException;
 }

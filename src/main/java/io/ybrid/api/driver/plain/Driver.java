@@ -24,12 +24,12 @@ package io.ybrid.api.driver.plain;
 
 import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.SimpleMetadata;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,11 +41,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     protected Driver(Session session) {
         super(session);
-        try {
-            this.bouquet = new Factory().getBouquet(session.getServer(), session.getAlias());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.bouquet = new Bouquet(new SimpleService());
         this.currentService = bouquet.getDefaultService();
         metadata = new SimpleMetadata(new Item(), null, this.currentService, TemporalValidity.INDEFINITELY_VALID);
         capabilities.add(Capability.PLAYBACK_URL);

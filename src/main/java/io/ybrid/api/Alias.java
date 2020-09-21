@@ -22,12 +22,9 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.bouquet.Bouquet;
-import io.ybrid.api.driver.FactorySelector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -98,15 +95,6 @@ public final class Alias implements ApiUser {
      */
     public @NotNull Session createSession() throws MalformedURLException {
         return getServer().createSession(this);
-    }
-
-    /**
-     * Get the current {@link Bouquet} from the default {@link Server}.
-     * @return Returns the current {@link Bouquet}.
-     * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
-     */
-    public Bouquet getBouquet() throws IOException {
-        return FactorySelector.getFactory(getServer(), this).getBouquet(getServer(), this);
     }
 
     /**
