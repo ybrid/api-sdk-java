@@ -22,7 +22,10 @@
 
 package io.ybrid.api.transport;
 
+import io.ybrid.api.Alias;
 import io.ybrid.api.MetadataMixer;
+import io.ybrid.api.Server;
+import io.ybrid.api.WorkaroundMap;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.transaction.Transaction;
@@ -41,6 +44,7 @@ public abstract class TransportDescription {
     protected @Nullable final Map<String, Double> acceptedMediaFormats;
     protected @Nullable final Map<String, Double> acceptedLanguages;
     protected @NotNull final Transaction transaction;
+    protected final @NotNull WorkaroundMap activeWorkarounds;
 
     /**
      * Main constructor.
@@ -51,16 +55,18 @@ public abstract class TransportDescription {
      * @param acceptedMediaFormats List of accepted media formats or {@code null}.
      * @param acceptedLanguages List of accepted languages or {@code null}.
      * @param transaction The {@link Transaction} causing the creation of this transport description.
+     * @param activeWorkarounds The set of active workarounds for this transport.
      * @see #getAcceptedMediaFormats()
      * @see #getAcceptedLanguages()
      */
-    protected TransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction) {
+    protected TransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds) {
         this.source = source;
         this.initialService = initialService;
         this.metadataMixer = metadataMixer;
         this.acceptedMediaFormats = acceptedMediaFormats;
         this.acceptedLanguages = acceptedLanguages;
         this.transaction = transaction;
+        this.activeWorkarounds = activeWorkarounds;
     }
 
     /**
@@ -118,5 +124,22 @@ public abstract class TransportDescription {
      */
     public @NotNull Transaction getTransaction() {
         return transaction;
+    }
+
+    /**
+     * Gets the map of currently active workarounds.
+     * This map can be updated by the module implementing support for this transport if needed.
+     * However special care must be taken when doing so to avoid data corruption.
+     * Applications must not update the map.
+     * Generally applications that wish to communicate workaround settings
+     * should use {@link Alias#getWorkarounds()} or {@link Server#getWorkarounds()}.
+     * Those methods are always safe to use.
+     *
+     * @return The map of active workarounds.
+     * @see Alias#getWorkarounds()
+     * @see Server#getWorkarounds()
+     */
+    public @NotNull WorkaroundMap getActiveWorkarounds() {
+        return activeWorkarounds;
     }
 }

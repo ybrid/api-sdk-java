@@ -23,6 +23,7 @@
 package io.ybrid.api.transport;
 
 import io.ybrid.api.MetadataMixer;
+import io.ybrid.api.WorkaroundMap;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.message.MessageBody;
 import io.ybrid.api.metadata.source.Source;
@@ -53,8 +54,8 @@ public class URITransportDescription extends TransportDescription {
      * @param uri The URI to connect to.
      * @param requestBody The {@link MessageBody} to send alongside the request or {@code null}.
      */
-    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull URI uri, @Nullable MessageBody requestBody) {
-        super(source, initialService, metadataMixer, acceptedMediaFormats, acceptedLanguages, transaction);
+    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds, @NotNull URI uri, @Nullable MessageBody requestBody) {
+        super(source, initialService, metadataMixer, acceptedMediaFormats, acceptedLanguages, transaction, activeWorkarounds);
         this.uri = uri;
         this.requestBody = requestBody;
     }
@@ -65,10 +66,10 @@ public class URITransportDescription extends TransportDescription {
      * @param initialService The initial service to connect to.
      * @param transaction The {@link Transaction} causing the creation of this transport description.
      * @param uri The URI to connect to.
-     * @see #URITransportDescription(Source, Service, MetadataMixer, Map, Map, Transaction, URI, MessageBody)
+     * @see #URITransportDescription(Source, Service, MetadataMixer, Map, Map, Transaction, WorkaroundMap, URI, MessageBody)
      */
-    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @NotNull Transaction transaction, @NotNull URI uri) {
-        this(source, initialService, metadataMixer, null, null, transaction, uri, null);
+    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds, @NotNull URI uri) {
+        this(source, initialService, metadataMixer, null, null, transaction, activeWorkarounds, uri, null);
     }
 
     /**
