@@ -61,18 +61,6 @@ public class URITransportDescription extends TransportDescription {
     }
 
     /**
-     * Creates a new URITransportDescription based using only q {@link URI}.
-     * @param source The source that shall represent the new transport.
-     * @param initialService The initial service to connect to.
-     * @param transaction The {@link Transaction} causing the creation of this transport description.
-     * @param uri The URI to connect to.
-     * @see #URITransportDescription(Source, Service, MetadataMixer, Map, Map, Transaction, WorkaroundMap, URI, MessageBody)
-     */
-    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds, @NotNull URI uri) {
-        this(source, initialService, metadataMixer, null, null, transaction, activeWorkarounds, uri, null);
-    }
-
-    /**
      * Gets the {@link URI} associated with this description.
      * @return The URI of this description.
      */
