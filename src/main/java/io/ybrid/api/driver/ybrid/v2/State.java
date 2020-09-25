@@ -38,7 +38,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 final class State implements KnowsSubInfoState {
     private final Map<Identifier, Service> services = new HashMap<>();

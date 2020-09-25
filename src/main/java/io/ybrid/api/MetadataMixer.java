@@ -32,7 +32,9 @@ import io.ybrid.api.metadata.source.SourceType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class MetadataMixer implements KnowsSubInfoState {

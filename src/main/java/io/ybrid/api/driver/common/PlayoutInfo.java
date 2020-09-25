@@ -22,9 +22,9 @@
 
 package io.ybrid.api.driver.common;
 
+import io.ybrid.api.SwapInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.ybrid.api.SwapInfo;
 
 import java.time.Duration;
 import java.time.Instant;
