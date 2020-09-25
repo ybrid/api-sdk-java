@@ -46,8 +46,6 @@ import java.util.logging.Logger;
 public final class Driver extends io.ybrid.api.driver.common.Driver {
     private static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
-    private static final Capability[] initialCapabilities = {Capability.AUDIO_TRANSPORT};
-
     private io.ybrid.api.metadata.Metadata metadata;
     private PlayoutInfo playoutInfo;
 
@@ -58,8 +56,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         this.currentService = new SimpleService();
         metadata = new InvalidMetadata(this.currentService);
-
-        capabilities.add(initialCapabilities);
 
         setChanged(SubInfo.BOUQUET);
         setChanged(SubInfo.METADATA);
@@ -256,6 +252,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         this.hostname = hostname;
 
         connected = true;
+        capabilities.add(Capability.AUDIO_TRANSPORT);
     }
 
 }

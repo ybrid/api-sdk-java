@@ -44,7 +44,6 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         this.bouquet = new Bouquet(new SimpleService());
         this.currentService = bouquet.getDefaultService();
         metadata = new SimpleMetadata(new Item(), null, this.currentService, TemporalValidity.INDEFINITELY_VALID);
-        capabilities.add(Capability.AUDIO_TRANSPORT);
         setChanged(SubInfo.CAPABILITIES);
         setChanged(SubInfo.BOUQUET);
         setChanged(SubInfo.PLAYOUT);
@@ -56,6 +55,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         switch (request.getCommand()) {
             case CONNECT:
                 connected = true;
+                capabilities.add(Capability.AUDIO_TRANSPORT);
                 break;
             case REFRESH:
                 // no-op.

@@ -165,6 +165,7 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         switch (request.getCommand()) {
             case DISCONNECT:
                 connected = false;
+                capabilities.remove(Capability.AUDIO_TRANSPORT);
                 break;
             case SWAP_SERVICE:
                 if (request.getArgumentNotNull(0).equals(session.getMetadataMixer().getCurrentService()))
