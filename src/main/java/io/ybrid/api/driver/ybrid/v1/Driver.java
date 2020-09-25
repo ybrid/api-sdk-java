@@ -44,9 +44,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class Driver extends io.ybrid.api.driver.common.Driver {
-    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     private static final Capability[] initialCapabilities = {Capability.AUDIO_TRANSPORT};
+
     private io.ybrid.api.metadata.Metadata metadata;
     private PlayoutInfo playoutInfo;
 
