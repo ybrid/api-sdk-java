@@ -63,7 +63,7 @@ public interface CapabilitySet extends Iterable<Capability> {
      * This is a helper method that will create a new set suitable for player implementations.
      * The new set will be linked to the old set in that it will see updates.
      * The difference is that the returned set will contain {@link Capability#PLAYBACK} if
-     * {@link Capability#PLAYBACK_URL} is present in the parent set.
+     * {@link Capability#AUDIO_TRANSPORT} is present in the parent set.
      * @return the new set.
      */
     default CapabilitySet makePlayerSet() {
@@ -86,7 +86,7 @@ public interface CapabilitySet extends Iterable<Capability> {
             public int size() {
                 int size = parent.size();
 
-                if (contains(Capability.PLAYBACK_URL))
+                if (contains(Capability.AUDIO_TRANSPORT))
                     size++;
 
                 return size;
@@ -99,7 +99,7 @@ public interface CapabilitySet extends Iterable<Capability> {
 
             @Override
             public boolean contains(@NotNull Capability o) {
-                if (o == Capability.PLAYBACK && contains(Capability.PLAYBACK_URL))
+                if (o == Capability.PLAYBACK && contains(Capability.AUDIO_TRANSPORT))
                     return true;
                 return parent.contains(o);
             }

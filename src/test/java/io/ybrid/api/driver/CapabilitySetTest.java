@@ -63,13 +63,13 @@ public class CapabilitySetTest extends TestCase {
         io.ybrid.api.driver.CapabilitySet set = new io.ybrid.api.driver.CapabilitySet();
         CapabilitySet playerSet;
 
-        set.add(Capability.PLAYBACK_URL);
+        set.add(Capability.AUDIO_TRANSPORT);
 
         assertFalse(set.isEmpty());
         assertEquals(set.size(), 1);
         assertFalse(set.contains(Capability.SWAP_ITEM));
         assertFalse(set.contains(Capability.PLAYBACK));
-        assertTrue(set.contains(Capability.PLAYBACK_URL));
+        assertTrue(set.contains(Capability.AUDIO_TRANSPORT));
 
         playerSet = set.makePlayerSet();
         assertNotNull(playerSet);
@@ -77,6 +77,6 @@ public class CapabilitySetTest extends TestCase {
         assertEquals(playerSet.size(), 2);
         assertFalse(playerSet.contains(Capability.SWAP_ITEM));
         assertTrue(playerSet.contains(Capability.PLAYBACK));
-        assertTrue(playerSet.contains(Capability.PLAYBACK_URL));
+        assertTrue(playerSet.contains(Capability.AUDIO_TRANSPORT));
     }
 }

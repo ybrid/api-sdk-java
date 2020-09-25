@@ -29,9 +29,9 @@ import io.ybrid.api.metadata.Item;
  */
 public enum Capability {
     /**
-     * The {@link Session} supports accessing an URL for playback.
+     * The {@link Session} supports accessing an transport for audio playback.
      */
-    PLAYBACK_URL,
+    AUDIO_TRANSPORT,
     /**
      * The {@link Session} supports playback.
      * This is not a feature of the Session itself but may be used by classes that implement {@link Session}.

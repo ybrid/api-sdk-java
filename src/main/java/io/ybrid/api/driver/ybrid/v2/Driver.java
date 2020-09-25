@@ -206,7 +206,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
         connected = true;
 
-        capabilities.add(Capability.PLAYBACK_URL);
+        capabilities.add(Capability.AUDIO_TRANSPORT);
         capabilities.add(Capability.SKIP_BACKWARDS);
         setChanged(SubInfo.CAPABILITIES);
     }
@@ -234,7 +234,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
                 break;
             case DISCONNECT:
                 capabilities.remove(Capability.SKIP_BACKWARDS);
-                capabilities.remove(Capability.PLAYBACK_URL);
+                capabilities.remove(Capability.AUDIO_TRANSPORT);
                 setChanged(SubInfo.CAPABILITIES);
 
                 try {
