@@ -22,18 +22,23 @@
 
 package io.ybrid.api.metadata;
 
-import io.ybrid.api.*;
+import io.ybrid.api.Identifier;
+import io.ybrid.api.Session;
+import io.ybrid.api.TemporalValidity;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
+import io.ybrid.api.hasIdentifier;
 import io.ybrid.api.metadata.source.Source;
-import io.ybrid.api.session.Command;
 import io.ybrid.api.transaction.SimpleTransaction;
 import io.ybrid.api.transaction.TransactionWithResult;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public final class MetadataMixer implements Consumer<@NotNull Sync> {
@@ -51,18 +56,7 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
 
         @Override
         protected void execute() throws Exception {
-            final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), request);
-            final @NotNull Metadata metadata;
-
-            session.createTransaction(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT))).run();
-
-            metadata = session.getMetadata();
-            builder.setCurrentTrack(metadata.getCurrentItem());
-            builder.setNextTrack(metadata.getNextItem());
-            builder.setCurrentService(metadata.getService());
-            builder.setTemporalValidity(session.getPlayoutInfo().getTemporalValidity());
-
-            result = builder.build();
+            result = session.refresh(request);
             consumer.accept(result);
         }
 

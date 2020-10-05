@@ -27,6 +27,7 @@ import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.MetadataMixer;
+import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
@@ -150,6 +151,10 @@ public final class Session implements Connectable, KnowsSubInfoState {
     public @NotNull PlayoutInfo getPlayoutInfo() {
         driver.clearChanged(SubInfo.PLAYOUT);
         return driver.getPlayoutInfo();
+    }
+
+    public @NotNull Sync refresh(@NotNull Sync sync) {
+        return driver.refresh(sync);
     }
 
     @Override
