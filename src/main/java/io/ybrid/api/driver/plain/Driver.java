@@ -22,11 +22,14 @@
 
 package io.ybrid.api.driver.plain;
 
-import io.ybrid.api.*;
+import io.ybrid.api.Capability;
+import io.ybrid.api.Server;
+import io.ybrid.api.Session;
+import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
+import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Metadata;
-import io.ybrid.api.metadata.SimpleMetadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
@@ -38,13 +41,11 @@ import java.net.URISyntaxException;
 public class Driver extends io.ybrid.api.driver.common.Driver {
     private final @NotNull Bouquet bouquet;
     private final @NotNull PlayoutInfo playoutInfo = new PlayoutInfo();
-    private final @NotNull Metadata metadata;
 
     protected Driver(Session session) {
         super(session);
         this.bouquet = new Bouquet(new SimpleService());
         this.currentService = bouquet.getDefaultService();
-        metadata = new SimpleMetadata(new Item(), null, this.currentService, TemporalValidity.INDEFINITELY_VALID);
         setChanged(SubInfo.CAPABILITIES);
         setChanged(SubInfo.BOUQUET);
         setChanged(SubInfo.PLAYOUT);
@@ -75,9 +76,10 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         return new URI(server.getProtocol(), null, server.getHostname(), server.getPort(), getMountpoint(), null, null);
     }
 
+    /* This is never called */
     @Override
     public @NotNull Metadata getMetadata() {
-        return metadata;
+        return new InvalidMetadata();
     }
 
     @Override
