@@ -25,7 +25,6 @@ package io.ybrid.api;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
-import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.metadata.source.Source;
@@ -138,14 +137,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
         } catch (Exception e) {
             throw new IOException(e);
         }
-    }
-
-    public @NotNull Metadata getMetadata() {
-        if (driver.hasChanged(SubInfo.METADATA)) {
-            driver.clearChanged(SubInfo.METADATA);
-        }
-
-        return driver.getMetadata();
     }
 
     public @NotNull PlayoutInfo getPlayoutInfo() {
