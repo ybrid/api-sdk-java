@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class MetadataMixer implements Consumer<@NotNull Sync> {
+public final class MetadataMixer implements Consumer<@NotNull Sync> {
     private static class RefreshTransaction extends SimpleTransaction implements TransactionWithResult<@NotNull Sync> {
         private final @NotNull Sync request;
         private final @NotNull Session session;
