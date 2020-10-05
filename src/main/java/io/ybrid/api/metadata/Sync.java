@@ -187,7 +187,9 @@ public final class Sync implements hasIdentifier {
         @Nullable Sync cur = this;
 
         while (cur != null) {
-            if (cur.getIdentifier().equals(identifier) || cur.getPredecessorIdentifier().equals(identifier))
+            if (cur.getIdentifier().equals(identifier))
+                return true;
+            if (cur.getPredecessorIdentifier() != null && cur.getPredecessorIdentifier().equals(identifier))
                 return true;
 
             cur = cur.getParent();
