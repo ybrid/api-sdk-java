@@ -26,6 +26,7 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
@@ -56,7 +57,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
-    private final @NotNull io.ybrid.api.metadata.MetadataMixer metadataMixer;
+    private final @NotNull MetadataMixer metadataMixer;
     private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull Alias alias;
@@ -66,7 +67,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
-        this.metadataMixer = new io.ybrid.api.metadata.MetadataMixer(this);
+        this.metadataMixer = new MetadataMixer(this);
 
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
@@ -76,7 +77,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * Gets the {@link MetadataMixer} for this session.
      * @return Gets the current {@link MetadataMixer}.
      */
-    public @NotNull io.ybrid.api.metadata.MetadataMixer getMetadataMixer() {
+    public @NotNull MetadataMixer getMetadataMixer() {
         return metadataMixer;
     }
 
