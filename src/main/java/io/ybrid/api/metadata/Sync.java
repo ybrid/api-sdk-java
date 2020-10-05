@@ -119,6 +119,11 @@ public final class Sync implements hasIdentifier {
         public @NotNull Sync build() {
             return new Sync(source, parent, predecessor != null ? predecessor.getIdentifier() : null, sessionSpecific, currentService, currentTrack, nextTrack, temporalValidity);
         }
+
+        @Contract(value = "_ -> new", pure = true)
+        public static @NotNull Sync buildEmpty(@NotNull Source source) {
+            return new Builder(source).build();
+        }
     }
 
     private Sync(@NotNull Source source, @Nullable Sync parent, @Nullable Identifier predecessor, @Nullable Object sessionSpecific, @Nullable Service currentService, @Nullable TrackMetadata currentTrack, @Nullable TrackMetadata nextTrack, @Nullable TemporalValidity temporalValidity) {
