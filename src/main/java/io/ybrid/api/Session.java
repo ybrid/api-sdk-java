@@ -232,6 +232,16 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return activeWorkarounds;
     }
 
+    /**
+     * Gets the {@link Source} for this session.
+     *
+     * @return The {@link Source} for this session.
+     */
+    @Contract(pure = true)
+    public @NotNull Source getSource() {
+        return source;
+    }
+
     @Override
     public boolean isConnected() {
         return driver.isConnected();
