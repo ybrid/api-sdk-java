@@ -23,7 +23,7 @@
 package io.ybrid.api.transport;
 
 import io.ybrid.api.Alias;
-import io.ybrid.api.MetadataMixer;
+import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.Server;
 import io.ybrid.api.WorkaroundMap;
 import io.ybrid.api.bouquet.Service;

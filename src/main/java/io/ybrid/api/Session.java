@@ -56,46 +56,27 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
-    private final @NotNull MetadataMixer metadataMixer;
+    private final @NotNull io.ybrid.api.metadata.MetadataMixer metadataMixer;
     private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull Alias alias;
     private @Nullable PlayerControl playerControl = null;
 
-    private void loadSessionToMixer() {
-        try {
-            // get initial metadata if any.
-            if (driver.hasChanged(SubInfo.BOUQUET)) {
-                metadataMixer.add(driver.getBouquet(), source);
-                metadataMixer.add(driver.getMetadata().getService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
-                LOGGER.info("Loaded initial bouquet");
-            }
-            if (driver.hasChanged(SubInfo.METADATA)) {
-                driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
-                LOGGER.info("Loaded initial metadata");
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
     Session(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
-        this.metadataMixer = new MetadataMixer(this.driver::acceptSessionSpecific);
+        this.metadataMixer = new io.ybrid.api.metadata.MetadataMixer(this);
 
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
-
-        loadSessionToMixer();
     }
 
     /**
      * Gets the {@link MetadataMixer} for this session.
      * @return Gets the current {@link MetadataMixer}.
      */
-    public @NotNull MetadataMixer getMetadataMixer() {
+    public @NotNull io.ybrid.api.metadata.MetadataMixer getMetadataMixer() {
         return metadataMixer;
     }
 
@@ -122,10 +103,9 @@ public final class Session implements Connectable, KnowsSubInfoState {
     public @NotNull Bouquet getBouquet() {
         if (driver.hasChanged(SubInfo.BOUQUET)) {
             driver.clearChanged(SubInfo.BOUQUET);
-            metadataMixer.add(driver.getBouquet(), source);
         }
 
-        return metadataMixer.getBouquet();
+        return driver.getBouquet();
     }
 
     /**
@@ -145,7 +125,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
                 case CONNECT_INITIAL_TRANSPORT:
                 case RECONNECT_TRANSPORT: {
                     final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
+                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), driver.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
 
                     Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                     break;
@@ -156,20 +136,14 @@ public final class Session implements Connectable, KnowsSubInfoState {
         } catch (Exception e) {
             throw new IOException(e);
         }
-
-        switch (request.getCommand()) {
-            case CONNECT:
-                loadSessionToMixer();
-                break;
-        }
     }
 
     public @NotNull Metadata getMetadata() {
         if (driver.hasChanged(SubInfo.METADATA)) {
             driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
         }
-        return metadataMixer.getMetadata();
+
+        return driver.getMetadata();
     }
 
     public @NotNull PlayoutInfo getPlayoutInfo() {
@@ -179,7 +153,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
-        return metadataMixer.hasChanged(what) || driver.hasChanged(what);
+        return driver.hasChanged(what);
     }
 
     /**

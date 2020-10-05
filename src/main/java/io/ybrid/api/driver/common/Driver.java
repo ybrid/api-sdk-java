@@ -32,6 +32,7 @@ import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -106,6 +107,11 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         return capabilities;
     }
 
+    @Contract(pure = true)
+    public @NotNull Service getCurrentService() {
+        return currentService;
+    }
+
     public void clearChanged(@NotNull SubInfo what) {
         changed.remove(what);
     }
@@ -168,7 +174,7 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
                 capabilities.remove(Capability.AUDIO_TRANSPORT);
                 break;
             case SWAP_SERVICE:
-                if (request.getArgumentNotNull(0).equals(session.getMetadataMixer().getCurrentService()))
+                if (request.getArgumentNotNull(0).equals(getCurrentService()))
                     return;
 
                 throw new UnsupportedOperationException("Can not swap to given Service");

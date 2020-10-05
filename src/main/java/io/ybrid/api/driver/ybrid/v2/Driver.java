@@ -28,6 +28,7 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.session.Request;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -209,6 +210,12 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         capabilities.add(Capability.AUDIO_TRANSPORT);
         capabilities.add(Capability.SKIP_BACKWARDS);
         setChanged(SubInfo.CAPABILITIES);
+    }
+
+    @Override
+    @Contract(pure = true)
+    public @NotNull Service getCurrentService() {
+        return state.getCurrentService();
     }
 
     @Override
