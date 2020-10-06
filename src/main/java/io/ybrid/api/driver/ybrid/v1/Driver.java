@@ -26,6 +26,8 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.metadata.InvalidMetadata;
+import io.ybrid.api.metadata.Sync;
+import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -191,8 +193,17 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public io.ybrid.api.metadata.@NotNull Metadata getMetadata() {
-        return metadata;
+    public @NotNull Sync refresh(@NotNull Sync sync) {
+        final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), sync);
+
+        session.createTransaction(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT))).run();
+
+        builder.setCurrentTrack(metadata.getCurrentItem());
+        builder.setNextTrack(metadata.getNextItem());
+        builder.setCurrentService(currentService);
+        builder.setTemporalValidity(getPlayoutInfo().getTemporalValidity());
+
+        return builder.build();
     }
 
     @Override

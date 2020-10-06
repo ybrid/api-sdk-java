@@ -29,6 +29,8 @@ import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.driver.ybrid.v1.SwapInfo;
 import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.Sync;
+import io.ybrid.api.session.Command;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -89,9 +91,17 @@ final class State implements KnowsSubInfoState {
         return currentService;
     }
 
-    public Metadata getMetadata() {
-        clearChanged(SubInfo.METADATA);
-        return currentMetadata;
+    public @NotNull Sync refresh(@NotNull Sync sync) {
+        final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), sync);
+
+        session.createTransaction(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT))).run();
+
+        builder.setCurrentTrack(currentMetadata.getCurrentItem());
+        builder.setNextTrack(currentMetadata.getNextItem());
+        builder.setCurrentService(currentService);
+        builder.setTemporalValidity(getPlayoutInfo().getTemporalValidity());
+
+        return builder.build();
     }
 
     public Bouquet getBouquet() {

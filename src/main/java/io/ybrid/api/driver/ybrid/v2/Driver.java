@@ -26,7 +26,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
-import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -219,8 +219,8 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public @NotNull Metadata getMetadata() {
-        return state.getMetadata();
+    public @NotNull Sync refresh(@NotNull Sync sync) {
+        return state.refresh(sync);
     }
 
     @Override

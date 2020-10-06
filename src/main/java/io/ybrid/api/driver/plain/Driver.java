@@ -28,8 +28,6 @@ import io.ybrid.api.Session;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
-import io.ybrid.api.metadata.InvalidMetadata;
-import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
@@ -74,12 +72,6 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
         assertConnected();
 
         return new URI(server.getProtocol(), null, server.getHostname(), server.getPort(), getMountpoint(), null, null);
-    }
-
-    /* This is never called */
-    @Override
-    public @NotNull Metadata getMetadata() {
-        return new InvalidMetadata();
     }
 
     @Override

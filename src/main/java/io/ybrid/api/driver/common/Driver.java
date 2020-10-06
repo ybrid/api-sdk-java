@@ -28,7 +28,6 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
-import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
@@ -61,10 +60,10 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     protected String token;
     protected Service currentService;
 
-    abstract public @NotNull Metadata getMetadata();
     abstract public @NotNull Bouquet getBouquet();
     abstract public @NotNull PlayoutInfo getPlayoutInfo();
     abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
+    abstract public @NotNull Sync refresh(@NotNull Sync sync);
 
     @Override
     public void close() throws IOException {
@@ -186,26 +185,6 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
 
     public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
         // no-op
-    }
-
-    public @NotNull Sync refresh(@NotNull Sync sync) {
-        final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), sync);
-
-        refresh(builder);
-
-        return builder.build();
-    }
-
-    protected void refresh(@NotNull Sync.Builder builder) {
-        final @NotNull Metadata metadata;
-
-        session.createTransaction(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT))).run();
-
-        metadata = getMetadata();
-        builder.setCurrentTrack(metadata.getCurrentItem());
-        builder.setNextTrack(metadata.getNextItem());
-        builder.setCurrentService(metadata.getService());
-        builder.setTemporalValidity(getPlayoutInfo().getTemporalValidity());
     }
 
     public boolean isConnected() {
