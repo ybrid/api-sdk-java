@@ -35,10 +35,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class MetadataMixer implements Consumer<@NotNull Sync> {
@@ -71,6 +68,9 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
     private final @NotNull Set<Source> sources = new HashSet<>();
     private final @NotNull Set<Sync> syncs = new HashSet<>();
     private final @NotNull Session session;
+    private final @NotNull Map<@NotNull Identifier, @NotNull Service> services = new HashMap<>();
+    private final @NotNull Map<@NotNull Identifier, @NotNull Service> serviceUpdates = new HashMap<>();
+    private Service defaultService = null;
 
     public MetadataMixer(@NotNull Session session) {
         this.session = session;
@@ -96,6 +96,29 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
         return builder.build();
     }
 
+    public synchronized void accept(@NotNull Bouquet bouquet) {
+        final @NotNull Map<@NotNull Identifier, @NotNull Service> fromBouquet = new HashMap<>();
+
+        for (final @NotNull Service service : bouquet.getServices()) {
+            fromBouquet.put(service.getIdentifier(), service);
+        }
+
+        for (Iterator<@NotNull Service> iterator = serviceUpdates.values().iterator(); iterator.hasNext(); ) {
+            final @NotNull Identifier identifier = iterator.next().getIdentifier();
+            if (fromBouquet.get(identifier) != services.get(identifier)) {
+                iterator.remove();
+            }
+        }
+
+        services.clear();
+        services.putAll(fromBouquet);
+
+        defaultService = serviceUpdates.get(bouquet.getDefaultService().getIdentifier());
+
+        if (defaultService == null)
+            defaultService = bouquet.getDefaultService();
+    }
+
     @Override
     public synchronized void accept(@NotNull Sync sync) {
         if (syncs.contains(sync))
@@ -113,6 +136,8 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
         }
 
         syncs.add(sync);
+        if (sync.getCurrentService() != null)
+            serviceUpdates.put(sync.getCurrentService().getIdentifier(), sync.getCurrentService());
     }
 
     public synchronized void add(@NotNull Source source) {
@@ -126,24 +151,6 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
             final @NotNull Sync sync = iterator.next();
             if (sync.getSource().equals(source))
                 iterator.remove();
-        }
-    }
-
-    public @NotNull Bouquet resolveBouquet(@NotNull Sync sync) {
-        final @NotNull Service currentService = resolveService(sync);
-        final @NotNull Bouquet fromSession = session.getBouquet();
-        final @NotNull Set<Service> services = new HashSet<>(fromSession.getServices());
-
-        // Force refresh of the service within the set.
-        // (just calling add() would not overwrite the Service if one of it's incarnations is already present in the set.)
-        services.remove(currentService);
-        services.add(currentService);
-
-        // Force to use our copy of the current service if it is also the default service
-        if (fromSession.getDefaultService().equals(currentService)) {
-            return new Bouquet(currentService, services);
-        } else {
-            return new Bouquet(fromSession.getDefaultService(), services);
         }
     }
 
@@ -176,5 +183,20 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
 
     public @NotNull TransactionWithResult<@NotNull Sync> refreshSession(@NotNull Sync sync) {
         return new RefreshTransaction(sync, session, this);
+    }
+
+    public @NotNull Bouquet getBouquet() {
+        final @NotNull Set<Service> newServices = new HashSet<>();
+
+        for (final @NotNull Service service : services.values()) {
+            //noinspection Java8MapApi
+            if (serviceUpdates.containsKey(service.getIdentifier())) {
+                newServices.add(serviceUpdates.get(service.getIdentifier()));
+            } else {
+                newServices.add(service);
+            }
+        }
+
+        return new Bouquet(defaultService, newServices);
     }
 }
