@@ -28,7 +28,6 @@ import io.ybrid.api.Session;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
-import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,10 +79,5 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public @NotNull Bouquet getBouquet() {
         return new Bouquet(currentService);
-    }
-
-    @Override
-    public @NotNull Sync refresh(@NotNull Sync sync) {
-        return sync;
     }
 }

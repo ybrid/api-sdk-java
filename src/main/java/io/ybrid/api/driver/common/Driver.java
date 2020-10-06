@@ -28,7 +28,6 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
-import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
@@ -63,7 +62,6 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     abstract public @NotNull Bouquet getBouquet();
     abstract public @NotNull PlayoutInfo getPlayoutInfo();
     abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
-    abstract public @NotNull Sync refresh(@NotNull Sync sync);
 
     @Override
     public void close() throws IOException {

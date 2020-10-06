@@ -29,8 +29,6 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.hasIdentifier;
 import io.ybrid.api.metadata.source.Source;
-import io.ybrid.api.transaction.SimpleTransaction;
-import io.ybrid.api.transaction.TransactionWithResult;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,32 +37,6 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public final class MetadataMixer implements Consumer<@NotNull Sync> {
-    private static class RefreshTransaction extends SimpleTransaction implements TransactionWithResult<@NotNull Sync> {
-        private final @NotNull Sync request;
-        private final @NotNull Session session;
-        private final @NotNull Consumer<@NotNull Sync> consumer;
-        private @Nullable Sync result = null;
-
-        private RefreshTransaction(@NotNull Sync request, @NotNull Session session, @NotNull Consumer<@NotNull Sync> consumer) {
-            this.request = request;
-            this.session = session;
-            this.consumer = consumer;
-        }
-
-        @Override
-        protected void execute() throws Exception {
-            result = session.refresh(request);
-            consumer.accept(result);
-        }
-
-        @Override
-        public @NotNull Sync getResult() {
-            if (result == null)
-                throw new IllegalStateException("Transaction must be run before the result can be fetched");
-            return result;
-        }
-    }
-
     private final @NotNull Set<Source> sources = new HashSet<>();
     private final @NotNull Set<Sync> syncs = new HashSet<>();
     private final @NotNull Session session;
@@ -179,10 +151,6 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
 
     public @NotNull Service resolveService(@NotNull Sync sync) {
         return Objects.requireNonNull(upgrade(sync).getCurrentService());
-    }
-
-    public @NotNull TransactionWithResult<@NotNull Sync> refreshSession(@NotNull Sync sync) {
-        return new RefreshTransaction(sync, session, this);
     }
 
     public @NotNull Bouquet getBouquet() {

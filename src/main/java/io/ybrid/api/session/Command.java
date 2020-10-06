@@ -27,6 +27,7 @@ import io.ybrid.api.SubInfo;
 import io.ybrid.api.SwapMode;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
+import io.ybrid.api.metadata.Sync;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +57,7 @@ public enum Command {
     /**
      * Requests the refresh of a set of {@link SubInfo}.
      */
-    REFRESH(true, EnumSet.class),
+    REFRESH(true, new Class[]{EnumSet.class, Sync.class}),
     /**
      * Winds back to the live position of the stream.
      */
@@ -97,9 +98,13 @@ public enum Command {
     private final boolean argumentNotNull;
     private final @Nullable Class<?>[] argumentTypes;
 
-    Command(boolean argumentNotNull, @NotNull Class<?> argumentType) {
+    Command(boolean argumentNotNull, @NotNull Class<?>[] argumentTypes) {
         this.argumentNotNull = argumentNotNull;
-        this.argumentTypes = new Class[]{argumentType};
+        this.argumentTypes = argumentTypes;
+    }
+
+    Command(boolean argumentNotNull, @NotNull Class<?> argumentType) {
+        this(argumentNotNull, new Class[]{argumentType});
     }
 
     Command() {

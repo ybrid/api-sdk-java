@@ -219,11 +219,6 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public @NotNull Sync refresh(@NotNull Sync sync) {
-        return state.refresh(sync);
-    }
-
-    @Override
     public @NotNull Bouquet getBouquet() {
         return state.getBouquet();
     }
@@ -250,15 +245,28 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
                     e.printStackTrace();
                 }
                 break;
-            case REFRESH:
-                //noinspection unchecked
-                for (SubInfo subInfo : (EnumSet<SubInfo>)request.getArgumentNotNull(0)) {
+            case REFRESH: {
+                final @NotNull Object arg = request.getArgumentNotNull(0);
+                final @NotNull EnumSet<SubInfo> infos;
+
+                if (arg instanceof Sync) {
+                    infos = EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT);
+                } else {
+                    //noinspection unchecked
+                    infos = (EnumSet<SubInfo>) arg;
+                }
+
+                for (SubInfo subInfo : infos) {
                     if (shouldRequestSessionInfo(subInfo)) {
                         v2request(COMMAND_SESSION_INFO);
                         return;
                     }
                 }
+
+                if (arg instanceof Sync)
+                    state.refresh((Sync) arg);
                 break;
+            }
             case WIND_TO_LIVE:
                 v2request(COMMAND_PLAYOUT_WIND_BACK_TO_LIVE);
                 break;
