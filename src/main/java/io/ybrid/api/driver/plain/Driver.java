@@ -37,13 +37,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Driver extends io.ybrid.api.driver.common.Driver {
-    private final @NotNull Bouquet bouquet;
     private final @NotNull PlayoutInfo playoutInfo = new PlayoutInfo();
 
     protected Driver(Session session) {
         super(session);
-        this.bouquet = new Bouquet(new SimpleService());
-        this.currentService = bouquet.getDefaultService();
+        this.currentService = new SimpleService();
         setChanged(SubInfo.CAPABILITIES);
         setChanged(SubInfo.BOUQUET);
         setChanged(SubInfo.PLAYOUT);
@@ -81,7 +79,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull Bouquet getBouquet() {
-        return bouquet;
+        return new Bouquet(currentService);
     }
 
     @Override
