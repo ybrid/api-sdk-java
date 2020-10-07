@@ -142,4 +142,26 @@ public abstract class TransportDescription {
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
     }
+
+    /**
+     * This function must be called to signal any state changes of the transport's connection
+     * back to the description provider.
+     *
+     * @param state The new state of transport.
+     * @see TransportConnectionState
+     */
+    public void signalConnectionState(@NotNull TransportConnectionState state) {
+        switch (state) {
+            case DISCONNECTED:
+            case DISCONNECTING:
+            case ERROR:
+                metadataMixer.remove(getSource());
+                break;
+            case CONNECTING:
+            case CONNECTED:
+            case RECEIVED_EOF:
+                metadataMixer.add(getSource());
+                break;
+        }
+    }
 }
