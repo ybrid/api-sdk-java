@@ -37,6 +37,7 @@ public final class Sync implements hasIdentifier {
     private final @NotNull Identifier identifier = new Identifier();
     private final @NotNull Source source;
     private final @Nullable Sync parent;
+    private @Nullable Sync child;
     private final @Nullable Identifier predecessor;
     private final @Nullable Object sessionSpecific;
     private final @Nullable Service currentService;
@@ -135,6 +136,9 @@ public final class Sync implements hasIdentifier {
         this.currentTrack = currentTrack;
         this.nextTrack = nextTrack;
         this.temporalValidity = temporalValidity;
+
+        if (parent != null)
+            parent.setChild(this);
     }
 
     @Contract(pure = true)
@@ -183,6 +187,10 @@ public final class Sync implements hasIdentifier {
         return temporalValidity;
     }
 
+    private void setChild(@Nullable Sync child) {
+        this.child = child;
+    }
+
     public boolean isSuccessorOf(@NotNull Identifier identifier) {
         @Nullable Sync cur = this;
 
@@ -202,6 +210,14 @@ public final class Sync implements hasIdentifier {
         return isSuccessorOf(sync.getIdentifier());
     }
 
+    public @NotNull Sync getUpgraded() {
+        @NotNull Sync cur = this;
+
+        while (cur.child != null)
+            cur = cur.child;
+
+        return cur;
+    }
 
     @Override
     public boolean equals(Object o) {

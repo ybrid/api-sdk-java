@@ -38,7 +38,6 @@ import java.util.function.Consumer;
 
 public final class MetadataMixer implements Consumer<@NotNull Sync> {
     private final @NotNull Set<Source> sources = new HashSet<>();
-    private final @NotNull Set<Sync> syncs = new HashSet<>();
     private final @NotNull Session session;
     private final @NotNull Map<@NotNull Identifier, @NotNull Service> services = new HashMap<>();
     private final @NotNull Map<@NotNull Identifier, @NotNull Service> serviceUpdates = new HashMap<>();
@@ -47,25 +46,6 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
     public MetadataMixer(@NotNull Session session) {
         this.session = session;
         add(session.getSource());
-    }
-
-    private @NotNull Sync upgrade(@NotNull Sync sync) {
-        final @NotNull Sync.Builder builder = new Sync.Builder(sync.getSource(), sync);
-        @Nullable Sync cur = sync;
-
-        accept(sync);
-
-        for (final @NotNull Sync candidate : syncs) {
-            if (candidate.isSuccessorOf(cur))
-                cur = candidate;
-        }
-
-        while (cur != null) {
-            builder.loadDefaults(cur);
-            cur = cur.getParent();
-        }
-
-        return builder.build();
     }
 
     public synchronized void accept(@NotNull Bouquet bouquet) {
@@ -93,21 +73,9 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
 
     @Override
     public synchronized void accept(@NotNull Sync sync) {
-        if (syncs.contains(sync))
-            return;
-
         if (!sources.contains(sync.getSource()))
             return;
 
-        for (Iterator<Sync> iterator = syncs.iterator(); iterator.hasNext(); ) {
-            final @NotNull Sync cur = iterator.next();
-            if (cur.isSuccessorOf(sync))
-                return;
-            if (sync.isSuccessorOf(cur))
-                iterator.remove();
-        }
-
-        syncs.add(sync);
         if (sync.getCurrentService() != null)
             serviceUpdates.put(sync.getCurrentService().getIdentifier(), sync.getCurrentService());
     }
@@ -118,12 +86,6 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
 
     public synchronized void remove(@NotNull Source source) {
         sources.remove(source);
-        //noinspection Java8CollectionRemoveIf
-        for (Iterator<Sync> iterator = syncs.iterator(); iterator.hasNext(); ) {
-            final @NotNull Sync sync = iterator.next();
-            if (sync.getSource().equals(source))
-                iterator.remove();
-        }
     }
 
     @Contract("null -> null; !null -> !null")
@@ -141,7 +103,7 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
     }
 
     public @NotNull Metadata resolveMetadata(@NotNull Sync sync) {
-        final @NotNull Sync upgraded = upgrade(sync);
+        final @NotNull Sync upgraded = sync.getUpgraded();
 
         return new SimpleMetadata(Objects.requireNonNull(trackToItem(upgraded.getCurrentTrack())),
                 trackToItem(upgraded.getNextTrack()),
@@ -150,7 +112,7 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
     }
 
     public @NotNull Service resolveService(@NotNull Sync sync) {
-        return Objects.requireNonNull(upgrade(sync).getCurrentService());
+        return Objects.requireNonNull(sync.getUpgraded().getCurrentService());
     }
 
     public @NotNull Bouquet getBouquet() {
