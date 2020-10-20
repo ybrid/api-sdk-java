@@ -41,22 +41,23 @@ A simple example of using the Alias and Session classes as often seen in applica
 
 ```java
 import io.ybrid.api.*;
+import io.ybrid.api.session.Command;
 import java.io.IOException;
 import java.net.URL;
 
 class Client {
     void run() throws IOException {
         /* URL to the Bouquet to connect to */
-        URL url = new URL("https://stagecast.ybrid.io/adaptive-demo");
+        final URL url = new URL("https://stagecast.ybrid.io/adaptive-demo");
 
         /* Create an Alias object from the URL.*/
-        Alias alias = new Alias(url);
+        final Alias alias = new Alias(url);
 
         /* create an unconnected session */
-        Session session = alias.createSession();
+        final Session session = alias.createSession();
 
         /* Connect the session to the server. */
-        session.connect();
+        session.createTransaction(Command.CONNECT.makeRequest()).run();
 
         /* Run a player using this session. */
         runPlayer(session);
