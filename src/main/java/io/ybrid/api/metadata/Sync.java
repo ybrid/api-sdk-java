@@ -101,6 +101,9 @@ public final class Sync implements hasIdentifier {
             if (predecessor != null) {
                 loadDefaults(predecessor);
             }
+            if (parent != null) {
+                loadDefaults(parent);
+            }
         }
 
         public void loadDefaults(@NotNull Sync defaults) {

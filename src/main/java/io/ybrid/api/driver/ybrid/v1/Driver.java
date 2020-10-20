@@ -182,9 +182,9 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
                 if (arg instanceof Sync) {
                     final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), (Sync)arg);
 
+                    builder.autoFill();
                     builder.setCurrentTrack(metadata.getCurrentItem());
                     builder.setNextTrack(metadata.getNextItem());
-                    builder.setCurrentService(currentService);
                     builder.setTemporalValidity(getPlayoutInfo().getTemporalValidity());
 
                     session.getMetadataMixer().accept(builder.build());
