@@ -105,8 +105,12 @@ public final class MetadataMixer implements Consumer<@NotNull Sync>, KnowsSubInf
 
     public @NotNull Metadata resolveMetadata(@NotNull Sync sync) {
         final @NotNull Sync upgraded = sync.getUpgraded();
+        @Nullable Item currentItem = trackToItem(upgraded.getCurrentTrack());
 
-        return new SimpleMetadata(Objects.requireNonNull(trackToItem(upgraded.getCurrentTrack())),
+        if (currentItem == null)
+            currentItem = new SimpleItem(new Identifier());
+
+        return new SimpleMetadata(currentItem,
                 trackToItem(upgraded.getNextTrack()),
                 Objects.requireNonNull(upgraded.getCurrentService()),
                 upgraded.getTemporalValidity() != null ? upgraded.getTemporalValidity() : TemporalValidity.INDEFINITELY_VALID);
