@@ -22,13 +22,11 @@
 
 package io.ybrid.api.metadata;
 
-import io.ybrid.api.Identifier;
-import io.ybrid.api.Session;
-import io.ybrid.api.TemporalValidity;
+import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
-import io.ybrid.api.hasIdentifier;
 import io.ybrid.api.metadata.source.Source;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,11 +34,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-public final class MetadataMixer implements Consumer<@NotNull Sync> {
+public final class MetadataMixer implements Consumer<@NotNull Sync>, KnowsSubInfoState {
     private final @NotNull Set<Source> sources = new HashSet<>();
     private final @NotNull Session session;
     private final @NotNull Map<@NotNull Identifier, @NotNull Service> services = new HashMap<>();
     private final @NotNull Map<@NotNull Identifier, @NotNull Service> serviceUpdates = new HashMap<>();
+    private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private Service defaultService = null;
 
     public MetadataMixer(@NotNull Session session) {
@@ -76,8 +75,10 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
         if (!sources.contains(sync.getSource()))
             return;
 
-        if (sync.getCurrentService() != null)
+        if (sync.getCurrentService() != null) {
             serviceUpdates.put(sync.getCurrentService().getIdentifier(), sync.getCurrentService());
+            changed.add(SubInfo.BOUQUET);
+        }
     }
 
     public synchronized void add(@NotNull Source source) {
@@ -127,6 +128,21 @@ public final class MetadataMixer implements Consumer<@NotNull Sync> {
             }
         }
 
+        changed.remove(SubInfo.BOUQUET);
         return new Bouquet(defaultService, newServices);
+    }
+
+    /**
+     * This is internal API. Do not call this method.
+     *
+     * @param what The information to check
+     * @return Whether the corresponding getter needs to be called again.
+     * @see Session#hasChanged(SubInfo)
+     */
+    @Contract(pure = true)
+    @ApiStatus.Internal
+    @Override
+    public boolean hasChanged(@NotNull SubInfo what) {
+        return changed.contains(what);
     }
 }

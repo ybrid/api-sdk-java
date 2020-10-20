@@ -143,7 +143,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
-        return driver.hasChanged(what);
+        return metadataMixer.hasChanged(what) || driver.hasChanged(what);
     }
 
     /**
