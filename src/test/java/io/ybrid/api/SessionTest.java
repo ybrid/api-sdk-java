@@ -22,7 +22,6 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.transport.TransportDescription;
 import junit.framework.TestCase;
@@ -30,9 +29,6 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.EnumSet;
 
 public class SessionTest extends TestCase {
     public void testGetStreamURLPositive() throws IOException, URISyntaxException {
@@ -52,44 +48,6 @@ public class SessionTest extends TestCase {
             session.attachPlayer(newTransportDescription -> transportDescription[0] = newTransportDescription);
             session.createTransaction(Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
             assertNotNull(transportDescription[0]);
-
-            session.close();
-        }
-    }
-
-    public void testSessionInfo() throws IOException, InterruptedException, URISyntaxException {
-        for (URL aliasUrl : NetworkHelper.getAliases()) {
-            Session session = new Alias(aliasUrl).createSession();
-            Metadata oldMetadata = null;
-            Metadata newMetadata;
-
-            assertNotNull(session);
-
-            session.connect();
-
-            {
-                final TransportDescription[] transportDescription = new TransportDescription[1];
-                session.attachPlayer(newTransportDescription -> transportDescription[0] = newTransportDescription);
-                session.createTransaction(Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
-                assertEquals(200, NetworkHelper.ping(transportDescription[0]));
-            }
-
-            for (int i = 0; i < 10; i++) {
-                Instant start;
-                Instant end;
-
-                start = ClockManager.now();
-                session.createTransaction(Command.REFRESH.makeRequest(EnumSet.of(SubInfo.METADATA)));
-                newMetadata = session.getMetadata();
-                end = ClockManager.now();
-
-                assertNotNull(newMetadata);
-
-                System.out.println("i = " + i + ", end - start = " + Duration.between(start, end).toMillis() + "ms, (oldMetadata == newMetadata) = " + (oldMetadata == newMetadata));
-
-                oldMetadata = newMetadata;
-                Thread.sleep(100);
-            }
 
             session.close();
         }

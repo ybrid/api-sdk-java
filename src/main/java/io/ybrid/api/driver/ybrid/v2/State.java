@@ -29,6 +29,8 @@ import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.driver.ybrid.v1.SwapInfo;
 import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.Sync;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -83,9 +85,20 @@ final class State implements KnowsSubInfoState {
         lastUpdated.put(what, ClockManager.now());
     }
 
-    public Metadata getMetadata() {
-        clearChanged(SubInfo.METADATA);
-        return currentMetadata;
+    @Contract(pure = true)
+    public Service getCurrentService() {
+        return currentService;
+    }
+
+    public void refresh(@NotNull Sync sync) {
+        final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), sync);
+
+        builder.setCurrentTrack(currentMetadata.getCurrentItem());
+        builder.setNextTrack(currentMetadata.getNextItem());
+        builder.setCurrentService(currentService);
+        builder.setTemporalValidity(getPlayoutInfo().getTemporalValidity());
+
+        session.getMetadataMixer().accept(builder.build());
     }
 
     public Bouquet getBouquet() {

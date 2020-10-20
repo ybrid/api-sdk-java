@@ -22,10 +22,9 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.common.Driver;
-import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
@@ -62,33 +61,14 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull Alias alias;
     private @Nullable PlayerControl playerControl = null;
 
-    private void loadSessionToMixer() {
-        try {
-            // get initial metadata if any.
-            if (driver.hasChanged(SubInfo.BOUQUET)) {
-                metadataMixer.add(driver.getBouquet(), source);
-                metadataMixer.add(driver.getMetadata().getService(), source, MetadataMixer.Position.CURRENT, TemporalValidity.INDEFINITELY_VALID);
-                LOGGER.info("Loaded initial bouquet");
-            }
-            if (driver.hasChanged(SubInfo.METADATA)) {
-                driver.clearChanged(SubInfo.METADATA);
-                metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
-                LOGGER.info("Loaded initial metadata");
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
     Session(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
         this.server = server;
         this.alias = alias;
         this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
-        this.metadataMixer = new MetadataMixer(this.driver::acceptSessionSpecific);
+        this.metadataMixer = new MetadataMixer(this);
 
         activeWorkarounds.merge(alias.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
-
-        loadSessionToMixer();
     }
 
     /**
@@ -119,15 +99,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return driver.getCapabilities();
     }
 
-    public @NotNull Bouquet getBouquet() {
-        if (driver.hasChanged(SubInfo.BOUQUET)) {
-            driver.clearChanged(SubInfo.BOUQUET);
-            metadataMixer.add(driver.getBouquet(), source);
-        }
-
-        return metadataMixer.getBouquet();
-    }
-
     /**
      * Creates a transaction for this session.
      * @param request The request for the transaction.
@@ -145,7 +116,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
                 case CONNECT_INITIAL_TRANSPORT:
                 case RECONNECT_TRANSPORT: {
                     final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), metadataMixer.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
+                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), driver.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
 
                     Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                     break;
@@ -159,17 +130,10 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
         switch (request.getCommand()) {
             case CONNECT:
-                loadSessionToMixer();
+            case REFRESH:
+                metadataMixer.accept(driver.getBouquet());
                 break;
         }
-    }
-
-    public @NotNull Metadata getMetadata() {
-        if (driver.hasChanged(SubInfo.METADATA)) {
-            driver.clearChanged(SubInfo.METADATA);
-            metadataMixer.add(driver.getMetadata(), source, getPlayoutInfo().getTemporalValidity());
-        }
-        return metadataMixer.getMetadata();
     }
 
     public @NotNull PlayoutInfo getPlayoutInfo() {
@@ -230,6 +194,16 @@ public final class Session implements Connectable, KnowsSubInfoState {
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
+    }
+
+    /**
+     * Gets the {@link Source} for this session.
+     *
+     * @return The {@link Source} for this session.
+     */
+    @Contract(pure = true)
+    public @NotNull Source getSource() {
+        return source;
     }
 
     @Override

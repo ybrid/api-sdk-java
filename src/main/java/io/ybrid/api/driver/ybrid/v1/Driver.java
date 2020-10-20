@@ -26,6 +26,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
 import io.ybrid.api.metadata.InvalidMetadata;
+import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,7 +97,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         if (json == null)
             throw new IOException("No valid reply from server");
 
-        metadata = new Metadata(session.getMetadataMixer().getCurrentService(), json);
+        metadata = new Metadata(getCurrentService(), json);
         setChanged(SubInfo.METADATA);
         setChanged(SubInfo.BOUQUET);
 
@@ -152,24 +153,44 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
             case CONNECT:
                 connect();
                 break;
-            case REFRESH:
-                //noinspection unchecked
-                final @NotNull EnumSet<SubInfo> localSet = EnumSet.copyOf((EnumSet<SubInfo>)request.getArgumentNotNull(0));
+            case REFRESH: {
+                final @NotNull Object arg = request.getArgumentNotNull(0);
+                final @NotNull EnumSet<SubInfo> infos;
 
-                localSet.remove(SubInfo.BOUQUET);
+                if (arg instanceof Sync) {
+                    infos = EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT);
+                } else {
+                    //noinspection unchecked
+                    infos = EnumSet.copyOf((EnumSet<SubInfo>) arg);
 
-                if (localSet.isEmpty())
-                    return;
+                    infos.remove(SubInfo.BOUQUET);
 
-                if (localSet.contains(SubInfo.VALIDITY)) {
+                    if (infos.isEmpty())
+                        return;
+
+                }
+
+                if (infos.contains(SubInfo.VALIDITY)) {
                     updateValidity();
-                    if (localSet.size() > 1) {
+                    if (infos.size() > 1) {
                         updateMetadata();
                     }
                 } else {
                     updateMetadata();
                 }
+
+                if (arg instanceof Sync) {
+                    final @NotNull Sync.Builder builder = new Sync.Builder(session.getSource(), (Sync)arg);
+
+                    builder.autoFill();
+                    builder.setCurrentTrack(metadata.getCurrentItem());
+                    builder.setNextTrack(metadata.getNextItem());
+                    builder.setTemporalValidity(getPlayoutInfo().getTemporalValidity());
+
+                    session.getMetadataMixer().accept(builder.build());
+                }
                 break;
+            }
             case SWAP_ITEM:
                 final Map<String, String> parameters;
 
@@ -187,12 +208,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull Bouquet getBouquet() {
-        return new Bouquet(session.getMetadataMixer().getCurrentService());
-    }
-
-    @Override
-    public io.ybrid.api.metadata.@NotNull Metadata getMetadata() {
-        return metadata;
+        return new Bouquet(getCurrentService());
     }
 
     @Override

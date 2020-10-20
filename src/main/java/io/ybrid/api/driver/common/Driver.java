@@ -28,10 +28,10 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
-import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -59,7 +59,6 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     protected String token;
     protected Service currentService;
 
-    abstract public @NotNull Metadata getMetadata();
     abstract public @NotNull Bouquet getBouquet();
     abstract public @NotNull PlayoutInfo getPlayoutInfo();
     abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
@@ -104,6 +103,11 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
         clearChanged(SubInfo.CAPABILITIES);
         return capabilities;
+    }
+
+    @Contract(pure = true)
+    public @NotNull Service getCurrentService() {
+        return currentService;
     }
 
     public void clearChanged(@NotNull SubInfo what) {
@@ -168,7 +172,7 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
                 capabilities.remove(Capability.AUDIO_TRANSPORT);
                 break;
             case SWAP_SERVICE:
-                if (request.getArgumentNotNull(0).equals(session.getMetadataMixer().getCurrentService()))
+                if (request.getArgumentNotNull(0).equals(getCurrentService()))
                     return;
 
                 throw new UnsupportedOperationException("Can not swap to given Service");

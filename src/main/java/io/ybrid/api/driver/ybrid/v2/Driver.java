@@ -26,8 +26,9 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
-import io.ybrid.api.metadata.Metadata;
+import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -212,8 +213,9 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public @NotNull Metadata getMetadata() {
-        return state.getMetadata();
+    @Contract(pure = true)
+    public @NotNull Service getCurrentService() {
+        return state.getCurrentService();
     }
 
     @Override
@@ -243,15 +245,28 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
                     e.printStackTrace();
                 }
                 break;
-            case REFRESH:
-                //noinspection unchecked
-                for (SubInfo subInfo : (EnumSet<SubInfo>)request.getArgumentNotNull(0)) {
+            case REFRESH: {
+                final @NotNull Object arg = request.getArgumentNotNull(0);
+                final @NotNull EnumSet<SubInfo> infos;
+
+                if (arg instanceof Sync) {
+                    infos = EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT);
+                } else {
+                    //noinspection unchecked
+                    infos = (EnumSet<SubInfo>) arg;
+                }
+
+                for (SubInfo subInfo : infos) {
                     if (shouldRequestSessionInfo(subInfo)) {
                         v2request(COMMAND_SESSION_INFO);
                         return;
                     }
                 }
+
+                if (arg instanceof Sync)
+                    state.refresh((Sync) arg);
                 break;
+            }
             case WIND_TO_LIVE:
                 v2request(COMMAND_PLAYOUT_WIND_BACK_TO_LIVE);
                 break;
