@@ -238,7 +238,8 @@ final class State implements KnowsSubInfoState {
             try {
                 final @NotNull JSONObject json = list.optJSONObject(i);
                 final @NotNull String identifier = json.getString("id");
-                final @NotNull Service service = new SimpleService(identifier, new Identifier(identifier), jsonToURL(json, "iconURL"), null);
+                final @NotNull String displayName = json.getString("displayName");
+                final @NotNull Service service = new SimpleService(displayName, new Identifier(identifier), jsonToURL(json, "iconURL"), null);
                 services.put(service.getIdentifier(), service);
             } catch (MalformedURLException ignored) {
             }
