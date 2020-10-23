@@ -82,14 +82,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        final @NotNull URL baseUrl;
-
-        assertConnected();
-
-        baseUrl = state.getBaseUrl();
-
-        //noinspection SpellCheckingInspection
-        return new URI(baseUrl.getProtocol().equals("https") ? "icyxs" : "icyx", null, baseUrl.getHost(), baseUrl.getPort() > 0 ? baseUrl.getPort() : baseUrl.getDefaultPort(), baseUrl.getPath(), "session-id=" + token, null);
+        return state.getPlaybackURI();
     }
 
     private void handleUpdates() {

@@ -36,16 +36,20 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 final class State implements KnowsSubInfoState {
+    private static final Logger LOGGER = Logger.getLogger(State.class.getName());
+
     private final Map<Identifier, Service> services = new HashMap<>();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private final EnumMap<SubInfo, Instant> lastUpdated = new EnumMap<>(SubInfo.class);
@@ -56,6 +60,8 @@ final class State implements KnowsSubInfoState {
     private SwapInfo swapInfo;
     private Duration behindLive;
     private URL baseUrl;
+    private URI playbackURI;
+    private String token;
 
     public State(@NotNull Session session, @NotNull URL baseUrl) {
         this.session = session;
@@ -64,6 +70,10 @@ final class State implements KnowsSubInfoState {
 
     public URL getBaseUrl() {
         return baseUrl;
+    }
+
+    public URI getPlaybackURI() {
+        return playbackURI;
     }
 
     @Override
@@ -154,6 +164,53 @@ final class State implements KnowsSubInfoState {
             baseUrl = newURL;
     }
 
+    private URI guessPlaybackURI() throws URISyntaxException, UnsupportedEncodingException {
+        final @NotNull URI ret = new URI(baseUrl.getProtocol().equals("https") ? "icyxs" : "icyx",
+                null,
+                baseUrl.getHost(),
+                baseUrl.getPort() > 0 ? baseUrl.getPort() : baseUrl.getDefaultPort(),
+                baseUrl.getPath(),
+                "session-id=" + URLEncoder.encode(token, StandardCharsets.UTF_8.name()),
+                null);
+        LOGGER.warning("Was asked to guess playbackURI, guessed: " + ret);
+        return ret;
+    }
+
+    private void updatePlaybackURI(@Nullable String raw) {
+        LOGGER.info("Request to set playbackURI to: " + raw);
+        if (raw == null)
+            return;
+
+        try {
+            final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
+
+            switch (workarounds.get(Workaround.WORKAROUND_BAD_FQDN)) {
+                case FALSE:
+                    playbackURI = new URI(raw);
+                    break;
+                case TRUE:
+                    if (playbackURI == null)
+                        playbackURI = guessPlaybackURI();
+                    break;
+                case TRI: {
+                    final @NotNull URI uri = new URI(raw);
+                    if (io.ybrid.api.driver.common.Driver.isValidFQDN(uri.getHost())) {
+                        playbackURI = uri;
+                    } else {
+                        if (playbackURI == null)
+                            playbackURI = guessPlaybackURI();
+                        workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                    }
+                    break;
+                }
+            }
+
+            LOGGER.info("playbackURI set to: " + playbackURI);
+        } catch (URISyntaxException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private @Nullable URL jsonToURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
         final @Nullable String value = json.getString(key);
         if (value != null && !value.isEmpty()) {
@@ -229,6 +286,7 @@ final class State implements KnowsSubInfoState {
             return;
 
         updateBaseURL(raw.getString("baseURL"));
+        updatePlaybackURI(raw.getString("playbackURI"));
 
         behindLive = Duration.ofMillis(raw.getLong("offsetToLive"));
         setChanged(SubInfo.PLAYOUT);
@@ -245,6 +303,7 @@ final class State implements KnowsSubInfoState {
     }
 
     void accept(Response response) {
+        token = response.getToken();
         updateBouquet(response.getRawBouquet());
         updateMetadata(response.getRawMetadata()); // This must be after updateBouquet() has been called.
         updatePlayout(response.getRawPlayout());
