@@ -81,4 +81,12 @@ public final class Source implements hasIdentifier {
     public int hashCode() {
         return Objects.hash(identifier);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "Source{" +
+                "type=" + type +
+                ", identifier=" + identifier +
+                '}';
+    }
 }
