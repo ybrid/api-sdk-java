@@ -252,7 +252,6 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
                 for (SubInfo subInfo : infos) {
                     if (shouldRequestSessionInfo(subInfo)) {
                         v2request(COMMAND_SESSION_INFO);
-                        return;
                     }
                 }
 
