@@ -53,6 +53,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
             case CONNECT:
                 connected = true;
                 capabilities.add(Capability.AUDIO_TRANSPORT);
+                setChanged(SubInfo.CAPABILITIES);
                 break;
             case REFRESH:
                 // no-op.
