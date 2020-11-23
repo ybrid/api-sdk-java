@@ -25,6 +25,8 @@ package io.ybrid.api;
 import junit.framework.TestCase;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class ServerTest extends TestCase {
@@ -52,12 +54,12 @@ public class ServerTest extends TestCase {
         }
     }
 
-    public void testGetStreamSessionPositive() throws MalformedURLException {
+    public void testGetStreamSessionPositive() throws MalformedURLException, URISyntaxException {
         String hostname = "localhost";
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            MediaEndpoint alias = new MediaEndpoint(new URL("http://" + hostname + mountpoint));
+            MediaEndpoint alias = new MediaEndpoint(new URI("http://" + hostname + mountpoint));
             Session session = alias.createSession();
 
             assertNotNull(session);

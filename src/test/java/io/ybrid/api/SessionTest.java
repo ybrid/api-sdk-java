@@ -27,17 +27,17 @@ import io.ybrid.api.transport.TransportDescription;
 import junit.framework.TestCase;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 public class SessionTest extends TestCase {
     public void testGetStreamURLPositive() throws IOException, URISyntaxException {
-        for (URL aliasUrl : NetworkHelper.getAliases()) {
+        for (URI mediaEndpointURI : NetworkHelper.getAliases()) {
             final MediaEndpoint alias;
             final Session session;
             final TransportDescription[] transportDescription = new TransportDescription[1];
 
-            alias = new MediaEndpoint(aliasUrl);
+            alias = new MediaEndpoint(mediaEndpointURI);
             assertNotNull(alias);
 
             session = alias.createSession();

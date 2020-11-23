@@ -57,7 +57,7 @@ public final class FactorySelector {
         EnumSet<ApiVersion> set = getSupportedVersions(server, mediaEndpoint);
 
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("Supported versions for " + mediaEndpoint.getUrl().toString() +
+            LOGGER.info("Supported versions for " + mediaEndpoint.getURI().toString() +
                     " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
                     " = " + set);
         }
@@ -91,7 +91,7 @@ public final class FactorySelector {
         }
 
         try {
-            final String path = mediaEndpoint.getUrl().getPath() + "/ctrl/v2/session/info";
+            final String path = mediaEndpoint.getURI().getPath() + "/ctrl/v2/session/info";
             final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
             final JSONRequest request = new JSONRequest(url, "GET");
             JSONArray supportedVersions;

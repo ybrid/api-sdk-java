@@ -36,7 +36,7 @@ import java.net.URL;
 
 @SuppressWarnings("ConstantConditions")
 public class NetworkHelper {
-    private static final URL[] aliases = {
+    private static final URI[] aliases = {
     };
 
     /**
@@ -70,7 +70,7 @@ public class NetworkHelper {
      * @return The {@link URL} of the alias or null if no online tests should be preformed.
      */
     @Contract(pure = true)
-    public static @Nullable URL getDefaultAlias() {
+    public static @Nullable URI getDefaultAlias() {
         if (!isOnline())
             return null;
         return aliases[0];
@@ -82,7 +82,7 @@ public class NetworkHelper {
      * @return The array of Aliases used for tests.
      */
     @Contract(pure = true)
-    public static URL[] getAliases() {
+    public static URI[] getAliases() {
         return aliases;
     }
 
