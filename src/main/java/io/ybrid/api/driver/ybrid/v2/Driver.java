@@ -65,7 +65,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
     public Driver(@NotNull Session session) {
         super(session);
-        state = new State(session, session.getAlias().getUrl());
+        state = new State(session, session.getMediaEndpoint().getUrl());
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_BAD_PACKED_RESPONSE);

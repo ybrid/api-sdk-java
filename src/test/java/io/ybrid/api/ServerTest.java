@@ -57,7 +57,7 @@ public class ServerTest extends TestCase {
         String[] mountpoints = {"/test", "/a/b"};
 
         for (String mountpoint : mountpoints) {
-            Alias alias = new Alias(new URL("http://" + hostname + mountpoint));
+            MediaEndpoint alias = new MediaEndpoint(new URL("http://" + hostname + mountpoint));
             Session session = alias.createSession();
 
             assertNotNull(session);

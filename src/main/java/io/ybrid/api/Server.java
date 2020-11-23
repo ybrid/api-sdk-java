@@ -123,17 +123,17 @@ public final class Server implements Connectable, ApiUser {
     }
 
     /**
-     * Create a new unconnected {@link Session} for the given {@link Alias}.
+     * Create a new unconnected {@link Session} for the given {@link MediaEndpoint}.
      *
      * This may connect if needed. See {@link #connect()}.
      *
-     * @param alias The {@link Alias} to connect to.
+     * @param mediaEndpoint The {@link MediaEndpoint} to connect to.
      * @return Returns the newly created {@link Session}.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
      */
-    public @NotNull Session createSession(@NotNull Alias alias) throws MalformedURLException {
+    public @NotNull Session createSession(@NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
         connect();
-        return new Session(this, alias);
+        return new Session(this, mediaEndpoint);
     }
 
     @Override

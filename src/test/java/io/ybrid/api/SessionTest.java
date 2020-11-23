@@ -33,11 +33,11 @@ import java.net.URL;
 public class SessionTest extends TestCase {
     public void testGetStreamURLPositive() throws IOException, URISyntaxException {
         for (URL aliasUrl : NetworkHelper.getAliases()) {
-            final Alias alias;
+            final MediaEndpoint alias;
             final Session session;
             final TransportDescription[] transportDescription = new TransportDescription[1];
 
-            alias = new Alias(aliasUrl);
+            alias = new MediaEndpoint(aliasUrl);
             assertNotNull(alias);
 
             session = alias.createSession();

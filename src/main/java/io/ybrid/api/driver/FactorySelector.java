@@ -23,7 +23,7 @@
 package io.ybrid.api.driver;
 
 
-import io.ybrid.api.Alias;
+import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.ApiVersion;
 import io.ybrid.api.Server;
 import io.ybrid.api.driver.common.Factory;
@@ -38,7 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class selects a {@link Factory} based on a given {@link Server} and {@link Alias}.
+ * This class selects a {@link Factory} based on a given {@link Server} and {@link MediaEndpoint}.
  *
  * This should not be used directly.
  */
@@ -50,14 +50,14 @@ public final class FactorySelector {
      * This method may access the network.
      *
      * @param server The {@link Server} to use.
-     * @param alias The {@link Alias} to use.
+     * @param mediaEndpoint The {@link MediaEndpoint} to use.
      * @return The instance of the {@link Factory} to use.
      */
-    public static @NotNull Factory getFactory(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
-        EnumSet<ApiVersion> set = getSupportedVersions(server, alias);
+    public static @NotNull Factory getFactory(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
+        EnumSet<ApiVersion> set = getSupportedVersions(server, mediaEndpoint);
 
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("Supported versions for " + alias.getUrl().toString() +
+            LOGGER.info("Supported versions for " + mediaEndpoint.getUrl().toString() +
                     " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
                     " = " + set);
         }
@@ -77,11 +77,11 @@ public final class FactorySelector {
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
+    private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
         EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
 
-        if (alias.getForcedApiVersion() != null) {
-            ret.add(alias.getForcedApiVersion());
+        if (mediaEndpoint.getForcedApiVersion() != null) {
+            ret.add(mediaEndpoint.getForcedApiVersion());
             return ret;
         }
 
@@ -91,7 +91,7 @@ public final class FactorySelector {
         }
 
         try {
-            final String path = alias.getUrl().getPath() + "/ctrl/v2/session/info";
+            final String path = mediaEndpoint.getUrl().getPath() + "/ctrl/v2/session/info";
             final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
             final JSONRequest request = new JSONRequest(url, "GET");
             JSONArray supportedVersions;

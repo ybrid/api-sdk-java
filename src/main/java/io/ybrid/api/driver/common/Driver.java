@@ -95,7 +95,7 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     }
 
     protected final String getMountpoint() throws MalformedURLException {
-        String mountpoint = session.getAlias().getUrl().getPath();
+        String mountpoint = session.getMediaEndpoint().getUrl().getPath();
         assertValidMountpoint(mountpoint);
         return mountpoint;
     }

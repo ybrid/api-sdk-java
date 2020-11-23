@@ -58,16 +58,16 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull MetadataMixer metadataMixer;
     private final @NotNull Driver driver;
     private final @NotNull Server server;
-    private final @NotNull Alias alias;
+    private final @NotNull MediaEndpoint mediaEndpoint;
     private @Nullable PlayerControl playerControl = null;
 
-    Session(@NotNull Server server, @NotNull Alias alias) throws MalformedURLException {
+    Session(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
         this.server = server;
-        this.alias = alias;
-        this.driver = FactorySelector.getFactory(server, alias).getDriver(this);
+        this.mediaEndpoint = mediaEndpoint;
+        this.driver = FactorySelector.getFactory(server, mediaEndpoint).getDriver(this);
         this.metadataMixer = new MetadataMixer(this);
 
-        activeWorkarounds.merge(alias.getWorkarounds());
+        activeWorkarounds.merge(mediaEndpoint.getWorkarounds());
         activeWorkarounds.merge(server.getWorkarounds());
     }
 
@@ -80,11 +80,11 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     /**
-     * Gets the {@link Alias} used for this session.
-     * @return Returns the {@link Alias}.
+     * Gets the {@link MediaEndpoint} used for this session.
+     * @return Returns the {@link MediaEndpoint}.
      */
-    public @NotNull Alias getAlias() {
-        return alias;
+    public @NotNull MediaEndpoint getMediaEndpoint() {
+        return mediaEndpoint;
     }
 
     /**
@@ -116,7 +116,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
                 case CONNECT_INITIAL_TRANSPORT:
                 case RECONNECT_TRANSPORT: {
                     final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), driver.getCurrentService(), metadataMixer, acceptedMediaFormats, alias.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
+                    final @NotNull TransportDescription transportDescription = new URITransportDescription(new Source(SourceType.TRANSPORT), driver.getCurrentService(), metadataMixer, acceptedMediaFormats, mediaEndpoint.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
 
                     Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                     break;
@@ -185,11 +185,11 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * This map can be updated by the caller if needed.
      * However special care must be taken when doing so to avoid data corruption.
      * Generally applications that wish to communicate workaround settings
-     * should use {@link Alias#getWorkarounds()} or {@link Server#getWorkarounds()}.
+     * should use {@link MediaEndpoint#getWorkarounds()} or {@link Server#getWorkarounds()}.
      * Those methods are always safe to use.
      *
      * @return The map of active workarounds.
-     * @see Alias#getWorkarounds()
+     * @see MediaEndpoint#getWorkarounds()
      * @see Server#getWorkarounds()
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {

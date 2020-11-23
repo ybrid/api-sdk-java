@@ -33,10 +33,10 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * An Alias represents a entry point on a {@link Server}.
- * The alias can be used to open a {@link Session} and a stream.
+ * An MediaEndpoint represents a entry point on a {@link Server}.
+ * The MediaEndpoint can be used to open a {@link Session} and a stream.
  */
-public final class Alias implements ApiUser {
+public final class MediaEndpoint implements ApiUser {
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull URL url;
     private final @NotNull Server server;
@@ -44,12 +44,12 @@ public final class Alias implements ApiUser {
     private @Nullable Map<String, Double> acceptedLanguages = null;
 
     /**
-     * Create a new Alias using the given {@link Server}.
+     * Create a new MediaEndpoint using the given {@link Server}.
      *
-     * @param url The {@link URL} of the Alias.
-     * @param server The {@link Server} to use for contacting the Alias.
+     * @param url The {@link URL} of the MediaEndpoint.
+     * @param server The {@link Server} to use for contacting the MediaEndpoint.
      */
-    public Alias(@NotNull URL url, @Nullable Server server) throws MalformedURLException {
+    public MediaEndpoint(@NotNull URL url, @Nullable Server server) throws MalformedURLException {
         this.url = url;
         if (server != null) {
             this.server = server;
@@ -59,39 +59,39 @@ public final class Alias implements ApiUser {
     }
 
     /**
-     * Create a new Alias using the given {@link Server}.
+     * Create a new MediaEndpoint using the given {@link Server}.
      *
-     * @param url The {@link URL} of the Alias.
+     * @param url The {@link URL} of the MediaEndpoint.
      */
-    public Alias(@NotNull URL url) throws MalformedURLException {
+    public MediaEndpoint(@NotNull URL url) throws MalformedURLException {
         this(url, null);
     }
 
     /**
-     * Get the {@link URL} of the Alias.
-     * @return Returns the {@link URL} of the Alias.
+     * Get the {@link URL} of the MediaEndpoint.
+     * @return Returns the {@link URL} of the MediaEndpoint.
      */
     public @NotNull URL getUrl() {
         return url;
     }
 
     /**
-     * Returns the {@link Server} used by this Alias.
+     * Returns the {@link Server} used by this MediaEndpoint.
      * If no {@link Server} has been passed to the Constructor it is automatically created.
      *
-     * @return Returns the {@link Server} object of this Alias.
+     * @return Returns the {@link Server} object of this MediaEndpoint.
      */
     public @NotNull Server getServer() {
         return server;
     }
 
     /**
-     * Create a {@link Session} using this Alias.
+     * Create a {@link Session} using this MediaEndpoint.
      *
      * This may will connect the used {@link Server} if needed.
      *
      * @return Returns a newly created and unconnected {@link Session}.
-     * @throws MalformedURLException Thrown if any error is found in the Alias' URL.
+     * @throws MalformedURLException Thrown if any error is found in the MediaEndpoint' URL.
      */
     public @NotNull Session createSession() throws MalformedURLException {
         return getServer().createSession(this);

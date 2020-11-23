@@ -51,10 +51,10 @@ class Client {
         final URL url = new URL("https://stagecast.ybrid.io/adaptive-demo");
 
         /* Create an Alias object from the URL.*/
-        final Alias alias = new Alias(url);
+        final MediaEndpoint mediaEndpoint = new MediaEndpoint(url);
 
         /* create an unconnected session */
-        final Session session = alias.createSession();
+        final Session session = mediaEndpoint.createSession();
 
         /* Connect the session to the server. */
         session.createTransaction(Command.CONNECT.makeRequest()).run();
