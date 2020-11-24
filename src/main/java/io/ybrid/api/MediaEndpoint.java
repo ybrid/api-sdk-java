@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.util.Utils;
+import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,7 @@ import java.util.Map;
  * An MediaEndpoint represents a entry point on a {@link Server}.
  * The MediaEndpoint can be used to open a {@link Session} and a stream.
  */
-public final class MediaEndpoint implements ApiUser {
+public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull URI uri;
     private final @NotNull Server server;
@@ -108,14 +109,8 @@ public final class MediaEndpoint implements ApiUser {
         return getServer().createSession(this);
     }
 
-    /**
-     * Get list of languages requested by the user.
-     *
-     * If this returns null no {@code Accept-Language:}-header should be generated.
-     * @return List of languages requested by the user or null.
-     */
-    @Nullable
-    public Map<String, Double> getAcceptedLanguages() {
+    @Override
+    public @Nullable Map<String, Double> getAcceptedLanguages() {
         return acceptedLanguages;
     }
 

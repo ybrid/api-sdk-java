@@ -23,12 +23,13 @@
 package io.ybrid.api.transport;
 
 import io.ybrid.api.MediaEndpoint;
-import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.Server;
 import io.ybrid.api.WorkaroundMap;
 import io.ybrid.api.bouquet.Service;
+import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.transaction.Transaction;
+import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,7 @@ import java.util.Map;
 /**
  * This is the base class for all transport descriptions.
  */
-public abstract class TransportDescription {
+public abstract class TransportDescription implements hasAcceptedLanguages {
     protected @NotNull final Source source;
     protected @NotNull final Service initialService;
     protected @NotNull final MetadataMixer metadataMixer;
@@ -105,14 +106,7 @@ public abstract class TransportDescription {
         return acceptedMediaFormats;
     }
 
-    /**
-     * Get list of languages accepted for this transport.
-     * <P>
-     * For HTTP based protocols:
-     * If this returns {@code null} no {@code Accept-Language:}-header should be generated.
-     *
-     * @return List of languages accepted or {@code null}.
-     */
+    @Override
     public @Nullable Map<String, Double> getAcceptedLanguages() {
         return acceptedLanguages;
     }
