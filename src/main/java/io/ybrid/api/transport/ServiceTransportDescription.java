@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * This is the base class for all transport descriptions.
  */
-public abstract class TransportDescription implements hasAcceptedLanguages {
+public abstract class ServiceTransportDescription implements hasAcceptedLanguages {
     protected @NotNull final Source source;
     protected @NotNull final Service initialService;
     protected @NotNull final MetadataMixer metadataMixer;
@@ -60,7 +60,7 @@ public abstract class TransportDescription implements hasAcceptedLanguages {
      * @see #getAcceptedMediaFormats()
      * @see #getAcceptedLanguages()
      */
-    protected TransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds) {
+    protected ServiceTransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds) {
         this.source = source;
         this.initialService = initialService;
         this.metadataMixer = metadataMixer;

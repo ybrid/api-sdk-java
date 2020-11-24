@@ -52,7 +52,7 @@ public enum TransportConnectionState {
     /**
      * The transport's connection could not be established or was lost at any non-disconnected state.
      * After a transport's connection reached this state no attempt must be made to reconnect.
-     * Rather a new {@link TransportDescription} must be requested.
+     * Rather a new {@link ServiceTransportDescription} must be requested.
      */
     ERROR;
 }

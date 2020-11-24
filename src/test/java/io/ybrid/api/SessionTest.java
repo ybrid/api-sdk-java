@@ -23,7 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.session.Command;
-import io.ybrid.api.transport.TransportDescription;
+import io.ybrid.api.transport.ServiceTransportDescription;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class SessionTest extends TestCase {
         for (URI mediaEndpointURI : NetworkHelper.getAliases()) {
             final MediaEndpoint alias;
             final Session session;
-            final TransportDescription[] transportDescription = new TransportDescription[1];
+            final ServiceTransportDescription[] transportDescription = new ServiceTransportDescription[1];
 
             alias = new MediaEndpoint(mediaEndpointURI);
             assertNotNull(alias);

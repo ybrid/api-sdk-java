@@ -23,7 +23,7 @@
 package io.ybrid.api.session;
 
 import io.ybrid.api.Session;
-import io.ybrid.api.transport.TransportDescription;
+import io.ybrid.api.transport.ServiceTransportDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,5 +68,5 @@ public interface PlayerControl {
      * @param transportDescription The transport to connect.
      * @throws Exception Any exception thrown while connecting the new transport.
      */
-    void connectTransport(@NotNull TransportDescription transportDescription) throws Exception;
+    void connectTransport(@NotNull ServiceTransportDescription transportDescription) throws Exception;
 }

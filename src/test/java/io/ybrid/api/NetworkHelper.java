@@ -22,8 +22,8 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.transport.TransportDescription;
-import io.ybrid.api.transport.URITransportDescription;
+import io.ybrid.api.transport.ServiceTransportDescription;
+import io.ybrid.api.transport.ServiceURITransportDescription;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,11 +124,11 @@ public class NetworkHelper {
     /**
      * Make a HTTP GET request and discard returned document.
      *
-     * @param transportDescription The {@link TransportDescription} to ping
+     * @param transportDescription The {@link ServiceTransportDescription} to ping
      * @return The HTTP status code
      * @throws IOException Thrown on any I/O-Error
      */
-    public static int ping(TransportDescription transportDescription) throws IOException {
-        return ping(((URITransportDescription) transportDescription).getURI());
+    public static int ping(ServiceTransportDescription transportDescription) throws IOException {
+        return ping(((ServiceURITransportDescription) transportDescription).getURI());
     }
 }

@@ -35,11 +35,11 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * This class implements {@link URI} based {@link TransportDescription}s.
+ * This class implements {@link URI} based {@link ServiceTransportDescription}s.
  * In addition to the pure URI this class can also store a {@link MessageBody} to be send alongside
  * the request to the given URI.
  */
-public class URITransportDescription extends TransportDescription {
+public class ServiceURITransportDescription extends ServiceTransportDescription {
     private final @NotNull URI uri;
     private final @Nullable MessageBody requestBody;
 
@@ -54,7 +54,7 @@ public class URITransportDescription extends TransportDescription {
      * @param uri The URI to connect to.
      * @param requestBody The {@link MessageBody} to send alongside the request or {@code null}.
      */
-    public URITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds, @NotNull URI uri, @Nullable MessageBody requestBody) {
+    public ServiceURITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds, @NotNull URI uri, @Nullable MessageBody requestBody) {
         super(source, initialService, metadataMixer, acceptedMediaFormats, acceptedLanguages, transaction, activeWorkarounds);
         this.uri = uri;
         this.requestBody = requestBody;
