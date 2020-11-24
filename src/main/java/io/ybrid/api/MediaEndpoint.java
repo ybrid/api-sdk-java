@@ -79,43 +79,6 @@ public final class MediaEndpoint implements ApiUser {
     }
 
     /**
-     * Create a new MediaEndpoint using the given {@link Server}.
-     *
-     * @param url The {@link URL} of the MediaEndpoint.
-     * @param server The {@link Server} to use for contacting the MediaEndpoint.
-     * @deprecated Use {@link #MediaEndpoint(URI, Server)}.
-     */
-    @Deprecated
-    public MediaEndpoint(@NotNull URL url, @Nullable Server server) throws MalformedURLException {
-        this(toURI(url), server);
-    }
-
-    /**
-     * Create a new MediaEndpoint using the given {@link URL}.
-     *
-     * @param url The {@link URL} of the MediaEndpoint.
-     * @deprecated Use {@link #MediaEndpoint(URI)}.
-     */
-    @Deprecated
-    public MediaEndpoint(@NotNull URL url) throws MalformedURLException {
-        this(url, null);
-    }
-
-    /**
-     * Get the {@link URL} of the MediaEndpoint.
-     * @return Returns the {@link URL} of the MediaEndpoint.
-     * @deprecated Use {@link #getURI()}.
-     */
-    @Deprecated
-    public @NotNull URL getUrl() {
-        try {
-            return uri.toURL();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Get the {@link URI} of the MediaEndpoint.
      * @return Returns the {@link URI} of the MediaEndpoint.
      */
