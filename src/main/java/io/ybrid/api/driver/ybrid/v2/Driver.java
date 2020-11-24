@@ -65,14 +65,14 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
     public Driver(@NotNull Session session) {
         super(session);
-        state = new State(session, session.getMediaEndpoint().getUrl());
+        state = new State(session, session.getMediaEndpoint().getURI());
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_BAD_PACKED_RESPONSE);
     }
 
     private URL getUrl(@Nullable String suffix) throws MalformedURLException {
-        final @NotNull URL baseUrl = state.getBaseUrl();
+        final @NotNull URL baseUrl = state.getBaseURI().toURL();
 
         if (suffix == null || suffix.isEmpty())
             return baseUrl;
@@ -187,8 +187,8 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         if (!isValid())
             throw new IOException("Session is not valid.");
 
-        if (state.getBaseUrl().getPath().contains("/ctrl/v2/session/info")) {
-            response = v2request(state.getBaseUrl().toString());
+        if (state.getBaseURI().getPath().contains("/ctrl/v2/session/info")) {
+            response = v2request(state.getBaseURI().toString());
         } else {
             response = v2request(COMMAND_SESSION_CREATE);
         }

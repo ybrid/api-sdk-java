@@ -59,17 +59,17 @@ final class State implements KnowsSubInfoState {
     private Metadata currentMetadata;
     private SwapInfo swapInfo;
     private Duration behindLive;
-    private URL baseUrl;
+    private URI baseURI;
     private URI playbackURI;
     private String token;
 
-    public State(@NotNull Session session, @NotNull URL baseUrl) {
+    public State(@NotNull Session session, @NotNull URI baseURI) {
         this.session = session;
-        this.baseUrl = baseUrl;
+        this.baseURI = baseURI;
     }
 
-    public URL getBaseUrl() {
-        return baseUrl;
+    public URI getBaseURI() {
+        return baseURI;
     }
 
     public URI getPlaybackURI() {
@@ -135,7 +135,7 @@ final class State implements KnowsSubInfoState {
 
     private void updateBaseURL(@Nullable String raw) {
         final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
-        @Nullable URL newURL = null;
+        @Nullable URI newURI = null;
 
         if (raw == null)
             return;
@@ -143,33 +143,33 @@ final class State implements KnowsSubInfoState {
         try {
             switch (workarounds.get(Workaround.WORKAROUND_BAD_FQDN)) {
                 case TRUE:
-                    newURL = null;
+                    newURI = null;
                     break;
                 case FALSE:
-                    newURL = new URL(raw);
+                    newURI = new URI(raw);
                     break;
                 case TRI:
-                    newURL = new URL(raw);
-                    if (!io.ybrid.api.driver.common.Driver.isValidFQDN(newURL.getHost())) {
-                        newURL = null;
+                    newURI = new URI(raw);
+                    if (!io.ybrid.api.driver.common.Driver.isValidFQDN(newURI.getHost())) {
+                        newURI = null;
                         workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
                     }
                     break;
             }
-        } catch (MalformedURLException ignored) {
+        } catch (URISyntaxException ignored) {
         }
 
 
-        if (newURL != null)
-            baseUrl = newURL;
+        if (newURI != null)
+            baseURI = newURI;
     }
 
-    private URI guessPlaybackURI() throws URISyntaxException, UnsupportedEncodingException {
-        final @NotNull URI ret = new URI(baseUrl.getProtocol().equals("https") ? "icyxs" : "icyx",
+    private URI guessPlaybackURI() throws URISyntaxException, UnsupportedEncodingException, MalformedURLException {
+        final @NotNull URI ret = new URI(baseURI.getScheme().equals("https") ? "icyxs" : "icyx",
                 null,
-                baseUrl.getHost(),
-                baseUrl.getPort() > 0 ? baseUrl.getPort() : baseUrl.getDefaultPort(),
-                baseUrl.getPath(),
+                baseURI.getHost(),
+                baseURI.getPort() > 0 ? baseURI.getPort() : baseURI.toURL().getDefaultPort(),
+                baseURI.getPath(),
                 "session-id=" + URLEncoder.encode(token, StandardCharsets.UTF_8.name()),
                 null);
         LOGGER.warning("Was asked to guess playbackURI, guessed: " + ret);
@@ -206,7 +206,7 @@ final class State implements KnowsSubInfoState {
             }
 
             LOGGER.info("playbackURI set to: " + playbackURI);
-        } catch (URISyntaxException | UnsupportedEncodingException e) {
+        } catch (URISyntaxException | UnsupportedEncodingException | MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
