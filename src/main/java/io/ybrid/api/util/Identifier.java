@@ -20,49 +20,54 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.util;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
+
 /**
- * Generic tri-state class.
+ * This class abstracts identifiers as used in metadata.
  */
-public enum TriState {
-    /**
-     * Third state.
-     */
-    TRI,
-    /**
-     * False or negative state.
-     */
-    FALSE,
-    /**
-     * True or positive state.
-     */
-    TRUE;
+public final class Identifier implements Serializable {
+    private static final long serialVersionUID = -3059154610234338954L;
+
+    private final @NotNull String identifier;
 
     /**
-     * Alias for the third state.
+     * Main constructor.
+     * @param identifier The identifier to use as string.
      */
-    public static final @NotNull TriState NULL = TRI;
-    /**
-     * Alias for the third state.
-     */
-    public static final @NotNull TriState AUTOMATIC = TRI;
+    public Identifier(@NotNull String identifier) {
+        if (identifier.isEmpty())
+            throw new IllegalArgumentException("Empty string passed as identifier");
+        this.identifier = identifier;
+    }
 
     /**
-     * Conversion of a TriState value to a boolean.
-     * @param def The value used for the third state.
-     * @return The corresponding boolean value.
+     * Constructs a new random identifier.
      */
-    public boolean toBool(boolean def) {
-        switch (this) {
-            case FALSE:
-                return false;
-            case TRUE:
-                return true;
-        }
+    public Identifier() {
+        this(UUID.randomUUID().toString());
+    }
 
-        return def;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Identifier that = (Identifier) o;
+        return identifier.equals(that.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(identifier);
+    }
+
+    @Override
+    public String toString() {
+        return identifier;
     }
 }

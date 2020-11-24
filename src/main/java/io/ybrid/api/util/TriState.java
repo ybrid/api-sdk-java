@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,16 +20,49 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.util;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
- * This interface is implemented by objects that can return a name that is meaningful to the user.
+ * Generic tri-state class.
  */
-public interface hasDisplayName {
+public enum TriState {
     /**
-     * Get a name for the object that is meaningful to the user.
-     *
-     * @return the name to display.
+     * Third state.
      */
-    String getDisplayName();
+    TRI,
+    /**
+     * False or negative state.
+     */
+    FALSE,
+    /**
+     * True or positive state.
+     */
+    TRUE;
+
+    /**
+     * Alias for the third state.
+     */
+    public static final @NotNull TriState NULL = TRI;
+    /**
+     * Alias for the third state.
+     */
+    public static final @NotNull TriState AUTOMATIC = TRI;
+
+    /**
+     * Conversion of a TriState value to a boolean.
+     * @param def The value used for the third state.
+     * @return The corresponding boolean value.
+     */
+    public boolean toBool(boolean def) {
+        switch (this) {
+            case FALSE:
+                return false;
+            case TRUE:
+                return true;
+        }
+
+        return def;
+    }
 }

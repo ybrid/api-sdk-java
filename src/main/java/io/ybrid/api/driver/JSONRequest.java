@@ -22,8 +22,8 @@
 
 package io.ybrid.api.driver;
 
-import io.ybrid.api.Utils;
-import io.ybrid.api.XWWWFormUrlEncodedBuilder;
+import io.ybrid.api.util.Utils;
+import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;

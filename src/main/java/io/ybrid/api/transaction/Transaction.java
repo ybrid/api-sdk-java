@@ -22,7 +22,7 @@
 
 package io.ybrid.api.transaction;
 
-import io.ybrid.api.hasIdentifier;
+import io.ybrid.api.util.hasIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

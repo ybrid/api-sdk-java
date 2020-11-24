@@ -22,7 +22,7 @@
 
 package io.ybrid.api.driver.ybrid.v1;
 
-import io.ybrid.api.Identifier;
+import io.ybrid.api.util.Identifier;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.SimpleItem;
 import org.jetbrains.annotations.NotNull;

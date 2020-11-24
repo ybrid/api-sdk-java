@@ -22,10 +22,10 @@
 
 package io.ybrid.api.metadata;
 
-import io.ybrid.api.Identifier;
+import io.ybrid.api.util.Identifier;
 import io.ybrid.api.TemporalValidity;
 import io.ybrid.api.bouquet.Service;
-import io.ybrid.api.hasIdentifier;
+import io.ybrid.api.util.hasIdentifier;
 import io.ybrid.api.metadata.source.Source;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -20,54 +20,17 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.util;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.UUID;
-
 /**
- * This class abstracts identifiers as used in metadata.
+ * This interface is implemented by objects that do have a identifier.
  */
-public final class Identifier implements Serializable {
-    private static final long serialVersionUID = -3059154610234338954L;
-
-    private final @NotNull String identifier;
-
+public interface hasIdentifier {
     /**
-     * Main constructor.
-     * @param identifier The identifier to use as string.
+     * This returns a identifier for the object.
+     * @return the identifier of the object.
      */
-    public Identifier(@NotNull String identifier) {
-        if (identifier.isEmpty())
-            throw new IllegalArgumentException("Empty string passed as identifier");
-        this.identifier = identifier;
-    }
-
-    /**
-     * Constructs a new random identifier.
-     */
-    public Identifier() {
-        this(UUID.randomUUID().toString());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Identifier that = (Identifier) o;
-        return identifier.equals(that.identifier);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(identifier);
-    }
-
-    @Override
-    public String toString() {
-        return identifier;
-    }
+    @NotNull Identifier getIdentifier();
 }

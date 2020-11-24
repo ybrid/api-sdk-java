@@ -22,7 +22,7 @@
 
 package io.ybrid.api.driver.plain;
 
-import io.ybrid.api.Identifier;
+import io.ybrid.api.util.Identifier;
 import io.ybrid.api.metadata.SimpleItem;
 
 public class Item extends SimpleItem {

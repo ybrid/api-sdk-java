@@ -34,6 +34,7 @@ import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.TransportDescription;
 import io.ybrid.api.transport.URITransportDescription;
+import io.ybrid.api.util.Connectable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

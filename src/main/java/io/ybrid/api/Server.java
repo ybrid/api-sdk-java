@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.util.Connectable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

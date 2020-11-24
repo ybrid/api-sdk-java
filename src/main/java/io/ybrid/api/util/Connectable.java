@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,17 +20,39 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.util;
 
-import org.jetbrains.annotations.NotNull;
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
- * This interface is implemented by objects that do have a identifier.
+ * Interface that is implemented by objects that can be connected to a remote resource.
  */
-public interface hasIdentifier {
+public interface Connectable extends Closeable {
     /**
-     * This returns a identifier for the object.
-     * @return the identifier of the object.
+     * Connect to the remote resource.
+     * @throws IOException Thrown when a connection can not be established.
      */
-    @NotNull Identifier getIdentifier();
+    void connect() throws IOException;
+
+    /**
+     * Disconnects from a the remote resource.
+     */
+    void disconnect();
+
+    /**
+     * Returns whether the object is connected.
+     * @return Whether the object is connected.
+     */
+    boolean isConnected();
+
+    /**
+     * Closes resources open by this object.
+     * By default disconnect from the remote resource.
+     * @throws IOException Thrown in case of I/O-Errors.
+     */
+    @Override
+    default void close() throws IOException {
+        disconnect();
+    }
 }

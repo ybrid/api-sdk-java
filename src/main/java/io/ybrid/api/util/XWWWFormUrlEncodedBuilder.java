@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.util;
 
 import io.ybrid.api.message.MessageBody;
 import org.jetbrains.annotations.NotNull;

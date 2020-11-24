@@ -22,7 +22,7 @@
 
 package io.ybrid.api.bouquet.source;
 
-import io.ybrid.api.Identifier;
+import io.ybrid.api.util.Identifier;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.source.Source;
 import org.jetbrains.annotations.Contract;

@@ -22,8 +22,8 @@
 
 package io.ybrid.api.metadata.source;
 
-import io.ybrid.api.Identifier;
-import io.ybrid.api.hasIdentifier;
+import io.ybrid.api.util.Identifier;
+import io.ybrid.api.util.hasIdentifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
