@@ -122,7 +122,7 @@ public final class MetadataMixer implements Consumer<@NotNull Sync>, KnowsSubInf
         return Objects.requireNonNull(sync.getUpgraded().getCurrentService());
     }
 
-    public @NotNull Bouquet getBouquet() {
+    public synchronized @NotNull Bouquet getBouquet() {
         final @NotNull Set<Service> newServices = new HashSet<>();
 
         for (final @NotNull Service service : services.values()) {
