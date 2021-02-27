@@ -223,6 +223,7 @@ final class State implements KnowsSubInfoState {
     }
 
     private void updateBouquet(@Nullable JSONObject raw) {
+        final @NotNull WorkaroundMap workaroundMap = session.getActiveWorkarounds();
         JSONArray list;
         String primary;
         String active;
@@ -240,8 +241,22 @@ final class State implements KnowsSubInfoState {
             try {
                 final @NotNull JSONObject json = list.optJSONObject(i);
                 final @NotNull String identifier = json.getString("id");
-                final @NotNull String displayName = json.getString("displayName");
-                final @NotNull Service service = new SimpleService(displayName, new Identifier(identifier), jsonToURL(json, "iconURL"), null);
+                @NotNull String displayName;
+                final @NotNull Service service;
+
+                try {
+                    displayName = json.getString("displayName");
+                } catch (Throwable e) {
+                    if (workaroundMap.get(Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME).toBool(true)) {
+                        displayName = identifier;
+                        workaroundMap.enableIfAutomatic(Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME);
+                    } else {
+                        throw new RuntimeException("Service \"" + identifier + "\" has no displayName. Consider to enabling " + Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME, e);
+                    }
+                }
+
+                service = new SimpleService(displayName, new Identifier(identifier), jsonToURL(json, "iconURL"), null);
+
                 services.put(service.getIdentifier(), service);
             } catch (MalformedURLException ignored) {
             }

@@ -48,5 +48,9 @@ public enum Workaround {
      * Note MP3 streams always start with silence. For servers only supporting this legacy codec
      * this workaround should be in the automatic or enabled state.
      */
-    WORKAROUND_SKIP_SILENCE;
+    WORKAROUND_SKIP_SILENCE,
+    /**
+     * Workaround used for servers that provide services without a {@code DisplayName}.
+     */
+    WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME;
 }
