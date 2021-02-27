@@ -52,5 +52,9 @@ public enum Workaround {
     /**
      * Workaround used for servers that provide services without a {@code DisplayName}.
      */
-    WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME;
+    WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME,
+    /**
+     * Workaround used for servers that provide a invalid playback URI.
+     */
+    WORKAROUND_INVALID_PLAYBACK_URI;
 }

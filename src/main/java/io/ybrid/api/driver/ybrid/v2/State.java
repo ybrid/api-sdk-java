@@ -179,37 +179,46 @@ final class State implements KnowsSubInfoState {
     }
 
     private void updatePlaybackURI(@Nullable String raw) {
+        final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
+
         LOGGER.info("Request to set playbackURI to: " + raw);
-        if (raw == null)
-            return;
 
-        try {
-            final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
+        if (workarounds.get(Workaround.WORKAROUND_INVALID_PLAYBACK_URI).toBool(false)) {
+            try {
+                playbackURI = guessPlaybackURI();
+            } catch (URISyntaxException | UnsupportedEncodingException | MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            if (raw == null)
+                return;
 
-            switch (workarounds.get(Workaround.WORKAROUND_BAD_FQDN)) {
-                case FALSE:
-                    playbackURI = new URI(raw);
-                    break;
-                case TRUE:
-                    if (playbackURI == null)
-                        playbackURI = guessPlaybackURI();
-                    break;
-                case TRI: {
-                    final @NotNull URI uri = new URI(raw);
-                    if (io.ybrid.api.driver.common.Driver.isValidFQDN(uri.getHost())) {
-                        playbackURI = uri;
-                    } else {
+            try {
+                switch (workarounds.get(Workaround.WORKAROUND_BAD_FQDN)) {
+                    case FALSE:
+                        playbackURI = new URI(raw);
+                        break;
+                    case TRUE:
                         if (playbackURI == null)
                             playbackURI = guessPlaybackURI();
-                        workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                        break;
+                    case TRI: {
+                        final @NotNull URI uri = new URI(raw);
+                        if (io.ybrid.api.driver.common.Driver.isValidFQDN(uri.getHost())) {
+                            playbackURI = uri;
+                        } else {
+                            if (playbackURI == null)
+                                playbackURI = guessPlaybackURI();
+                            workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                        }
+                        break;
                     }
-                    break;
                 }
-            }
 
-            LOGGER.info("playbackURI set to: " + playbackURI);
-        } catch (URISyntaxException | UnsupportedEncodingException | MalformedURLException e) {
-            throw new RuntimeException(e);
+                LOGGER.info("playbackURI set to: " + playbackURI);
+            } catch (URISyntaxException | UnsupportedEncodingException | MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
