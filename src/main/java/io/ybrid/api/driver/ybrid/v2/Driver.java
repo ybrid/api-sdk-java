@@ -145,9 +145,10 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
             }
 
             response = new Response(Objects.requireNonNull(request(url, parameters)));
-            state.accept(response);
 
             try {
+                state.accept(response);
+
                 if (!response.getValid())
                     setInvalid();
             } catch (Exception e) {
