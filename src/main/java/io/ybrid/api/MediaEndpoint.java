@@ -29,8 +29,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -46,14 +44,6 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     private final @NotNull Server server;
     private @Nullable ApiVersion apiVersion = null;
     private @Nullable Map<String, Double> acceptedLanguages = null;
-
-    static private URI toURI(@NotNull URL url) {
-        try {
-            return url.toURI();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Create a new MediaEndpoint using the given {@link Server}.
