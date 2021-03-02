@@ -132,7 +132,7 @@ public class XWWWFormUrlEncodedBuilder implements MessageBody {
      * Renders the result into a array of bytes suitable for over-the-wire transmission.
      * @return The result as a byte array.
      */
-    public @NotNull byte[] getBytes() {
+    public byte[] getBytes() {
         return toString().getBytes(StandardCharsets.US_ASCII);
     }
 

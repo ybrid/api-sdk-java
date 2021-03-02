@@ -50,7 +50,7 @@ public final class JSONRequest {
     private final @NotNull URL url;
     private final @NotNull String requestMethod;
     private final @Nullable String requestBodyContentType;
-    private final @Nullable byte[] requestBody;
+    private final byte[] requestBody;
     private @Nullable JSONObject responseBody = null;
 
     @SuppressWarnings("RedundantIfStatement")
@@ -80,7 +80,7 @@ public final class JSONRequest {
      * @param requestBodyContentType Content-type of the request body or null.
      * @param requestBody Request body or null.
      */
-    public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable String requestBodyContentType, @Nullable byte[] requestBody) throws IllegalArgumentException {
+    public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable String requestBodyContentType, byte[] requestBody) throws IllegalArgumentException {
         this.url = url;
         this.requestMethod = requestMethod;
 

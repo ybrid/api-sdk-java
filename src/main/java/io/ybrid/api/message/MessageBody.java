@@ -39,5 +39,5 @@ public interface MessageBody {
      * Renders the message body into a array of bytes suitable for over-the-wire transmission.
      * @return The result as a byte array.
      */
-    @NotNull byte[] getBytes();
+    byte[] getBytes();
 }
