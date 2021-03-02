@@ -28,10 +28,9 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public class SessionTest extends TestCase {
-    public void testGetStreamURLPositive() throws IOException, URISyntaxException {
+    public void testGetStreamURLPositive() throws IOException {
         for (URI mediaEndpointURI : NetworkHelper.getAliases()) {
             final MediaEndpoint alias;
             final Session session;

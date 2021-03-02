@@ -77,7 +77,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return driver;
     }
 
-    Session(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
+    Session(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
         this.server = server;
         this.mediaEndpoint = mediaEndpoint;
         this.metadataMixer = new MetadataMixer(this);

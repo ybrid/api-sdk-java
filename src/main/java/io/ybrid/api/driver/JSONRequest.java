@@ -31,7 +31,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -123,7 +122,7 @@ public final class JSONRequest {
      * @param url URL to request.
      * @param requestMethod Request method to be used if protocol uses HTTP-style methods.
      */
-    public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable Map<String, String> requestBody) throws IllegalArgumentException, UnsupportedEncodingException {
+    public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable Map<String, String> requestBody) throws IllegalArgumentException {
         this.url = url;
         this.requestMethod = requestMethod;
 

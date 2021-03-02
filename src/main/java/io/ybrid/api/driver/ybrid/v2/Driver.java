@@ -36,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -82,7 +81,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public URI getStreamURI() throws MalformedURLException, URISyntaxException {
+    public URI getStreamURI() {
         return state.getPlaybackURI();
     }
 
@@ -171,7 +170,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         return v2request(command, null);
     }
 
-    protected boolean shouldRequestSessionInfo(@NotNull SubInfo what) throws IOException {
+    protected boolean shouldRequestSessionInfo(@NotNull SubInfo what) {
         Instant lastUpdate;
 
         assertConnected();

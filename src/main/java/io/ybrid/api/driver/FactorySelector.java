@@ -77,7 +77,7 @@ public final class FactorySelector {
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
+    private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
         EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
 
         if (mediaEndpoint.getForcedApiVersion() != null) {
