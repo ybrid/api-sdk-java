@@ -38,14 +38,12 @@ import java.util.function.Consumer;
 
 public final class MetadataMixer implements Consumer<@NotNull Sync>, KnowsSubInfoState {
     private final @NotNull Set<Source> sources = new HashSet<>();
-    private final @NotNull Session session;
     private final @NotNull Map<@NotNull Identifier, @NotNull Service> services = new HashMap<>();
     private final @NotNull Map<@NotNull Identifier, @NotNull Service> serviceUpdates = new HashMap<>();
     private final @NotNull EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     private Service defaultService = null;
 
     public MetadataMixer(@NotNull Session session) {
-        this.session = session;
         add(session.getSource());
     }
 
