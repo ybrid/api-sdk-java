@@ -33,7 +33,10 @@ import java.net.URL;
  * This class represents the connection to a specific Ybrid server.
  *
  * Objects of this class can be reused for several sessions.
+ *
+ * @deprecated This class should no longer be used directly by the user.
  */
+@Deprecated
 public final class Server implements Connectable, ApiUser {
     /**
      * The default port used for Ybrid servers.
