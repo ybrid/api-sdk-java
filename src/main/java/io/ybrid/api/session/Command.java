@@ -163,7 +163,7 @@ public enum Command {
      * @param argument The argument to pass as part of the request.
      * @return The newly created request.
      */
-    @Contract(" -> new")
+    @Contract("_ -> new")
     public @NotNull Request makeRequest(@Nullable Object argument) throws IllegalArgumentException {
         if (numberOfArguments() != 1)
             throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 1");
