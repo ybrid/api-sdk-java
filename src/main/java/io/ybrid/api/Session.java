@@ -135,7 +135,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
                 case CONNECT_INITIAL_TRANSPORT:
                 case RECONNECT_TRANSPORT: {
                     final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-                    final @NotNull ServiceTransportDescription transportDescription = new ServiceURITransportDescription(new Source(SourceType.TRANSPORT), driver.getCurrentService(), metadataMixer, acceptedMediaFormats, mediaEndpoint.getAcceptedLanguages(), transaction, getActiveWorkarounds(), driver.getStreamURI(), null);
+                    final @NotNull ServiceTransportDescription transportDescription = new ServiceURITransportDescription(new Source(SourceType.TRANSPORT), getDriver().getCurrentService(), metadataMixer, acceptedMediaFormats, mediaEndpoint.getAcceptedLanguages(), transaction, getActiveWorkarounds(), getDriver().getStreamURI(), null);
 
                     Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                     break;
