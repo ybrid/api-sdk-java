@@ -57,15 +57,29 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final @NotNull MetadataMixer metadataMixer;
-    private final @NotNull Driver driver;
     private final @NotNull Server server;
     private final @NotNull MediaEndpoint mediaEndpoint;
     private @Nullable PlayerControl playerControl = null;
+    private @Nullable Driver driver;
+
+    private @NotNull Driver getDriver() {
+        if (driver != null)
+            return driver;
+
+        LOGGER.info("Connecting driver...");
+        try {
+            this.driver = FactorySelector.getFactory(server, mediaEndpoint).getDriver(this);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        LOGGER.info("Selected driver: " + driver.getClass().getName());
+
+        return driver;
+    }
 
     Session(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
         this.server = server;
         this.mediaEndpoint = mediaEndpoint;
-        this.driver = FactorySelector.getFactory(server, mediaEndpoint).getDriver(this);
         this.metadataMixer = new MetadataMixer(this);
 
         activeWorkarounds.merge(mediaEndpoint.getWorkarounds());
@@ -97,7 +111,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     public @NotNull CapabilitySet getCapabilities() {
-        return driver.getCapabilities();
+        return getDriver().getCapabilities();
     }
 
     /**
@@ -112,6 +126,10 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     private void executeTransaction(@NotNull Transaction transaction) throws IOException {
         final @NotNull Request request = ((SessionTransaction)transaction).getRequest();
+
+        // Ensure we run all transactions with a valid driver.
+        getDriver();
+
         try {
             switch (request.getCommand()) {
                 case CONNECT_INITIAL_TRANSPORT:
@@ -123,7 +141,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
                     break;
                 }
                 default:
-                    driver.executeRequest(request);
+                    getDriver().executeRequest(request);
             }
         } catch (Exception e) {
             throw new IOException(e);
@@ -132,19 +150,23 @@ public final class Session implements Connectable, KnowsSubInfoState {
         switch (request.getCommand()) {
             case CONNECT:
             case REFRESH:
-                metadataMixer.accept(driver.getBouquet());
+                metadataMixer.accept(getDriver().getBouquet());
                 break;
         }
     }
 
     public @NotNull PlayoutInfo getPlayoutInfo() {
-        driver.clearChanged(SubInfo.PLAYOUT);
-        return driver.getPlayoutInfo();
+        getDriver().clearChanged(SubInfo.PLAYOUT);
+        return getDriver().getPlayoutInfo();
     }
 
     @Override
     public boolean hasChanged(@NotNull SubInfo what) {
-        return metadataMixer.hasChanged(what) || driver.hasChanged(what);
+        if (driver == null) {
+            return metadataMixer.hasChanged(what);
+        } else {
+            return metadataMixer.hasChanged(what) || driver.hasChanged(what);
+        }
     }
 
     /**
@@ -209,6 +231,8 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     @Override
     public boolean isConnected() {
+        if (driver == null)
+            return false;
         return driver.isConnected();
     }
 
@@ -239,12 +263,13 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     public boolean isValid() {
-        driver.clearChanged(SubInfo.VALIDITY);
+        if (driver != null)
+            driver.clearChanged(SubInfo.VALIDITY);
         return driver.isValid();
     }
 
     @Override
     public void close() throws IOException {
-        driver.close();
+        getDriver().close();
     }
 }
