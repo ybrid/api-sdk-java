@@ -86,6 +86,8 @@ public interface PlayoutInfo extends Serializable {
         @NotNull final Duration aliasAdjustment = adjustment;
 
         return new PlayoutInfo() {
+            private static final long serialVersionUID = -1720896005620054208L;
+
             @NotNull private final PlayoutInfo parent = aliasThis;
             @NotNull private final Duration adjustment = aliasAdjustment;
 

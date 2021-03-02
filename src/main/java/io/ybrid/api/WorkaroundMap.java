@@ -44,6 +44,8 @@ import java.util.Map;
  * All values are initialised to {@link TriState#AUTOMATIC} after object creation.
  */
 public class WorkaroundMap extends EnumMap<Workaround, TriState> {
+    private static final long serialVersionUID = 8697139292689958137L;
+
     /**
      * The main constructor.
      */

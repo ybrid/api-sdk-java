@@ -29,9 +29,13 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 
 public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
+    private static final long serialVersionUID = -6346059867180411426L;
+
     @Override
     public @NotNull SwapInfo getSwapInfo() {
         return new SwapInfo() {
+            private static final long serialVersionUID = -3341012359396714429L;
+
             @Override
             public boolean isNextSwapReturnToMain() {
                 return false;

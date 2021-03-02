@@ -30,6 +30,8 @@ import java.time.Duration;
 import java.time.Instant;
 
 public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
+    private static final long serialVersionUID = -9060307971835366582L;
+
     @NotNull
     protected final SwapInfo swapInfo;
     @Nullable

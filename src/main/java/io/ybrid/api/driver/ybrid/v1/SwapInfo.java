@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 public final class SwapInfo extends io.ybrid.api.driver.common.SwapInfo {
+    private static final long serialVersionUID = -3443872200483361536L;
+
     public SwapInfo(@NotNull JSONObject json) {
         nextSwapReturnsToMain = json.getBoolean("nextSwapReturnsToMain");
         swapsLeft = json.getInt("swapsLeft");

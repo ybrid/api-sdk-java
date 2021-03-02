@@ -25,6 +25,8 @@ package io.ybrid.api.driver.common;
 import java.util.Objects;
 
 abstract public class SwapInfo implements io.ybrid.api.SwapInfo {
+    private static final long serialVersionUID = 2429025611223161928L;
+
     protected boolean nextSwapReturnsToMain;
     protected int swapsLeft;
 
