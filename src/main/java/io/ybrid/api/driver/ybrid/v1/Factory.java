@@ -27,9 +27,9 @@ import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This implements the {@link io.ybrid.api.driver.common.Factory} for version 1 API.
+ * This implements the {@link io.ybrid.api.driver.Factory} for version 1 API.
  */
-public final class Factory extends io.ybrid.api.driver.common.Factory {
+public final class Factory implements io.ybrid.api.driver.Factory {
     @Override
     public @NotNull Driver getDriver(@NotNull Session session) {
         return new io.ybrid.api.driver.ybrid.v1.Driver(session);

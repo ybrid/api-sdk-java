@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,20 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.common;
+package io.ybrid.api.driver;
 
 import io.ybrid.api.Session;
+import io.ybrid.api.driver.common.Driver;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This implements a Factory for drivers. This should not be used directly.
  */
-abstract public class Factory {
+public interface Factory {
     /**
      * Gets a driver instance.
      * @param session The {@link Session} to return a driver for.
      * @return Returns the new instance of the driver.
      */
-    @NotNull
-    public abstract Driver getDriver(@NotNull Session session);
+    @NotNull Driver getDriver(@NotNull Session session);
 }
