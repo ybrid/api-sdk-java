@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,43 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.ybrid.v1;
+package io.ybrid.api.driver.ybrid.common;
 
-import io.ybrid.api.TemporalValidity;
-import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
-import java.time.Duration;
+import java.net.URL;
 
-public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
-        super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
-                json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
-                );
+final class Companion extends io.ybrid.api.driver.common.Companion {
+    private static String getString(@NotNull JSONObject json, @NotNull String key) {
+        String ret;
+
+        if (json.isNull(key))
+            return null;
+
+        ret = json.getString(key);
+        if (ret.isEmpty())
+            return null;
+
+        return ret;
+    }
+
+    private static URL getURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
+        String string = getString(json, key);
+        if (string == null)
+            return null;
+
+        return new URL(string);
+    }
+
+    Companion(@NotNull JSONObject json) throws MalformedURLException {
+        alternativeText = getString(json, "altText");
+        height = json.getInt("height");
+        width = json.getInt("width");
+        sequenceNumber = json.getInt("sequenceNumber");
+        staticResource = getURL(json, "staticResourceURL");
+        onClick = getURL(json, "onClickThroughURL");
+        onView = getURL(json, "onCreativeViewURL");
     }
 }

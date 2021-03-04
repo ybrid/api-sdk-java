@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.driver.ybrid.v1;
+package io.ybrid.api.driver.ybrid.common;
 
-import io.ybrid.api.util.Identifier;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.SimpleItem;
+import io.ybrid.api.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 final class Item extends SimpleItem {
-    static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
+    static final Logger LOGGER = Logger.getLogger(Item.class.getName());
     protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
 
 
