@@ -64,7 +64,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public URI getStreamURI() throws MalformedURLException, URISyntaxException {
+    public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
         Server server = session.getServer();
 
         assertConnected();

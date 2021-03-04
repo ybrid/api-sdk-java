@@ -24,6 +24,7 @@ package io.ybrid.api.driver.icy;
 
 import io.ybrid.api.Server;
 import io.ybrid.api.Session;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -35,7 +36,7 @@ public class Driver extends io.ybrid.api.driver.plain.Driver {
     }
 
     @Override
-    public URI getStreamURI() throws MalformedURLException, URISyntaxException {
+    public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
         Server server = session.getServer();
 
         assertConnected();

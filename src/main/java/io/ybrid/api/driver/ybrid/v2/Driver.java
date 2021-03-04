@@ -81,7 +81,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public URI getStreamURI() {
+    public @NotNull URI getStreamURI() {
         return state.getPlaybackURI();
     }
 

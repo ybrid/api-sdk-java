@@ -41,7 +41,7 @@ public interface Driver extends Closeable, KnowsSubInfoState {
 
     @NotNull PlayoutInfo getPlayoutInfo();
 
-    URI getStreamURI() throws MalformedURLException, URISyntaxException;
+    @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException;
 
     @NotNull io.ybrid.api.CapabilitySet getCapabilities();
 
