@@ -52,12 +52,14 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     private io.ybrid.api.metadata.Metadata metadata;
     private PlayoutInfo playoutInfo;
+    private @NotNull String hostname;
 
     public Driver(Session session) {
         super(session);
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
 
+        this.hostname = session.getServer().getHostname();
         this.currentService = new SimpleService();
         metadata = new InvalidMetadata(this.currentService);
 
@@ -67,7 +69,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
         Server server = session.getServer();
-        String hostname = this.hostname;
         String path = getMountpoint() + "/ctrl/" + command;
 
         if (token != null) {
@@ -78,9 +79,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
             }
             parameters.put("sessionId", token);
         }
-
-        if (hostname == null)
-            hostname = server.getHostname();
 
         final URL url = new URL(server.getProtocol(), hostname, server.getPort(), path);
         return request(url, parameters);
@@ -261,10 +259,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         }
 
         /* We did not get anything useful from the server */
-        if (hostname == null)
-            hostname = session.getServer().getHostname();
-
-        this.hostname = hostname;
+        if (hostname != null)
+            this.hostname = hostname;
 
         connected = true;
         capabilities.add(Capability.AUDIO_TRANSPORT);

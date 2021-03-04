@@ -53,7 +53,6 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     protected boolean connected = false;
     private boolean valid = true;
-    protected String hostname;
     protected String token;
     protected Service currentService;
 
