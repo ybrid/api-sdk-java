@@ -26,7 +26,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.bouquet.SimpleService;
-import io.ybrid.api.driver.ybrid.v1.SwapInfo;
+import io.ybrid.api.driver.ybrid.common.SwapInfo;
 import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.Sync;
