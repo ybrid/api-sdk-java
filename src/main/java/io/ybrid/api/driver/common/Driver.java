@@ -22,9 +22,10 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.PlayoutInfo;
-import io.ybrid.api.*;
-import io.ybrid.api.bouquet.Bouquet;
+import io.ybrid.api.Capability;
+import io.ybrid.api.Session;
+import io.ybrid.api.SubInfo;
+import io.ybrid.api.Workaround;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
@@ -37,18 +38,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Driver implements Closeable, KnowsSubInfoState {
+public abstract class Driver implements io.ybrid.api.driver.Driver {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     protected final Session session;
@@ -59,10 +57,6 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
     protected String hostname;
     protected String token;
     protected Service currentService;
-
-    abstract public @NotNull Bouquet getBouquet();
-    abstract public @NotNull PlayoutInfo getPlayoutInfo();
-    abstract public URI getStreamURI() throws MalformedURLException, URISyntaxException;
 
     @Override
     public void close() throws IOException {
@@ -101,16 +95,19 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         return mountpoint;
     }
 
+    @Override
     public @NotNull io.ybrid.api.CapabilitySet getCapabilities() {
         clearChanged(SubInfo.CAPABILITIES);
         return capabilities;
     }
 
+    @Override
     @Contract(pure = true)
     public @NotNull Service getCurrentService() {
         return currentService;
     }
 
+    @Override
     public void clearChanged(@NotNull SubInfo what) {
         changed.remove(what);
     }
@@ -166,6 +163,7 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         return jsonObject;
     }
 
+    @Override
     public void executeRequest(@NotNull Request request) throws Exception {
         switch (request.getCommand()) {
             case DISCONNECT:
@@ -186,10 +184,12 @@ public abstract class Driver implements Closeable, KnowsSubInfoState {
         // no-op
     }
 
+    @Override
     public boolean isConnected() {
         return connected;
     }
 
+    @Override
     public boolean isValid() {
         return valid;
     }

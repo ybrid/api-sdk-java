@@ -23,7 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.driver.FactorySelector;
-import io.ybrid.api.driver.common.Driver;
+import io.ybrid.api.driver.Driver;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
