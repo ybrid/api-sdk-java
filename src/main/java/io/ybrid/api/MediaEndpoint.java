@@ -24,6 +24,7 @@ package io.ybrid.api;
 
 import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.hasAcceptedLanguages;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +51,10 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      *
      * @param uri The {@link URI} of the MediaEndpoint.
      * @param server The {@link Server} to use for contacting the MediaEndpoint.
+     * @deprecated Deprecated as {@link Server} was deprecated.
      */
+    @ApiStatus.ScheduledForRemoval
+    @Deprecated
     public MediaEndpoint(@NotNull URI uri, @Nullable Server server) throws MalformedURLException {
         this.uri = uri;
         if (server != null) {
@@ -82,7 +86,10 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      * If no {@link Server} has been passed to the Constructor it is automatically created.
      *
      * @return Returns the {@link Server} object of this MediaEndpoint.
+     * @deprecated Deprecated as {@link Server} was deprecated.
      */
+    @ApiStatus.ScheduledForRemoval
+    @Deprecated
     public @NotNull Server getServer() {
         return server;
     }
@@ -96,7 +103,8 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      * @throws MalformedURLException Thrown if any error is found in the MediaEndpoint' URL.
      */
     public @NotNull Session createSession() throws MalformedURLException {
-        return getServer().createSession(this);
+        server.connect();
+        return new Session(server, this);
     }
 
     @Override

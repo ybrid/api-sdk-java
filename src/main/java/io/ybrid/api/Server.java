@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.util.Connectable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,11 +41,17 @@ import java.net.URL;
 public final class Server implements Connectable, ApiUser {
     /**
      * The default port used for Ybrid servers.
+     * @deprecated This is scheduled to be removed as this class is deprecated.
      */
+    @ApiStatus.ScheduledForRemoval
+    @Deprecated
     public static final int DEFAULT_PORT = 80;
     /**
      * The default security setting for Ybrid servers.
+     * @deprecated This is scheduled to be removed as this class is deprecated.
      */
+    @ApiStatus.ScheduledForRemoval
+    @Deprecated
     public static final boolean DEFAULT_SECURE = false;
 
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
@@ -134,7 +141,10 @@ public final class Server implements Connectable, ApiUser {
      * @param mediaEndpoint The {@link MediaEndpoint} to connect to.
      * @return Returns the newly created {@link Session}.
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
+     * @deprecated This is scheduled to be removed as this class is deprecated. Use {@link MediaEndpoint#createSession()}.
      */
+    @ApiStatus.ScheduledForRemoval
+    @Deprecated
     public @NotNull Session createSession(@NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
         connect();
         return new Session(this, mediaEndpoint);
