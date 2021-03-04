@@ -23,7 +23,6 @@
 package io.ybrid.api.driver.plain;
 
 import io.ybrid.api.Capability;
-import io.ybrid.api.Server;
 import io.ybrid.api.Session;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
@@ -65,11 +64,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        Server server = session.getServer();
-
-        assertConnected();
-
-        return new URI(server.getProtocol(), null, server.getHostname(), server.getPort(), getMountpoint(), null, null);
+        return guessPlaybackURI("http", null, null);
     }
 
     @Override

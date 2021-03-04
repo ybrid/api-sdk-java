@@ -221,12 +221,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        Server server = session.getServer();
-
-        assertConnected();
-
         //noinspection SpellCheckingInspection
-        return new URI(server.isSecure() ? "icyxs" : "icyx", null, hostname, server.getPort(), getMountpoint(), "sessionId=" + token, null);
+        return guessPlaybackURI("icyx", hostname, "sessionId=" + token);
     }
 
     public void connect() throws IOException {

@@ -22,10 +22,7 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.Capability;
-import io.ybrid.api.Session;
-import io.ybrid.api.SubInfo;
-import io.ybrid.api.Workaround;
+import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
@@ -40,6 +37,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
 import java.util.Map;
@@ -93,6 +92,20 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
         String mountpoint = session.getMediaEndpoint().getURI().getPath();
         assertValidMountpoint(mountpoint);
         return mountpoint;
+    }
+
+    protected final @NotNull URI guessPlaybackURI(@NotNull String protocol, @Nullable String hostname, @Nullable String query) throws MalformedURLException, URISyntaxException {
+        final @NotNull Server server = session.getServer();
+
+        assertConnected();
+
+        if (server.isSecure())
+            protocol += "s";
+
+        if (hostname == null)
+            hostname = server.getHostname();
+
+        return new URI(protocol, null, hostname, server.getPort(), getMountpoint(), query, null);
     }
 
     @Override

@@ -22,7 +22,6 @@
 
 package io.ybrid.api.driver.icy;
 
-import io.ybrid.api.Server;
 import io.ybrid.api.Session;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,11 +36,7 @@ public class Driver extends io.ybrid.api.driver.plain.Driver {
 
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        Server server = session.getServer();
-
-        assertConnected();
-
         //noinspection SpellCheckingInspection
-        return new URI(server.isSecure() ? "icyxs" : "icyx", null, server.getHostname(), server.getPort(), getMountpoint(), null, null);
+        return guessPlaybackURI("icxy", null, null);
     }
 }
