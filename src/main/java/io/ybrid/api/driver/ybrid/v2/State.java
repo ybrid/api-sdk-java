@@ -32,6 +32,7 @@ import io.ybrid.api.metadata.Metadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.util.ClockManager;
 import io.ybrid.api.util.Identifier;
+import io.ybrid.api.util.Utils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -152,7 +153,7 @@ final class State implements KnowsSubInfoState {
                     break;
                 case TRI:
                     newURI = new URI(raw);
-                    if (!io.ybrid.api.driver.common.Driver.isValidFQDN(newURI.getHost())) {
+                    if (!Utils.isValidFQDN(newURI.getHost())) {
                         newURI = null;
                         workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
                     }
@@ -204,7 +205,7 @@ final class State implements KnowsSubInfoState {
                         break;
                     case TRI: {
                         final @NotNull URI uri = new URI(raw);
-                        if (io.ybrid.api.driver.common.Driver.isValidFQDN(uri.getHost())) {
+                        if (Utils.isValidFQDN(uri.getHost())) {
                             playbackURI = uri;
                         } else {
                             if (playbackURI == null)

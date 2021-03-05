@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.util.Connectable;
+import io.ybrid.api.util.Utils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,18 +61,6 @@ public final class Server implements Connectable, ApiUser {
     private final boolean secure;
     private @Nullable ApiVersion apiVersion = null;
 
-    private void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
-        if (hostname == null)
-            throw new MalformedURLException("Bad hostname: null");
-        if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
-            throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
-    }
-
-    private void assertValidPort(int port) throws MalformedURLException {
-        if (port < 0 || port > 65535)
-            throw new MalformedURLException("Bad port");
-    }
-
     /**
      * Creates a new Server object.
      *
@@ -85,8 +74,8 @@ public final class Server implements Connectable, ApiUser {
         if (newPort < 0)
             newPort = baseURL.getDefaultPort();
 
-        assertValidHostname(baseURL.getHost());
-        assertValidPort(newPort);
+        Utils.assertValidHostname(baseURL.getHost());
+        Utils.assertValidPort(newPort);
         this.hostname = baseURL.getHost();
         this.port = newPort;
         switch (baseURL.getProtocol()) {

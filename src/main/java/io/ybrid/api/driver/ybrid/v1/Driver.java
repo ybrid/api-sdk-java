@@ -31,6 +31,7 @@ import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.util.TriState;
+import io.ybrid.api.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -249,7 +250,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
             if (hostname != null) {
                 if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) == TriState.AUTOMATIC) {
-                    if (!isValidFQDN(hostname)) {
+                    if (!Utils.isValidFQDN(hostname)) {
                         LOGGER.log(Level.SEVERE, "Invalid hostname from server: " + hostname);
                         hostname = null;
                         workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);

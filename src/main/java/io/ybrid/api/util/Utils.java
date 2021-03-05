@@ -22,12 +22,15 @@
 
 package io.ybrid.api.util;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -96,5 +99,42 @@ public final class Utils {
         for (double weight : list.values())
             if (weight < 0 || weight > 1)
                 throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
+    }
+
+    /**
+     * Asserts the given hostname is valid.
+     * @param hostname The hostname to check.
+     * @throws MalformedURLException Thrown if the hostname is invalid.
+     */
+    @Contract(value = "null -> fail", pure = true)
+    public static void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
+        if (hostname == null)
+            throw new MalformedURLException("Bad hostname: null");
+        if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
+            throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
+    }
+
+    /**
+     * Asserts the given port is valid.
+     * @param port The port to check.
+     * @throws MalformedURLException Thrown if the port is invalid.
+     */
+    @Contract(pure = true)
+    public static void assertValidPort(int port) throws MalformedURLException {
+        if (port < 0 || port > 65535)
+            throw new MalformedURLException("Bad port");
+    }
+
+    /**
+     * Checks the given FQDN for validity.
+     * {@code localhost} is not considered valid by this function.
+     * @param fqdn The FQDN to test.
+     * @return Whether the argument is a valid FQDN.
+     */
+    public static boolean isValidFQDN(@NotNull String fqdn) {
+        if (fqdn.equals("localhost") || fqdn.equals("localhost.localdomain") || fqdn.equals("127.0.0.1") || fqdn.equals("::1"))
+            return false;
+
+        return fqdn.contains(".");
     }
 }
