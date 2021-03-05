@@ -110,7 +110,7 @@ public final class Utils {
     public static void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
         if (hostname == null)
             throw new MalformedURLException("Bad hostname: null");
-        if (!hostname.matches("^[a-zA-Z0-9.-]+$"))
+        if (!hostname.matches("^[a-zA-Z0-9:.-]+$"))
             throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
     }
 
