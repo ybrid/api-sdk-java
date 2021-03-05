@@ -24,13 +24,16 @@ package io.ybrid.api;
 
 import io.ybrid.api.session.Command;
 import io.ybrid.api.transport.ServiceTransportDescription;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URI;
 
-public class SessionTest extends TestCase {
-    public void testGetStreamURLPositive() throws IOException {
+import static org.junit.Assert.assertNotNull;
+
+public class SessionTest {
+    @Test
+    public void GetStreamURLPositive() throws IOException {
         for (URI mediaEndpointURI : NetworkHelper.getAliases()) {
             final MediaEndpoint alias;
             final Session session;

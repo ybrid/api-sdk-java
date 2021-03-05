@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.time.Clock;
 import java.time.Instant;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class ClockManagerTest {
     static private void assertEquals(final @NotNull Instant expected, final @NotNull Instant actual) {

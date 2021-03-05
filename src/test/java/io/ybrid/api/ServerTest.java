@@ -22,15 +22,18 @@
 
 package io.ybrid.api;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class ServerTest extends TestCase {
-    public void testCreateSimplePositive() throws MalformedURLException {
+import static org.junit.Assert.*;
+
+public class ServerTest {
+    @Test
+    public void CreateSimplePositive() throws MalformedURLException {
         URL[] urls = {new URL("http://localhost/")};
 
         for (URL url : urls) {
@@ -41,7 +44,8 @@ public class ServerTest extends TestCase {
         }
     }
 
-    public void testCreateSimpleNegative() throws MalformedURLException {
+    @Test
+    public void CreateSimpleNegative() throws MalformedURLException {
         URL[] urls = {new URL("file:///dev/null")};
 
         for (URL url : urls) {
@@ -54,7 +58,8 @@ public class ServerTest extends TestCase {
         }
     }
 
-    public void testGetStreamSessionPositive() throws MalformedURLException, URISyntaxException {
+    @Test
+    public void GetStreamSessionPositive() throws MalformedURLException, URISyntaxException {
         String hostname = "localhost";
         String[] mountpoints = {"/test", "/a/b"};
 

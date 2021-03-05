@@ -24,10 +24,13 @@ package io.ybrid.api.driver;
 
 import io.ybrid.api.Capability;
 import io.ybrid.api.CapabilitySet;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class CapabilitySetTest extends TestCase {
-    public void testEmptySet() {
+import static org.junit.Assert.*;
+
+public class CapabilitySetTest {
+    @Test
+    public void EmptySet() {
         CapabilitySet set = new io.ybrid.api.driver.CapabilitySet();
         CapabilitySet playerSet;
 
@@ -40,7 +43,8 @@ public class CapabilitySetTest extends TestCase {
         assertEquals(playerSet.size(), 0);
     }
 
-    public void testSwapOnlySet() {
+    @Test
+    public void SwapOnlySet() {
         io.ybrid.api.driver.CapabilitySet set = new io.ybrid.api.driver.CapabilitySet();
         CapabilitySet playerSet;
 
@@ -59,7 +63,8 @@ public class CapabilitySetTest extends TestCase {
         assertFalse(playerSet.contains(Capability.PLAYBACK));
     }
 
-    public void testPlaybackURLSet() {
+    @Test
+    public void PlaybackURLSet() {
         io.ybrid.api.driver.CapabilitySet set = new io.ybrid.api.driver.CapabilitySet();
         CapabilitySet playerSet;
 
