@@ -23,12 +23,13 @@
 package io.ybrid.api.driver;
 
 
-import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.ApiVersion;
+import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.Server;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.EnumSet;
@@ -77,35 +78,37 @@ public final class FactorySelector {
     }
 
     private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
-        EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
-
         if (mediaEndpoint.getForcedApiVersion() != null) {
-            ret.add(mediaEndpoint.getForcedApiVersion());
-            return ret;
+            return EnumSet.of(mediaEndpoint.getForcedApiVersion());
         }
 
         if (server.getForcedApiVersion() != null) {
-            ret.add(server.getForcedApiVersion());
-            return ret;
+            return EnumSet.of(server.getForcedApiVersion());
         }
 
         try {
-            final String path = mediaEndpoint.getURI().getPath() + "/ctrl/v2/session/info";
-            final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
-            final JSONRequest request = new JSONRequest(url, "GET");
-            JSONArray supportedVersions;
-
-            request.perform();
-
-            supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
-            for (int i = 0; i < supportedVersions.length(); i++) {
-                ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
-            }
-        } catch (Exception e) {
-            // Best guess:
-            ret.clear();
-            ret.add(ApiVersion.PLAIN);
+            return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint);
+        } catch (Exception ignored) {
         }
+
+        // Best guess:
+        return EnumSet.of(ApiVersion.PLAIN);
+    }
+
+    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException {
+        final EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
+        final String path = mediaEndpoint.getURI().getPath() + "/ctrl/v2/session/info";
+        final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
+        final JSONRequest request = new JSONRequest(url, "GET");
+        JSONArray supportedVersions;
+
+        request.perform();
+
+        supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
+        for (int i = 0; i < supportedVersions.length(); i++) {
+            ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
+        }
+
         return ret;
     }
 }
