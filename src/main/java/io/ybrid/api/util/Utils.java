@@ -122,7 +122,7 @@ public final class Utils {
     @Contract(pure = true)
     public static void assertValidPort(int port) throws MalformedURLException {
         if (port < 0 || port > 65535)
-            throw new MalformedURLException("Bad port");
+            throw new MalformedURLException("Bad port: " + port);
     }
 
     /**
@@ -134,6 +134,12 @@ public final class Utils {
     public static boolean isValidFQDN(@NotNull String fqdn) {
         if (fqdn.equals("localhost") || fqdn.equals("localhost.localdomain") || fqdn.equals("127.0.0.1") || fqdn.equals("::1"))
             return false;
+
+        try {
+            assertValidHostname(fqdn);
+        } catch (MalformedURLException e) {
+            return false;
+        }
 
         return fqdn.contains(".");
     }
