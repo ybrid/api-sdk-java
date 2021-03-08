@@ -134,21 +134,19 @@ public class URIBuilderTest {
     @Test
     public void testInvalid() {
         for (final @NotNull Vector vector : vectors) {
+            boolean failed = false;
+
             if (vector instanceof ValidVector)
                 continue;
 
-            for (final @NotNull Constructor constructor : constructors) {
-                boolean failed = false;
-
-                try {
-                    constructor.construct(vector.uri);
-                } catch (URISyntaxException | MalformedURLException e) {
-                    failed = true;
-                }
-
-                if (!failed)
-                    fail("Constructor did not not fail for: " + vector.uri);
+            try {
+                constructors[0].construct(vector.uri);
+            } catch (URISyntaxException | MalformedURLException e) {
+                failed = true;
             }
+
+            if (!failed)
+                fail("Constructor did not not fail for: " + vector.uri);
         }
     }
 }
