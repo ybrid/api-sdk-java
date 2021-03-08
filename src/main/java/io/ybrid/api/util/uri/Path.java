@@ -109,6 +109,9 @@ public final class Path extends ArrayList<String> {
     public Path(@NotNull String rawPath) throws URISyntaxException {
         final @NotNull String[] segments;
 
+        if (rawPath.equals("/"))
+            return;
+
         if (!rawPath.startsWith("/")) {
             throw new URISyntaxException(rawPath, "Invalid path");
         }
@@ -121,13 +124,17 @@ public final class Path extends ArrayList<String> {
     }
 
     public @NotNull String toRawPath() {
-        StringBuilder ret = new StringBuilder();
+        if (isEmpty()) {
+            return "/";
+        } else {
+            StringBuilder ret = new StringBuilder();
 
-        for (final @NotNull String segment : this) {
-            ret.append("/").append(encode(segment));
+            for (final @NotNull String segment : this) {
+                ret.append("/").append(encode(segment));
+            }
+
+            return ret.toString();
         }
-
-        return ret.toString();
     }
 
     public void normalize() {

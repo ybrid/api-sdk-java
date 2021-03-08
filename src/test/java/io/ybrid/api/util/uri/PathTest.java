@@ -89,4 +89,18 @@ public class PathTest {
         assertEquals("/a/b/c/d", pathA.toRawPath());
         assertEquals("/a/b/c/d", pathB.toRawPath());
     }
+
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    public void empty() throws URISyntaxException {
+        final @NotNull Path pathA = new Path();
+        final @NotNull Path pathB = new Path("/");
+        final @NotNull Path pathC = new Path("/a");
+        assertTrue(pathA.isEmpty());
+        assertEquals("/", pathA.toRawPath());
+        assertTrue(pathB.isEmpty());
+        assertEquals("/", pathB.toRawPath());
+        pathC.append(pathA);
+        assertEquals("/a", pathC.toRawPath());
+    }
 }
