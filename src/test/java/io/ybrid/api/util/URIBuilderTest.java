@@ -118,6 +118,7 @@ public class URIBuilderTest {
                 }
 
                 System.out.println("builder.toString() = " + builder.toString());
+                System.out.println("builder.toURIString() = " + builder.toURIString());
 
                 assertEquals(validVector.scheme, builder.getRawScheme());
                 assertEquals(validVector.hostname, builder.getRawHostname());
@@ -125,6 +126,7 @@ public class URIBuilderTest {
                 assertEquals(validVector.path, builder.getRawPath());
                 assertEquals(validVector.query, builder.getRawQuery());
                 assertEquals(validVector.fragment, builder.getRawFragment());
+                assertEquals(vector.uri, builder.toURIString());
             }
         }
     }

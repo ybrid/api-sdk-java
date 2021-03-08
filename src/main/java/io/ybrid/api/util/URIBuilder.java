@@ -156,6 +156,30 @@ public class URIBuilder {
         return fragment;
     }
 
+    public @NotNull String toURIString() {
+        @NotNull String ret = scheme + "://";
+
+        if (hostname != null) {
+            if (hostname.contains(":")) {
+                ret += "[" + hostname + "]";
+            } else {
+                ret += hostname;
+            }
+            if (port > 0)
+                ret += ":" + port;
+        }
+
+        ret += path;
+
+        if (query != null)
+            ret += "?" + query;
+
+        if (fragment != null)
+            ret += "#" + fragment;
+
+        return ret;
+    }
+
     @Override
     public String toString() {
         return "URIBuilder{" +
