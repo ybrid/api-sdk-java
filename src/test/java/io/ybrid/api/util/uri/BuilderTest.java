@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.util;
+package io.ybrid.api.util.uri;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +34,7 @@ import java.net.URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class URIBuilderTest {
+public class BuilderTest {
     private static abstract class Vector {
         public final @NotNull String uri;
 
@@ -69,7 +69,7 @@ public class URIBuilderTest {
     }
 
     private interface Constructor {
-        @NotNull URIBuilder construct(@NotNull String uri) throws URISyntaxException, MalformedURLException;
+        @NotNull Builder construct(@NotNull String uri) throws URISyntaxException, MalformedURLException;
     }
 
     private static final Vector[] vectors = new Vector[]{
@@ -93,9 +93,9 @@ public class URIBuilderTest {
     };
 
     private static final Constructor[] constructors = new Constructor[]{
-            URIBuilder::new,
-            uri -> new URIBuilder(new URI(uri)),
-            uri -> new URIBuilder(new URL(uri))
+            Builder::new,
+            uri -> new Builder(new URI(uri)),
+            uri -> new Builder(new URL(uri))
     };
 
     private static final @NotNull String[] good_schemes = new String[]{"a", "a+b", "a-b", "a.b"};
@@ -116,7 +116,7 @@ public class URIBuilderTest {
             validVector = (ValidVector) vector;
 
             for (final @NotNull Constructor constructor : constructors) {
-                final @NotNull URIBuilder builder;
+                final @NotNull Builder builder;
 
                 try {
                     builder = constructor.construct(vector.uri);
@@ -162,7 +162,7 @@ public class URIBuilderTest {
 
     @Test
     public void setRawScheme() throws URISyntaxException {
-        final @NotNull URIBuilder builder = new URIBuilder("http://localhost/");
+        final @NotNull Builder builder = new Builder("http://localhost/");
 
         for (final @NotNull String scheme : good_schemes) {
             builder.setRawScheme(scheme);
@@ -185,7 +185,7 @@ public class URIBuilderTest {
 
     @Test
     public void setRawHostname() throws URISyntaxException {
-        final @NotNull URIBuilder builder = new URIBuilder("http://localhost/");
+        final @NotNull Builder builder = new Builder("http://localhost/");
 
         for (final @NotNull String hostname : good_hostnames) {
             builder.setRawHostname(hostname);
@@ -208,7 +208,7 @@ public class URIBuilderTest {
 
     @Test
     public void setRawQuery() throws URISyntaxException {
-        final @NotNull URIBuilder builder = new URIBuilder("http://localhost/");
+        final @NotNull Builder builder = new Builder("http://localhost/");
 
         for (final @NotNull String query : good_query) {
             builder.setRawQuery(query);

@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.util;
+package io.ybrid.api.util.uri;
 
+import io.ybrid.api.util.Utils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class URIBuilder {
+public class Builder {
     private static final Pattern VALIDATOR_SCHEME = Pattern.compile("^[a-z0-9.+-]+$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALIDATOR_HOSTNAME = Pattern.compile("^(?:(?:[a-z0-9!$&'()*+,;=~._-]|%[a-f0-9]{2})+|\\[[a-f0-9:.]+])$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALIDATOR_QUERY = Pattern.compile("^(?:[a-z0-9!$&'()*+,;=/?:@~._-]|%[a-f0-9]{2})+$", Pattern.CASE_INSENSITIVE);
@@ -69,7 +70,7 @@ public class URIBuilder {
             throw new URISyntaxException(uri, "Invalid scheme: " + scheme);
     }
 
-    public URIBuilder(@NotNull String uri) throws URISyntaxException {
+    public Builder(@NotNull String uri) throws URISyntaxException {
         @NotNull String[] res;
         @NotNull String rest;
 
@@ -145,11 +146,11 @@ public class URIBuilder {
             return "file://" + javasIdea.substring(5); // RFC's idea.
         return javasIdea;
     }
-    public URIBuilder(@NotNull URI uri) throws URISyntaxException {
+    public Builder(@NotNull URI uri) throws URISyntaxException {
         this(javaURItoString(uri));
     }
 
-    public URIBuilder(@NotNull URL url) throws URISyntaxException {
+    public Builder(@NotNull URL url) throws URISyntaxException {
         this(url.toURI());
     }
 
