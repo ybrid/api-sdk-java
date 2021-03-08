@@ -98,6 +98,13 @@ public class URIBuilderTest {
             uri -> new URIBuilder(new URL(uri))
     };
 
+    private static final @NotNull String[] good_schemes = new String[]{"a", "a+b", "a-b", "a.b"};
+    private static final @NotNull String[] bad_schemes = new String[]{"", ":", "a:b", "/", "a/b", ""};
+    private static final @NotNull String[] good_hostnames = new String[]{"a", "a.b", "[::1]", "127.1"};
+    private static final @NotNull String[] bad_hostnames = new String[]{"", "a:123", "a/b"};
+    private static final @NotNull String[] good_query = new String[]{"a", "a?b", "a=b", "a=b&c=d"};
+    private static final @NotNull String[] bad_query = new String[]{"", "#", "a#b"};
+
     @Test
     public void testValid() throws URISyntaxException, MalformedURLException {
         for (final @NotNull Vector vector : vectors) {
@@ -152,4 +159,74 @@ public class URIBuilderTest {
                 fail("Constructor did not not fail for: " + vector.uri);
         }
     }
+
+    @Test
+    public void setRawScheme() throws URISyntaxException {
+        final @NotNull URIBuilder builder = new URIBuilder("http://localhost/");
+
+        for (final @NotNull String scheme : good_schemes) {
+            builder.setRawScheme(scheme);
+            assertEquals(scheme, builder.getRawScheme());
+        }
+
+        for (final @NotNull String scheme : bad_schemes) {
+            boolean failed = false;
+
+            try {
+                builder.setRawScheme(scheme);
+            } catch (URISyntaxException e) {
+                failed = true;
+            }
+
+            if (!failed)
+                fail("Builder accepted invalid scheme: " + scheme);
+        }
+    }
+
+    @Test
+    public void setRawHostname() throws URISyntaxException {
+        final @NotNull URIBuilder builder = new URIBuilder("http://localhost/");
+
+        for (final @NotNull String hostname : good_hostnames) {
+            builder.setRawHostname(hostname);
+            assertEquals(hostname, builder.getRawHostname());
+        }
+
+        for (final @NotNull String hostname : bad_hostnames) {
+            boolean failed = false;
+
+            try {
+                builder.setRawHostname(hostname);
+            } catch (URISyntaxException e) {
+                failed = true;
+            }
+
+            if (!failed)
+                fail("Builder accepted invalid hostname: " + hostname);
+        }
+    }
+
+    @Test
+    public void setRawQuery() throws URISyntaxException {
+        final @NotNull URIBuilder builder = new URIBuilder("http://localhost/");
+
+        for (final @NotNull String query : good_query) {
+            builder.setRawQuery(query);
+            assertEquals(query, builder.getRawQuery());
+        }
+
+        for (final @NotNull String query : bad_query) {
+            boolean failed = false;
+
+            try {
+                builder.setRawQuery(query);
+            } catch (URISyntaxException e) {
+                failed = true;
+            }
+
+            if (!failed)
+                fail("Builder accepted invalid query: " + query);
+        }
+    }
+
 }

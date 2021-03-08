@@ -31,8 +31,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class URIBuilder {
+    private static final Pattern VALIDATOR_SCHEME = Pattern.compile("^[a-z0-9.+-]+$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern VALIDATOR_HOSTNAME = Pattern.compile("^(?:(?:[a-z0-9!$&'()*+,;=~._-]|%[a-f0-9]{2})+|\\[[a-f0-9:.]+])$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern VALIDATOR_QUERY = Pattern.compile("^(?:[a-z0-9!$&'()*+,;=/?:@~._-]|%[a-f0-9]{2})+$", Pattern.CASE_INSENSITIVE);
+
     private @NotNull String scheme;
     private @Nullable String hostname;
     private int port;
@@ -176,6 +181,24 @@ public class URIBuilder {
     @Contract(pure = true)
     public @Nullable String getRawFragment() {
         return fragment;
+    }
+
+    public void setRawScheme(@NotNull String scheme) throws URISyntaxException {
+        if (!VALIDATOR_SCHEME.matcher(scheme).matches())
+            throw new URISyntaxException(toURIString(), "Invalid new scheme: " + scheme);
+        this.scheme = scheme;
+    }
+
+    public void setRawHostname(@Nullable String hostname) throws URISyntaxException {
+        if (hostname != null && !VALIDATOR_HOSTNAME.matcher(hostname).matches())
+            throw new URISyntaxException(toURIString(), "Invalid new hostname: " + hostname);
+        this.hostname = hostname;
+    }
+
+    public void setRawQuery(@Nullable String query) throws URISyntaxException {
+        if (query != null && !VALIDATOR_QUERY.matcher(query).matches())
+            throw new URISyntaxException(toURIString(), "Invalid new query: " + query);
+        this.query = query;
     }
 
     public @NotNull String toURIString() {
