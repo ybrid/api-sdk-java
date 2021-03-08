@@ -127,6 +127,8 @@ public class URIBuilderTest {
                 assertEquals(validVector.query, builder.getRawQuery());
                 assertEquals(validVector.fragment, builder.getRawFragment());
                 assertEquals(vector.uri, builder.toURIString());
+                assertEquals(URI.create(vector.uri), builder.toURI());
+                assertEquals(new URL(vector.uri), builder.toURL());
             }
         }
     }

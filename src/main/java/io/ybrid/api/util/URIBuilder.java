@@ -180,6 +180,14 @@ public class URIBuilder {
         return ret;
     }
 
+    public @NotNull URI toURI() {
+        return URI.create(toURIString());
+    }
+
+    public @NotNull URL toURL() throws MalformedURLException {
+        return new URL(toURIString());
+    }
+
     @Override
     public String toString() {
         return "URIBuilder{" +
