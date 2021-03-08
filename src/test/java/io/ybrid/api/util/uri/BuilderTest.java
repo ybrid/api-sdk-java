@@ -229,4 +229,22 @@ public class BuilderTest {
         }
     }
 
+    @Test
+    public void getPath() throws URISyntaxException {
+        final @NotNull Builder builder = new Builder("http://example.org/a/b");
+        final @NotNull Path path = builder.getPath();
+
+        assertEquals(2, path.size());
+        assertEquals("a", path.get(0));
+        assertEquals("b", path.get(1));
+    }
+
+    @Test
+    public void setPath() throws URISyntaxException {
+        final @NotNull Builder builder = new Builder("http://example.org/a/b");
+
+        builder.setPath(new Path("/c/d"));
+
+        assertEquals("http://example.org/c/d", builder.toURIString());
+    }
 }

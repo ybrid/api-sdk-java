@@ -204,6 +204,18 @@ public final class Builder {
         this.query = query;
     }
 
+    public @NotNull Path getPath() {
+        try {
+            return new Path(getRawPath());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setPath(@NotNull Path path) {
+        this.path = path.toRawPath();
+    }
+
     public @NotNull String toURIString() {
         @NotNull String ret = scheme + "://";
 
