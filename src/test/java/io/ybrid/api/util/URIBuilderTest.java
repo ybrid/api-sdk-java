@@ -68,7 +68,7 @@ public class URIBuilderTest {
         }
     }
 
-    private static interface Constructor {
+    private interface Constructor {
         @NotNull URIBuilder construct(@NotNull String uri) throws URISyntaxException, MalformedURLException;
     }
 
