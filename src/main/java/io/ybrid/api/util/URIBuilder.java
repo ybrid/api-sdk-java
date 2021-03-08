@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class URIBuilder {
     private @NotNull String scheme;
@@ -38,6 +39,25 @@ public class URIBuilder {
     private @NotNull String path;
     private @Nullable String query;
     private @Nullable String fragment;
+
+    @Contract(value = "_, _, _ -> new", pure = true)
+    private static @NotNull String[] split(@NotNull String in, @NotNull String delimiter, int max) {
+        final @NotNull ArrayList<String> list = new ArrayList<>(max);
+        int pos = 0;
+
+        for (; max > 0; max--) {
+            final int nextPos = in.indexOf(delimiter, pos);
+            if (max == 1 || nextPos < 0) {
+                list.add(in.substring(pos));
+                break;
+            }
+
+            list.add(in.substring(pos, nextPos));
+            pos = nextPos + delimiter.length();
+        }
+
+        return list.toArray(new String[0]);
+    }
 
     static private void assertValidScheme(@NotNull String uri, @NotNull String scheme) throws URISyntaxException {
         if (!scheme.matches("^[a-zA-Z0-9.+-]+$"))
@@ -48,7 +68,7 @@ public class URIBuilder {
         @NotNull String[] res;
         @NotNull String rest;
 
-        res = uri.split(":", 2);
+        res = split(uri, ":", 2);
         if (res.length != 2)
             throw new URISyntaxException(uri, "No scheme given");
 
@@ -58,7 +78,7 @@ public class URIBuilder {
         if (!res[1].startsWith("//"))
             throw new URISyntaxException(uri, "Invalid syntax");
 
-        res = res[1].substring(2).split("/");
+        res = split(res[1].substring(2), "/", 2);
         if (res.length != 2)
             throw new URISyntaxException(uri, "No path given");
 
@@ -69,12 +89,16 @@ public class URIBuilder {
             this.port = 0;
         } else {
             if (res[0].startsWith("[")) {
-                res = res[0].substring(1).split("]:", 2);
+                res = split(res[0].substring(1), "]:", 2);
                 if (res.length != 2) {
-                    res = new String[]{res[0].substring(1, res[0].length() - 1)};
+                    if (res[0].substring(1).endsWith("]")) {
+                        res = new String[]{res[0].substring(1, res[0].length() - 1)};
+                    } else {
+                        throw new URISyntaxException(uri, "Invalid hostname");
+                    }
                 }
             } else {
-                res = res[0].split(":", 2);
+                res = split(res[0], ":", 2);
             }
             try {
                 Utils.assertValidHostname(res[0]);
@@ -93,14 +117,14 @@ public class URIBuilder {
             }
         }
 
-        res = rest.split("#", 2);
+        res = split(rest, "#", 2);
         if (res.length == 2) {
             this.fragment = res[1];
         } else {
             this.fragment = null;
         }
 
-        res = res[0].split("\\?", 2);
+        res = split(res[0], "?", 2);
         if (res.length == 2) {
             this.query = res[1];
         } else {

@@ -73,6 +73,7 @@ public class URIBuilderTest {
     }
 
     private static final Vector[] vectors = new Vector[]{
+            new ValidVector("http://example.org/", "http", "example.org", 0, "/", null, null),
             new ValidVector("http://example.org/bla", "http", "example.org", 0, "/bla", null, null),
             new ValidVector("http://example.org/bla?a=b", "http", "example.org", 0, "/bla", "a=b", null),
             new ValidVector("http://example.org/bla#c", "http", "example.org", 0, "/bla", null, "c"),
