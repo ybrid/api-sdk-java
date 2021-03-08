@@ -23,6 +23,7 @@
 package io.ybrid.api.util.uri;
 
 import io.ybrid.api.util.Utils;
+import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -214,6 +215,23 @@ public final class Builder {
 
     public void setPath(@NotNull Path path) {
         this.path = path.toRawPath();
+    }
+
+    public void setQuery(@NotNull XWWWFormUrlEncodedBuilder builder) {
+        this.query = builder.toString();
+    }
+
+    public void setQuery(Object... map) {
+        final @NotNull XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
+
+        if ((map.length % 2) != 0)
+            throw new IllegalArgumentException("Odd number of arguments");
+
+        for (int i = 0; i < map.length; i += 2) {
+            builder.append(map[i].toString(), map[i+1]);
+        }
+
+        setQuery(builder);
     }
 
     public @NotNull String toURIString() {

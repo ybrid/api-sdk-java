@@ -22,6 +22,7 @@
 
 package io.ybrid.api.util.uri;
 
+import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
@@ -246,5 +247,17 @@ public class BuilderTest {
         builder.setPath(new Path("/c/d"));
 
         assertEquals("http://example.org/c/d", builder.toURIString());
+    }
+
+    @Test
+    public void setQuery() throws URISyntaxException {
+        final @NotNull Builder builder = new Builder("http://example.org/a/b");
+        final @NotNull XWWWFormUrlEncodedBuilder query = new XWWWFormUrlEncodedBuilder();
+        query.append("a", "b");
+        builder.setQuery(query);
+        assertEquals("http://example.org/a/b?a=b", builder.toURIString());
+
+        builder.setQuery("c", "d", "e", "f");
+        assertEquals("http://example.org/a/b?c=d&e=f", builder.toURIString());
     }
 }
