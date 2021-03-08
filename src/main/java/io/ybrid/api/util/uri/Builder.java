@@ -23,6 +23,7 @@
 package io.ybrid.api.util.uri;
 
 import io.ybrid.api.util.Utils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class Builder {
+@ApiStatus.Internal
+public final class Builder {
     private static final Pattern VALIDATOR_SCHEME = Pattern.compile("^[a-z0-9.+-]+$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALIDATOR_HOSTNAME = Pattern.compile("^(?:(?:[a-z0-9!$&'()*+,;=~._-]|%[a-f0-9]{2})+|\\[[a-f0-9:.]+])$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALIDATOR_QUERY = Pattern.compile("^(?:[a-z0-9!$&'()*+,;=/?:@~._-]|%[a-f0-9]{2})+$", Pattern.CASE_INSENSITIVE);
