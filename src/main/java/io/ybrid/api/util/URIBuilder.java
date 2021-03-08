@@ -48,8 +48,6 @@ public class URIBuilder {
         @NotNull String[] res;
         @NotNull String rest;
 
-        System.out.println("uri = " + uri);
-
         res = uri.split(":", 2);
         if (res.length != 2)
             throw new URISyntaxException(uri, "No scheme given");
