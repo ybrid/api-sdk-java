@@ -32,6 +32,8 @@ import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.Utils;
+import io.ybrid.api.util.uri.Builder;
+import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -40,7 +42,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -69,8 +70,17 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
-        Server server = session.getServer();
-        String path = getMountpoint() + "/ctrl/" + command;
+        final @NotNull Builder builder;
+
+        try {
+            builder = new Builder(session.getMediaEndpoint().getURI());
+            builder.setServer(session.getServer());
+            builder.setRawHostname(hostname);
+            builder.appendPath(new Path("/ctrl"));
+            builder.appendPath(new Path("/" + command));
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
 
         if (token != null) {
             if (parameters == null) {
@@ -81,8 +91,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
             parameters.put("sessionId", token);
         }
 
-        final URL url = new URL(server.getProtocol(), hostname, server.getPort(), path);
-        return request(url, parameters);
+        return request(builder.toURL(), parameters);
     }
 
     protected JSONObject request(@NotNull String command) throws IOException {
@@ -220,8 +229,10 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        //noinspection SpellCheckingInspection
-        return guessPlaybackURI("icyx", hostname, "sessionId=" + token);
+        final @NotNull Builder builder = guessPlaybackURI("icyx");
+        builder.setRawHostname(hostname);
+        builder.setQuery("sessionId", token);
+        return builder.toURI();
     }
 
     public void connect() throws IOException {

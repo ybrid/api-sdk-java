@@ -64,7 +64,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        return guessPlaybackURI("http", null, null);
+        return guessPlaybackURI("http").toURI();
     }
 
     @Override

@@ -26,12 +26,14 @@ package io.ybrid.api.driver;
 import io.ybrid.api.ApiVersion;
 import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.Server;
+import io.ybrid.api.util.uri.Builder;
+import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -95,13 +97,16 @@ public final class FactorySelector {
         return EnumSet.of(ApiVersion.PLAIN);
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException {
+    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
         final EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
-        final String path = mediaEndpoint.getURI().getPath() + "/ctrl/v2/session/info";
-        final URL url = new URL(server.getProtocol(), server.getHostname(), server.getPort(), path);
-        final JSONRequest request = new JSONRequest(url, "GET");
+        final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
+        final @NotNull JSONRequest request;
         JSONArray supportedVersions;
 
+        builder.setServer(server);
+        builder.appendPath(new Path("/ctrl/v2/session/info"));
+
+        request = new JSONRequest(builder.toURL(), "GET");
         request.perform();
 
         supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
