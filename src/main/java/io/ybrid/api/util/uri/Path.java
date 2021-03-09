@@ -123,6 +123,14 @@ public final class Path extends ArrayList<String> {
         }
     }
 
+    public static @NotNull Path create(@NotNull String rawPath) {
+        try {
+            return new Path(rawPath);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public @NotNull String toRawPath() {
         if (isEmpty()) {
             return "/";
