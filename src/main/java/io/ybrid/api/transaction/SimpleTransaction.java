@@ -47,6 +47,7 @@ abstract class SimpleTransaction implements Transaction {
      * @throws Exception Any excepting thrown while executing.
      */
     @ApiStatus.Internal
+    @ApiStatus.OverrideOnly
     protected abstract void execute() throws Exception;
 
     private void signal(@NotNull Collection<@NotNull Runnable> callbacks) {
