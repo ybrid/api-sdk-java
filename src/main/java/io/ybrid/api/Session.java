@@ -29,7 +29,7 @@ import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.PlayerControl;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
@@ -123,12 +123,12 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * @return The newly created transaction.
      */
     @Contract("_ -> new")
-    public @NotNull SessionTransaction createTransaction(@NotNull Request request) {
+    public @NotNull SessionTransaction createTransaction(@NotNull Request<Command> request) {
         return new SessionTransaction(this, request, this::executeTransaction);
     }
 
     private void executeTransaction(@NotNull Transaction transaction) throws IOException {
-        final @NotNull Request request = ((SessionTransaction)transaction).getRequest();
+        final @NotNull Request<Command> request = ((SessionTransaction)transaction).getRequest();
 
         // Ensure we run all transactions with a valid driver.
         getDriver();

@@ -23,7 +23,7 @@
 package io.ybrid.api.transaction;
 
 import io.ybrid.api.Session;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.session.Command;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class SessionTransaction extends SimpleTransaction {
     private final @NotNull Session session;
-    private final @NotNull Request request;
+    private final @NotNull Request<Command> request;
     private final @NotNull Executor executor;
 
     public interface Executor {
@@ -50,7 +50,7 @@ public final class SessionTransaction extends SimpleTransaction {
      * @see Session#createTransaction(Request)
      */
     @ApiStatus.Internal
-    public SessionTransaction(@NotNull Session session, @NotNull Request request, @NotNull Executor executor) {
+    public SessionTransaction(@NotNull Session session, @NotNull Request<Command> request, @NotNull Executor executor) {
         this.session = session;
         this.request = request;
         this.executor = executor;
@@ -61,8 +61,8 @@ public final class SessionTransaction extends SimpleTransaction {
      * @return The request.
      */
     @Contract(pure = true)
-    public @NotNull Request getRequest() {
-        return request;
+    public @NotNull io.ybrid.api.session.Request getRequest() {
+        return new io.ybrid.api.session.Request(request);
     }
 
     /**

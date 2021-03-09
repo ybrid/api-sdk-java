@@ -27,7 +27,8 @@ import io.ybrid.api.Session;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.transaction.Request;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -47,7 +48,7 @@ public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void executeRequest(@NotNull Request request) throws Exception {
+    public void executeRequest(@NotNull Request<Command> request) throws Exception {
         switch (request.getCommand()) {
             case CONNECT:
                 connected = true;
