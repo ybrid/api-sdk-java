@@ -43,6 +43,7 @@ public final class Builder {
     private static final Pattern VALIDATOR_QUERY = Pattern.compile("^(?:[a-z0-9!$&'()*+,;=/?:@~._-]|%[a-f0-9]{2})+$", Pattern.CASE_INSENSITIVE);
 
     private @NotNull String scheme;
+    private @Nullable String userinfo;
     private @Nullable String hostname;
     private int port;
     private @NotNull String path;
@@ -94,9 +95,18 @@ public final class Builder {
         rest = "/" + res[1];
 
         if (res[0].isEmpty()) {
+            this.userinfo = null;
             this.hostname = null;
             this.port = 0;
         } else {
+            res = split(res[0], "@", 2);
+            if (res.length == 2) {
+                this.userinfo = res[0];
+                res[0] = res[1];
+            } else {
+                this.userinfo = null;
+            }
+
             if (res[0].startsWith("[")) {
                 res = split(res[0].substring(1), "]:", 2);
                 if (res.length != 2) {
@@ -160,6 +170,11 @@ public final class Builder {
     @Contract(pure = true)
     public @NotNull String getRawScheme() {
         return scheme;
+    }
+
+    @Contract(pure = true)
+    public @Nullable String getRawUserinfo() {
+        return userinfo;
     }
 
     @Contract(pure = true)
@@ -236,6 +251,12 @@ public final class Builder {
 
     public @NotNull String toURIString() {
         @NotNull String ret = scheme + "://";
+
+        if (userinfo != null) {
+            if (hostname == null)
+                throw new IllegalArgumentException();
+            ret += userinfo + "@";
+        }
 
         if (hostname != null) {
             if (hostname.contains(":")) {

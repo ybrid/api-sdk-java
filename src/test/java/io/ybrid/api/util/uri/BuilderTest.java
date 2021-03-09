@@ -52,15 +52,17 @@ public class BuilderTest {
 
     private static final class ValidVector extends Vector {
         public final @NotNull String scheme;
+        public final @Nullable String userinfo;
         public final @Nullable String hostname;
         public final int port;
         public final @NotNull String path;
         public final @Nullable String query;
         public final @Nullable String fragment;
 
-        public ValidVector(@NotNull String uri, @NotNull String scheme, @Nullable String hostname, int port, @NotNull String path, @Nullable String query, @Nullable String fragment) {
+        public ValidVector(@NotNull String uri, @NotNull String scheme, @Nullable String userinfo, @Nullable String hostname, int port, @NotNull String path, @Nullable String query, @Nullable String fragment) {
             super(uri);
             this.scheme = scheme;
+            this.userinfo = userinfo;
             this.hostname = hostname;
             this.port = port;
             this.path = path;
@@ -74,15 +76,16 @@ public class BuilderTest {
     }
 
     private static final Vector[] vectors = new Vector[]{
-            new ValidVector("http://example.org/", "http", "example.org", 0, "/", null, null),
-            new ValidVector("http://example.org/bla", "http", "example.org", 0, "/bla", null, null),
-            new ValidVector("http://example.org/bla?a=b", "http", "example.org", 0, "/bla", "a=b", null),
-            new ValidVector("http://example.org/bla#c", "http", "example.org", 0, "/bla", null, "c"),
-            new ValidVector("http://example.org/bla?a=b#c", "http", "example.org", 0, "/bla", "a=b", "c"),
-            new ValidVector("http://example.org:1234/bla?a=b#c", "http", "example.org", 1234, "/bla", "a=b", "c"),
-            new ValidVector("http://127.0.0.1:1234/bla?a=b#c", "http", "127.0.0.1", 1234, "/bla", "a=b", "c"),
-            new ValidVector("http://[::1]:1234/bla?a=b#c", "http", "::1", 1234, "/bla", "a=b", "c"),
-            new ValidVector("file:///bla", "file", null, 0, "/bla", null, null),
+            new ValidVector("http://user:pw@example.org/", "http", "user:pw", "example.org", 0, "/", null, null),
+            new ValidVector("http://example.org/", "http", null, "example.org", 0, "/", null, null),
+            new ValidVector("http://example.org/bla", "http", null, "example.org", 0, "/bla", null, null),
+            new ValidVector("http://example.org/bla?a=b", "http", null, "example.org", 0, "/bla", "a=b", null),
+            new ValidVector("http://example.org/bla#c", "http", null, "example.org", 0, "/bla", null, "c"),
+            new ValidVector("http://example.org/bla?a=b#c", "http", null, "example.org", 0, "/bla", "a=b", "c"),
+            new ValidVector("http://example.org:1234/bla?a=b#c", "http", null, "example.org", 1234, "/bla", "a=b", "c"),
+            new ValidVector("http://127.0.0.1:1234/bla?a=b#c", "http", null, "127.0.0.1", 1234, "/bla", "a=b", "c"),
+            new ValidVector("http://[::1]:1234/bla?a=b#c", "http", null, "::1", 1234, "/bla", "a=b", "c"),
+            new ValidVector("file:///bla", "file", null, null, 0, "/bla", null, null),
             new InvalidVector("xxx"),
             new InvalidVector("http://abc"),
             new InvalidVector("http://::1/"),
@@ -130,6 +133,7 @@ public class BuilderTest {
                 System.out.println("builder.toURIString() = " + builder.toURIString());
 
                 assertEquals(validVector.scheme, builder.getRawScheme());
+                assertEquals(validVector.userinfo, builder.getRawUserinfo());
                 assertEquals(validVector.hostname, builder.getRawHostname());
                 assertEquals(validVector.port, builder.getRawPort());
                 assertEquals(validVector.path, builder.getRawPath());
