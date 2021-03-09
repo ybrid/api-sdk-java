@@ -232,6 +232,16 @@ public final class Builder {
         this.path = path.toRawPath();
     }
 
+    public void appendPath(@NotNull Path path) {
+        try {
+            final @NotNull Path updated = new Path(this.path);
+            updated.append(path);
+            this.path = updated.toRawPath();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void setQuery(@NotNull XWWWFormUrlEncodedBuilder builder) {
         this.query = builder.toString();
     }
