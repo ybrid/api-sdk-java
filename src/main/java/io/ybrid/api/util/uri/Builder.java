@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @ApiStatus.Internal
@@ -255,6 +256,12 @@ public final class Builder {
 
     public void setQuery(@NotNull XWWWFormUrlEncodedBuilder builder) {
         this.query = builder.toString();
+    }
+
+    public void setQuery(@NotNull Map<@NotNull String, @Nullable ?> map) {
+        final @NotNull XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
+        builder.append(map);
+        setQuery(builder);
     }
 
     public void setQuery(Object... map) {
