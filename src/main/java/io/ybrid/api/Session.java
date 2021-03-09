@@ -105,7 +105,9 @@ public final class Session implements Connectable, KnowsSubInfoState {
     /**
      * Gets the {@link Server} object used to communicate with the server.
      * @return Returns the {@link Server} object.
+     * @deprecated The {@link Server} was deprecated.
      */
+    @Deprecated
     public @NotNull Server getServer() {
         return server;
     }

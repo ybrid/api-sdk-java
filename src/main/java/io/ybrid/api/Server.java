@@ -101,7 +101,9 @@ public final class Server implements Connectable, ApiUser {
     /**
      * Get the port used to contact the server.
      * @return Returns the port number.
+     * @deprecated This class is deprecated. For a replacement see {@link MediaEndpoint#getURI()}.
      */
+    @Deprecated
     public int getPort() {
         return port;
     }
@@ -109,7 +111,9 @@ public final class Server implements Connectable, ApiUser {
     /**
      * Get whether the connection should be established securely.
      * @return Whether contacting the server securely.
+     * @deprecated This class is deprecated. For a replacement see {@link MediaEndpoint#getURI()}.
      */
+    @Deprecated
     public boolean isSecure() {
         return secure;
     }
@@ -117,7 +121,9 @@ public final class Server implements Connectable, ApiUser {
     /**
      * Gets the transport protocol used.
      * @return Returns the name of the protocol.
+     * @deprecated This class is deprecated. For a replacement see {@link MediaEndpoint#getURI()}.
      */
+    @Deprecated
     public @NotNull String getProtocol() {
         return isSecure() ? "https" : "http";
     }
