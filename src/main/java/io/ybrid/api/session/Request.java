@@ -22,69 +22,36 @@
 
 package io.ybrid.api.session;
 
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * This class represents a single request to the {@link io.ybrid.api.Session} or it's driver.
  * It provides a uniform way to make API requests.
  * <P>
  * Instances can be created using {@link Command#makeRequest()}, and {@link Command#makeRequest(Object)}.
+ * @deprecated Use {@link io.ybrid.api.transaction.Request} instead.
  */
-public final class Request {
-    private final @NotNull Command command;
-    private final @Nullable Object[] arguments;
-
+@Deprecated
+@ApiStatus.ScheduledForRemoval
+public final class Request extends io.ybrid.api.transaction.Request<Command> {
     /**
      * Internal constructor.
-     * @param command The command to request.
+     *
+     * @param command   The command to request.
      * @param arguments The argument list for the request or {@code null}.
      * @see Command#makeRequest()
      * @see Command#makeRequest(Object)
      */
     protected Request(@NotNull Command command, @Nullable Object[] arguments) {
-        this.command = command;
-        this.arguments = arguments;
+        super(command, arguments);
     }
 
-    /**
-     * Gets the {@link Command} of this request.
-     * @return The command.
-     */
-    @Contract(pure = true)
-    public @NotNull Command getCommand() {
-        return command;
-    }
-
-    /**
-     * Gets the list of arguments for the request.
-     * @return The argument list or {@code null}.
-     */
-    @Contract(pure = true)
-    public @Nullable Object[] getArguments() {
-        return arguments;
-    }
-
-    /**
-     * Gets the n-th argument.
-     * @param index The index of the argument starting with 0.
-     * @return The argument.
-     */
-    @Contract(pure = true)
-    public @Nullable Object getArgumentNullable(int index) {
-        return getArguments()[index];
-    }
-
-    /**
-     * Gets the n-th argument and requires it to be non-null.
-     * @param index The index of the argument starting with 0.
-     * @return The argument.
-     */
-    @Contract(pure = true)
-    public @NotNull Object getArgumentNotNull(int index) {
-        return Objects.requireNonNull(getArguments()[index]);
+    @Deprecated
+    @ApiStatus.Internal
+    @ApiStatus.ScheduledForRemoval
+    public Request(@NotNull io.ybrid.api.transaction.Request<Command> request) {
+        this(request.getCommand(), request.getArguments());
     }
 }

@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.session.Command;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transport.ServiceTransportDescription;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class SessionTest {
             session.connect();
 
             session.attachPlayer(newTransportDescription -> transportDescription[0] = newTransportDescription);
-            session.createTransaction(Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
+            session.createTransaction((Request<?>) Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
             assertNotNull(transportDescription[0]);
 
             session.close();

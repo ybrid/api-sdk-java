@@ -28,7 +28,7 @@ import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.uri.Builder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -154,7 +154,7 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     }
 
     @Override
-    public void executeRequest(@NotNull Request request) throws Exception {
+    public void executeRequest(@NotNull Request<Command> request) throws Exception {
         switch (request.getCommand()) {
             case DISCONNECT:
                 connected = false;

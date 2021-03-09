@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,16 +20,11 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.session;
-
-import io.ybrid.api.player.Control;
-import org.jetbrains.annotations.ApiStatus;
+package io.ybrid.api.player;
 
 /**
- * This was the old interface for Player control. It was replaced by {@link Control}.
- * @deprecated Use {@link Control} in new code.
+ * This is the base interface implemented by all {@link Command} classes representing commands for players.
+ * @param <C> The command type.
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval
-public interface PlayerControl extends Control {
+public interface Command<C extends Command<C>> extends io.ybrid.api.transaction.Command<C> {
 }

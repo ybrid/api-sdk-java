@@ -27,14 +27,16 @@ import io.ybrid.api.driver.Driver;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.player.Control;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.PlayerControl;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
 import io.ybrid.api.transport.ServiceURITransportDescription;
 import io.ybrid.api.util.Connectable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +61,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull MetadataMixer metadataMixer;
     private final @NotNull Server server;
     private final @NotNull MediaEndpoint mediaEndpoint;
-    private @Nullable PlayerControl playerControl = null;
+    private @Nullable Control playerControl = null;
     private @Nullable Driver driver;
 
     private @NotNull Driver getDriver() {
@@ -121,14 +123,45 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * Creates a transaction for this session.
      * @param request The request for the transaction.
      * @return The newly created transaction.
+     * @deprecated Use {@link #createTransaction(Request)} instead.
      */
+    @Deprecated
     @Contract("_ -> new")
-    public @NotNull SessionTransaction createTransaction(@NotNull Request request) {
-        return new SessionTransaction(this, request, this::executeTransaction);
+    @ApiStatus.ScheduledForRemoval
+    public @NotNull SessionTransaction createTransaction(@NotNull io.ybrid.api.session.Request request) {
+        return new SessionTransaction(this, request, this::executeSessionTransaction);
     }
 
-    private void executeTransaction(@NotNull Transaction transaction) throws IOException {
-        final @NotNull Request request = ((SessionTransaction)transaction).getRequest();
+    @Contract("_ -> new")
+    private <C extends io.ybrid.api.player.Command<C>> @NotNull Transaction createPlayerTransaction(@NotNull Request<?> request) {
+        final @Nullable Control control = playerControl;
+
+        if (control == null)
+            throw new IllegalStateException("No player connected");
+
+        //noinspection unchecked
+        return control.createTransaction((Request<C>) request);
+    }
+
+    /**
+     * Creates a transaction for this session.
+     * @param request The request for the transaction.
+     * @return The newly created transaction.
+     */
+    @Contract("_ -> new")
+    public @NotNull Transaction createTransaction(@NotNull Request<?> request) {
+        if (request.getCommand() instanceof Command) {
+            //noinspection unchecked
+            return new SessionTransaction(this, (Request<Command>) request, this::executeSessionTransaction);
+        } else if (request.getCommand() instanceof io.ybrid.api.player.Command) {
+            return createPlayerTransaction(request);
+        } else {
+            throw new IllegalArgumentException("Unsupported request: " + request);
+        }
+    }
+
+    private void executeSessionTransaction(@NotNull SessionTransaction transaction) throws IOException {
+        final @NotNull Request<Command> request = transaction.getRequest();
 
         // Ensure we run all transactions with a valid driver.
         getDriver();
@@ -177,7 +210,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
      *
      * @param playerControl The player's {@link PlayerControl} interface.
      */
-    public void attachPlayer(@NotNull PlayerControl playerControl) {
+    public void attachPlayer(@NotNull Control playerControl) {
         if (this.playerControl == playerControl)
             return;
 
@@ -196,7 +229,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
      *
      * @param playerControl The player's {@link PlayerControl} interface.
      */
-    public void detachPlayer(@NotNull PlayerControl playerControl) {
+    public void detachPlayer(@NotNull Control playerControl) {
         if (this.playerControl == playerControl) {
             LOGGER.info("Detaching current player");
             this.playerControl = null;
@@ -241,7 +274,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     @Override
     public void connect() throws IOException {
-        final @NotNull Transaction transaction = createTransaction(Command.CONNECT.makeRequest());
+        final @NotNull Transaction transaction = createTransaction((Request<?>) Command.CONNECT.makeRequest());
         final @Nullable Throwable error;
 
         transaction.run();
@@ -259,7 +292,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     @Override
     public void disconnect() {
         try {
-            createTransaction(Command.DISCONNECT.makeRequest()).run();
+            createTransaction((Request<?>) Command.DISCONNECT.makeRequest()).run();
         } catch (Exception e) {
             e.printStackTrace();
         }

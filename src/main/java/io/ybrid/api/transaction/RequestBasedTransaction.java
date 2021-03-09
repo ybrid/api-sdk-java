@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,16 +20,28 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.session;
+package io.ybrid.api.transaction;
 
-import io.ybrid.api.player.Control;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * This was the old interface for Player control. It was replaced by {@link Control}.
- * @deprecated Use {@link Control} in new code.
+ * This class implements {@link Transaction}s based on {@link Request}s.
+ * @param <R> The {@link Request} to base this on.
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval
-public interface PlayerControl extends Control {
+public abstract class RequestBasedTransaction<R extends Request<?>> extends SimpleTransaction {
+    private final @NotNull R request;
+
+    protected RequestBasedTransaction(@NotNull R request) {
+        this.request = request;
+    }
+
+    /**
+     * Gets the {@link Request} of this transaction.
+     * @return The request.
+     */
+    @Contract(pure = true)
+    public @NotNull R getRequest() {
+        return request;
+    }
 }

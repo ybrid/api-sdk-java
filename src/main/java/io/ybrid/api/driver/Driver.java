@@ -27,7 +27,8 @@ import io.ybrid.api.PlayoutInfo;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.transaction.Request;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +51,7 @@ public interface Driver extends Closeable, KnowsSubInfoState {
 
     void clearChanged(@NotNull SubInfo what);
 
-    void executeRequest(@NotNull Request request) throws Exception;
+    void executeRequest(@NotNull Request<Command> request) throws Exception;
 
     boolean isConnected();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,16 +20,34 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api.session;
+package io.ybrid.api.player;
 
-import io.ybrid.api.player.Control;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * This was the old interface for Player control. It was replaced by {@link Control}.
- * @deprecated Use {@link Control} in new code.
+ * This enum implements basic player control commands.
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval
-public interface PlayerControl extends Control {
+public enum SimpleCommand implements Command<SimpleCommand> {
+    /**
+     * Prepares the player as if calling a standard {@code prepare()}-method.
+     */
+    PREPARE,
+    /**
+     * Starts playback.
+     */
+    PLAY,
+    /**
+     * Stops playback.
+     */
+    STOP;
+
+    @Override
+    public int numberOfArguments() {
+        return 0;
+    }
+
+    @Override
+    public boolean isArgumentValid(int index, @Nullable Object argument) {
+        return false;
+    }
 }

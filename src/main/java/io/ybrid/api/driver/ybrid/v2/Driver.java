@@ -27,7 +27,8 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Sync;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.ClockManager;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
@@ -219,7 +220,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void executeRequest(@NotNull Request request) throws Exception {
+    public void executeRequest(@NotNull Request<Command> request) throws Exception {
         switch (request.getCommand()) {
             case CONNECT:
                 connect();

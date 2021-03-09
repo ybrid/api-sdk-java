@@ -29,7 +29,8 @@ import io.ybrid.api.driver.ybrid.common.Metadata;
 import io.ybrid.api.driver.ybrid.common.SwapInfo;
 import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Sync;
-import io.ybrid.api.session.Request;
+import io.ybrid.api.session.Command;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.uri.Builder;
@@ -159,7 +160,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void executeRequest(@NotNull Request request) throws Exception {
+    public void executeRequest(@NotNull Request<Command> request) throws Exception {
         switch (request.getCommand()) {
             case CONNECT:
                 connect();
