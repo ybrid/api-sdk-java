@@ -87,7 +87,7 @@ public interface Control {
      * @param transaction The transaction to execute.
      * @throws Exception Any exception thrown while executing the request.
      */
-    default <C extends Command<C>> void executePlayerTransaction(@NotNull RequestBasedTransaction<Request<C>> transaction) throws Exception {
+    default <C extends Command<C>> void executeTransaction(@NotNull RequestBasedTransaction<Request<C>> transaction) throws Exception {
         throw new UnsupportedOperationException();
     }
 
@@ -106,7 +106,7 @@ public interface Control {
         return new RequestBasedTransaction<Request <C>>(request) {
             @Override
             protected void execute() throws Exception {
-                Control.this.executePlayerTransaction(this);
+                Control.this.executeTransaction(this);
             }
         };
     }
