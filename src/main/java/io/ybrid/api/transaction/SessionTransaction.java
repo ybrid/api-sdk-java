@@ -31,9 +31,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * This class implements transactions on {@link Session}s.
  */
-public final class SessionTransaction extends SimpleTransaction {
+public final class SessionTransaction extends RequestBasedTransaction<Request<Command>> {
     private final @NotNull Session session;
-    private final @NotNull Request<Command> request;
     private final @NotNull Executor executor;
 
     @ApiStatus.Internal
@@ -52,18 +51,9 @@ public final class SessionTransaction extends SimpleTransaction {
      */
     @ApiStatus.Internal
     public SessionTransaction(@NotNull Session session, @NotNull Request<Command> request, @NotNull Executor executor) {
+        super(request);
         this.session = session;
-        this.request = request;
         this.executor = executor;
-    }
-
-    /**
-     * Gets the {@link Request} of this transaction.
-     * @return The request.
-     */
-    @Contract(pure = true)
-    public @NotNull io.ybrid.api.session.Request getRequest() {
-        return new io.ybrid.api.session.Request(request);
     }
 
     /**
@@ -79,5 +69,10 @@ public final class SessionTransaction extends SimpleTransaction {
     @ApiStatus.Internal
     protected void execute() throws Exception {
         executor.execute(this);
+    }
+
+    @Override
+    public @NotNull io.ybrid.api.session.Request getRequest() {
+        return new io.ybrid.api.session.Request(super.getRequest());
     }
 }
