@@ -23,7 +23,11 @@
 package io.ybrid.api.player;
 
 import io.ybrid.api.Session;
+import io.ybrid.api.transaction.Request;
+import io.ybrid.api.transaction.RequestBasedTransaction;
+import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,4 +73,56 @@ public interface Control {
      * @throws Exception Any exception thrown while connecting the new transport.
      */
     void connectTransport(@NotNull ServiceTransportDescription transportDescription) throws Exception;
+
+    /**
+     * Executes the given transaction's {@link Request} in the player context.
+     * <P>
+     * <B>Note</B>:
+     * This is called from within {@link Transaction#run()}.
+     * Implementations must call {@link RequestBasedTransaction#getRequest()} to find the {@link Request}
+     * and handle this request.
+     * <P>
+     * The default implementation throws {@link UnsupportedOperationException}.
+     *
+     * @param transaction The transaction to execute.
+     * @throws Exception Any exception thrown while executing the request.
+     */
+    default <C extends Command<C>> void executePlayerTransaction(@NotNull RequestBasedTransaction<Request<C>> transaction) throws Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Creates a new Transaction for the given {@link Request}.
+     * The resulting transaction will be executed on this Control.
+     * <P>
+     * <B>Note:</B> Most implementations should not override this.
+     *
+     * @param request The request to create a transaction for.
+     * @param <C> The Command type.
+     * @return The resulting transaction.
+     */
+    @ApiStatus.NonExtendable
+    default <C extends Command<C>> @NotNull Transaction createTransaction(@NotNull Request<C> request) {
+        return new RequestBasedTransaction<Request <C>>(request) {
+            @Override
+            protected void execute() throws Exception {
+                Control.this.executePlayerTransaction(this);
+            }
+        };
+    }
+
+    /**
+     * Creates a new Transaction for the given {@link Command}.
+     * The resulting transaction will be executed on this Control.
+     * <P>
+     * <B>Note:</B> Most implementations should not override this.
+     *
+     * @param command The {@link Command} to execute.
+     * @return The resulting transaction.
+     * @see SimpleCommand
+     */
+    @ApiStatus.NonExtendable
+    default @NotNull Transaction createTransaction(@NotNull Command<?> command) {
+        return createTransaction(command.makeRequest());
+    }
 }

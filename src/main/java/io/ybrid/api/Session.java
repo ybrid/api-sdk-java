@@ -132,6 +132,17 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return new SessionTransaction(this, request, this::executeSessionTransaction);
     }
 
+    @Contract("_ -> new")
+    private <C extends io.ybrid.api.player.Command<C>> @NotNull Transaction createPlayerTransaction(@NotNull Request<?> request) {
+        final @Nullable Control control = playerControl;
+
+        if (control == null)
+            throw new IllegalStateException("No player connected");
+
+        //noinspection unchecked
+        return control.createTransaction((Request<C>) request);
+    }
+
     /**
      * Creates a transaction for this session.
      * @param request The request for the transaction.
@@ -142,6 +153,8 @@ public final class Session implements Connectable, KnowsSubInfoState {
         if (request.getCommand() instanceof Command) {
             //noinspection unchecked
             return new SessionTransaction(this, (Request<Command>) request, this::executeSessionTransaction);
+        } else if (request.getCommand() instanceof io.ybrid.api.player.Command) {
+            return createPlayerTransaction(request);
         } else {
             throw new IllegalArgumentException("Unsupported request: " + request);
         }
