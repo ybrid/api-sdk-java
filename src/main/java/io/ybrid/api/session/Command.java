@@ -36,7 +36,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumSet;
 
-public enum Command {
+public enum Command implements io.ybrid.api.transaction.Command<Command> {
     /**
      * Connects the {@link Session}.
      */
@@ -112,23 +112,13 @@ public enum Command {
         this.argumentTypes = null;
     }
 
-    /**
-     * Gets the number of arguments requests for this command requires.
-     * @return The number of required arguments.
-     */
+    @Override
     @Contract(pure = true)
     public int numberOfArguments() {
         return argumentTypes == null ? 0 : 1;
     }
 
-    /**
-     * Checks whether a object is valid as argument for the given Command.
-     * This includes checks for type, and nullability.
-     *
-     * @param index The index of the argument starting with 0 for the first argument.
-     * @param argument The object to check.
-     * @return Whether the object is valid as argument.
-     */
+    @Override
     @Contract(pure = true)
     public boolean isArgumentValid(int index, @Nullable Object argument) {
         if (index < 0 || index >= numberOfArguments())
@@ -146,31 +136,13 @@ public enum Command {
         }
     }
 
-    /**
-     * Builds a new {@link Request} for this Command with no arguments.
-     * @return The newly created request.
-     */
-    @Contract(" -> new")
+    @Override
     public @NotNull Request makeRequest() throws IllegalArgumentException {
-        if (numberOfArguments() != 0)
-            throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 0");
-
-        return new Request(this, null);
+        return new Request(io.ybrid.api.transaction.Command.super.makeRequest());
     }
 
-    /**
-     * Builds a new {@link Request} for this Command with one arguments.
-     * @param argument The argument to pass as part of the request.
-     * @return The newly created request.
-     */
-    @Contract("_ -> new")
+    @Override
     public @NotNull Request makeRequest(@Nullable Object argument) throws IllegalArgumentException {
-        if (numberOfArguments() != 1)
-            throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 1");
-
-        if (!isArgumentValid(0, argument))
-            throw new IllegalArgumentException("Invalid type of argument 0 for request command " + this);
-
-        return new Request(this, new Object[]{argument});
+        return new Request(io.ybrid.api.transaction.Command.super.makeRequest(argument));
     }
 }
