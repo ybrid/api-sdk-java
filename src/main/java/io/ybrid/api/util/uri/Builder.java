@@ -22,6 +22,7 @@
 
 package io.ybrid.api.util.uri;
 
+import io.ybrid.api.Server;
 import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.ApiStatus;
@@ -275,6 +276,13 @@ public final class Builder {
         }
 
         setQuery(builder);
+    }
+
+    @Deprecated
+    public void setServer(@NotNull Server server) throws URISyntaxException {
+        setRawScheme(server.getProtocol());
+        setRawHostname(server.getHostname());
+        setRawPort(server.getPort());
     }
 
     public @NotNull String toURIString() {
