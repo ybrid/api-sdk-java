@@ -35,6 +35,8 @@ abstract class SimpleTransaction implements Transaction {
     private final @NotNull Identifier identifier = new Identifier();
     private final @NotNull Set<@NotNull Runnable> onControlComplete = new HashSet<>();
     private final @NotNull Set<@NotNull Runnable> onAudioComplete = new HashSet<>();
+    private boolean signaledControlComplete = false;
+    private boolean signaledAudioComplete = false;
     private boolean running = false;
     private boolean controlComplete = false;
     private boolean audioComplete = false;
@@ -64,6 +66,11 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     protected void signalControlComplete() {
+        synchronized (this) {
+            if (signaledControlComplete)
+                return;
+            signaledControlComplete = true;
+        }
         signal(onControlComplete);
     }
 
@@ -72,6 +79,11 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     protected void signalAudioComplete() {
+        synchronized (this) {
+            if (signaledAudioComplete)
+                return;
+            signaledAudioComplete = true;
+        }
         signal(onAudioComplete);
     }
 
