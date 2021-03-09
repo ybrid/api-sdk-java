@@ -36,8 +36,9 @@ public final class SessionTransaction extends SimpleTransaction {
     private final @NotNull Request<Command> request;
     private final @NotNull Executor executor;
 
+    @ApiStatus.Internal
     public interface Executor {
-        void execute(@NotNull Transaction transaction) throws Exception;
+        void execute(@NotNull SessionTransaction transaction) throws Exception;
     }
 
     /**

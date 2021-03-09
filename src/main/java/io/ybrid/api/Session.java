@@ -128,7 +128,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     @Contract("_ -> new")
     @ApiStatus.ScheduledForRemoval
     public @NotNull SessionTransaction createTransaction(@NotNull io.ybrid.api.session.Request request) {
-        return new SessionTransaction(this, request, this::executeTransaction);
+        return new SessionTransaction(this, request, this::executeSessionTransaction);
     }
 
     /**
@@ -140,14 +140,14 @@ public final class Session implements Connectable, KnowsSubInfoState {
     public @NotNull Transaction createTransaction(@NotNull Request<?> request) {
         if (request.getCommand() instanceof Command) {
             //noinspection unchecked
-            return new SessionTransaction(this, (Request<Command>) request, this::executeTransaction);
+            return new SessionTransaction(this, (Request<Command>) request, this::executeSessionTransaction);
         } else {
             throw new IllegalArgumentException("Unsupported request: " + request);
         }
     }
 
-    private void executeTransaction(@NotNull Transaction transaction) throws IOException {
-        final @NotNull Request<Command> request = ((SessionTransaction)transaction).getRequest();
+    private void executeSessionTransaction(@NotNull SessionTransaction transaction) throws IOException {
+        final @NotNull Request<Command> request = transaction.getRequest();
 
         // Ensure we run all transactions with a valid driver.
         getDriver();
