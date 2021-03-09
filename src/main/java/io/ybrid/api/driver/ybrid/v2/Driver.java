@@ -29,6 +29,8 @@ import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Request;
 import io.ybrid.api.util.ClockManager;
+import io.ybrid.api.util.uri.Builder;
+import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -48,16 +51,17 @@ import java.util.logging.Logger;
 final class Driver extends io.ybrid.api.driver.common.Driver {
     private static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
-    private static final String COMMAND_SESSION_CREATE = "session/create";
-    private static final String COMMAND_SESSION_CLOSE = "session/close";
-    private static final String COMMAND_SESSION_INFO = "session/info";
-    private static final String COMMAND_PLAYOUT_SWAP_ITEM = "playout/swap/item";
-    private static final String COMMAND_PLAYOUT_BACK_TO_MAIN = "playout/back-to-main";
-    private static final String COMMAND_PLAYOUT_SWAP_SERVICE = "playout/swap/service";
-    private static final String COMMAND_PLAYOUT_WIND = "playout/wind";
-    private static final String COMMAND_PLAYOUT_WIND_BACK_TO_LIVE = "playout/wind/back-to-live";
-    private static final String COMMAND_PLAYOUT_SKIP_FORWARDS = "playout/skip/forwards";
-    private static final String COMMAND_PLAYOUT_SKIP_BACKWARDS = "playout/skip/backwards";
+    private static final @NotNull Path COMMAND_PREFIX = Path.create("/ctrl/v2");
+    private static final @NotNull Path COMMAND_SESSION_CREATE = Path.create("/session/create");
+    private static final @NotNull Path COMMAND_SESSION_CLOSE = Path.create("/session/close");
+    private static final @NotNull Path COMMAND_SESSION_INFO = Path.create("/session/info");
+    private static final @NotNull Path COMMAND_PLAYOUT_SWAP_ITEM = Path.create("/playout/swap/item");
+    private static final @NotNull Path COMMAND_PLAYOUT_BACK_TO_MAIN = Path.create("/playout/back-to-main");
+    private static final @NotNull Path COMMAND_PLAYOUT_SWAP_SERVICE = Path.create("/playout/swap/service");
+    private static final @NotNull Path COMMAND_PLAYOUT_WIND = Path.create("/playout/wind");
+    private static final @NotNull Path COMMAND_PLAYOUT_WIND_BACK_TO_LIVE = Path.create("/playout/wind/back-to-live");
+    private static final @NotNull Path COMMAND_PLAYOUT_SKIP_FORWARDS = Path.create("/playout/skip/forwards");
+    private static final @NotNull Path COMMAND_PLAYOUT_SKIP_BACKWARDS = Path.create("/playout/skip/backwards");
 
     private static final Duration MINIMUM_BETWEEN_SESSION_INFO = Duration.ofMillis(300);
 
@@ -71,13 +75,17 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_BAD_PACKED_RESPONSE);
     }
 
-    private URL getUrl(@Nullable String suffix) throws MalformedURLException {
-        final @NotNull URL baseUrl = state.getBaseURI().toURL();
+    private URL getUrl(@NotNull Path command) throws IOException {
+        try {
+            final @NotNull Builder builder = new Builder(state.getBaseURI());
 
-        if (suffix == null || suffix.isEmpty())
-            return baseUrl;
+            builder.appendPath(COMMAND_PREFIX);
+            builder.appendPath(command);
 
-        return new URL(baseUrl.getProtocol(), baseUrl.getHost(), baseUrl.getPort(), baseUrl.getFile() + suffix);
+            return builder.toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new IOException(e);
+        }
     }
 
     @Override
@@ -121,7 +129,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Nullable
-    protected Response v2request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
+    protected Response v2request(@NotNull Path command, @Nullable Map<String, String> parameters) throws IOException {
         Response response = null;
 
         if (token != null) {
@@ -135,15 +143,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
 
         try {
-            final @NotNull URL url;
-
-            if (command.startsWith("http://") || command.startsWith("https://")) {
-                url = new URL(command);
-            } else {
-                url = getUrl("/ctrl/v2/" + command);
-            }
-
-            response = new Response(Objects.requireNonNull(request(url, parameters)));
+            response = new Response(Objects.requireNonNull(request(getUrl(command), parameters)));
 
             try {
                 state.accept(response);
@@ -166,7 +166,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Nullable
-    protected Response v2request(@NotNull String command) throws IOException {
+    protected Response v2request(@NotNull Path command) throws IOException {
         return v2request(command, null);
     }
 
@@ -188,11 +188,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
         if (!isValid())
             throw new IOException("Session is not valid.");
 
-        if (state.getBaseURI().getPath().contains("/ctrl/v2/session/info")) {
-            response = v2request(state.getBaseURI().toString());
-        } else {
-            response = v2request(COMMAND_SESSION_CREATE);
-        }
+        response = v2request(COMMAND_SESSION_CREATE);
 
         if (response == null)
             throw new IOException("No valid response from server. BAD.");

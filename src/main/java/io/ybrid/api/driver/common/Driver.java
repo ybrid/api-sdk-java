@@ -29,7 +29,7 @@ import io.ybrid.api.driver.JSONRequest;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.Request;
-import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
+import io.ybrid.api.util.uri.Builder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +37,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
@@ -69,29 +68,21 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
         this.session = session;
     }
 
-    protected static void assertValidMountpoint(@NotNull String mountpoint) throws MalformedURLException {
-        if (!mountpoint.startsWith("/"))
-            throw new MalformedURLException();
-    }
-
-    protected final String getMountpoint() throws MalformedURLException {
-        String mountpoint = session.getMediaEndpoint().getURI().getPath();
-        assertValidMountpoint(mountpoint);
-        return mountpoint;
-    }
-
-    protected final @NotNull URI guessPlaybackURI(@NotNull String protocol, @Nullable String hostname, @Nullable String query) throws MalformedURLException, URISyntaxException {
+    protected final @NotNull Builder guessPlaybackURI(@NotNull String protocol) throws MalformedURLException, URISyntaxException {
         final @NotNull Server server = session.getServer();
+        final @NotNull Builder builder = new Builder(session.getMediaEndpoint().getURI());
 
         assertConnected();
+
+        builder.setServer(server);
 
         if (server.isSecure())
             protocol += "s";
 
-        if (hostname == null)
-            hostname = server.getHostname();
+        builder.setRawScheme(protocol);
 
-        return new URI(protocol, null, hostname, server.getPort(), getMountpoint(), query, null);
+        LOGGER.warning("Was asked to guess playbackURI, guessed: " + builder.toURIString());
+        return builder;
     }
 
     @Override
@@ -127,11 +118,11 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
 
     // TODO: Remove this once the servers no longer require it.
     private static URL workaroundNoPostBody(@NotNull URL url, @NotNull Map<String, String> body) {
-        final XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
-        builder.append(body);
         try {
-            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "?" + builder.toString());
-        } catch (MalformedURLException e) {
+            final @NotNull Builder builder = new Builder(url);
+            builder.setQuery(body);
+            return builder.toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

@@ -37,6 +37,6 @@ public class Driver extends io.ybrid.api.driver.plain.Driver {
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
         //noinspection SpellCheckingInspection
-        return guessPlaybackURI("icxy", null, null);
+        return guessPlaybackURI("icxy").toURI();
     }
 }

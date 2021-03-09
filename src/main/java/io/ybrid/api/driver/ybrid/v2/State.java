@@ -33,6 +33,7 @@ import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.util.ClockManager;
 import io.ybrid.api.util.Identifier;
 import io.ybrid.api.util.Utils;
+import io.ybrid.api.util.uri.Builder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,8 +41,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
@@ -168,15 +171,20 @@ final class State implements KnowsSubInfoState {
     }
 
     private URI guessPlaybackURI() throws URISyntaxException, UnsupportedEncodingException, MalformedURLException {
-        final @NotNull URI ret = new URI(baseURI.getScheme().equals("https") ? "icyxs" : "icyx",
-                null,
-                baseURI.getHost(),
-                baseURI.getPort() > 0 ? baseURI.getPort() : baseURI.toURL().getDefaultPort(),
-                baseURI.getPath(),
-                "session-id=" + URLEncoder.encode(token, StandardCharsets.UTF_8.name()),
-                null);
-        LOGGER.warning("Was asked to guess playbackURI, guessed: " + ret);
-        return ret;
+        final @NotNull Builder builder = new Builder(baseURI);
+
+        builder.setPort();
+
+        if (builder.getRawScheme().equals("https")) {
+            builder.setRawScheme("icyxs");
+        } else {
+            builder.setRawScheme("icyx");
+        }
+
+        builder.setQuery("session-id", token);
+
+        LOGGER.warning("Was asked to guess playbackURI, guessed: " + builder.toURIString());
+        return builder.toURI();
     }
 
     private void updatePlaybackURI(@Nullable String raw) {
