@@ -23,7 +23,6 @@
 package io.ybrid.api.transport;
 
 import io.ybrid.api.MediaEndpoint;
-import io.ybrid.api.Server;
 import io.ybrid.api.WorkaroundMap;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.MetadataMixer;
@@ -126,12 +125,11 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
      * However special care must be taken when doing so to avoid data corruption.
      * Applications must not update the map.
      * Generally applications that wish to communicate workaround settings
-     * should use {@link MediaEndpoint#getWorkarounds()} or {@link Server#getWorkarounds()}.
+     * should use {@link MediaEndpoint#getWorkarounds()}.
      * Those methods are always safe to use.
      *
      * @return The map of active workarounds.
      * @see MediaEndpoint#getWorkarounds()
-     * @see Server#getWorkarounds()
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;
