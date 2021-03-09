@@ -35,6 +35,7 @@ import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
 import io.ybrid.api.transport.ServiceURITransportDescription;
 import io.ybrid.api.util.Connectable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -121,10 +122,28 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * Creates a transaction for this session.
      * @param request The request for the transaction.
      * @return The newly created transaction.
+     * @deprecated Use {@link #createTransaction(Request)} instead.
+     */
+    @Deprecated
+    @Contract("_ -> new")
+    @ApiStatus.ScheduledForRemoval
+    public @NotNull SessionTransaction createTransaction(@NotNull io.ybrid.api.session.Request request) {
+        return new SessionTransaction(this, request, this::executeTransaction);
+    }
+
+    /**
+     * Creates a transaction for this session.
+     * @param request The request for the transaction.
+     * @return The newly created transaction.
      */
     @Contract("_ -> new")
-    public @NotNull SessionTransaction createTransaction(@NotNull Request<Command> request) {
-        return new SessionTransaction(this, request, this::executeTransaction);
+    public @NotNull Transaction createTransaction(@NotNull Request<?> request) {
+        if (request.getCommand() instanceof Command) {
+            //noinspection unchecked
+            return new SessionTransaction(this, (Request<Command>) request, this::executeTransaction);
+        } else {
+            throw new IllegalArgumentException("Unsupported request: " + request);
+        }
     }
 
     private void executeTransaction(@NotNull Transaction transaction) throws IOException {
