@@ -156,7 +156,6 @@ public final class Builder {
 
     private static @NotNull String javaURItoString(@NotNull URI uri) {
         final @NotNull String javasIdea = uri.toASCIIString();
-        System.out.println("javasIdea = " + javasIdea);
         if (javasIdea.startsWith("file:/") && !javasIdea.startsWith("file://"))
             return "file://" + javasIdea.substring(5); // RFC's idea.
         return javasIdea;
