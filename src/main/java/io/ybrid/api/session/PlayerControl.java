@@ -22,51 +22,14 @@
 
 package io.ybrid.api.session;
 
-import io.ybrid.api.Session;
-import io.ybrid.api.transport.ServiceTransportDescription;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
+import io.ybrid.api.player.Control;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
- * This interface defines the communication channel from the {@link Session} to the player.
+ * This was the old interface for Player control. It was replaced by {@link Control}.
+ * @deprecated Use {@link Control} in new code.
  */
-public interface PlayerControl {
-    /**
-     * This is called when the {@link Session} attaches a player.
-     *
-     * @param session The {@link Session} doing the attach.
-     */
-    default void onAttach(@NotNull Session session) {
-        // no-op
-    }
-
-    /**
-     * This is called when the {@link Session} detaches a player.
-     * The player must not use the {@link Session} any longer.
-     *
-     * @param session The {@link Session} doing the detach.
-     */
-    default void onDetach(@NotNull Session session) {
-        // no-op
-    }
-
-    /**
-     * Get the list of media formats supported by the player.
-     *
-     * If this returns null no {@code Accept:}-header should be generated.
-     * @return List of supported formats or null.
-     */
-    default @Nullable Map<String, Double> getAcceptedMediaFormats() {
-        return null;
-    }
-
-    /**
-     * Requests the player to connect a new transport.
-     *
-     * @param transportDescription The transport to connect.
-     * @throws Exception Any exception thrown while connecting the new transport.
-     */
-    void connectTransport(@NotNull ServiceTransportDescription transportDescription) throws Exception;
+@Deprecated
+@ApiStatus.ScheduledForRemoval
+public interface PlayerControl extends Control {
 }

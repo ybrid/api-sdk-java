@@ -27,6 +27,7 @@ import io.ybrid.api.driver.Driver;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
+import io.ybrid.api.player.Control;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.session.PlayerControl;
 import io.ybrid.api.transaction.Request;
@@ -60,7 +61,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull MetadataMixer metadataMixer;
     private final @NotNull Server server;
     private final @NotNull MediaEndpoint mediaEndpoint;
-    private @Nullable PlayerControl playerControl = null;
+    private @Nullable Control playerControl = null;
     private @Nullable Driver driver;
 
     private @NotNull Driver getDriver() {
@@ -196,7 +197,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
      *
      * @param playerControl The player's {@link PlayerControl} interface.
      */
-    public void attachPlayer(@NotNull PlayerControl playerControl) {
+    public void attachPlayer(@NotNull Control playerControl) {
         if (this.playerControl == playerControl)
             return;
 
@@ -215,7 +216,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
      *
      * @param playerControl The player's {@link PlayerControl} interface.
      */
-    public void detachPlayer(@NotNull PlayerControl playerControl) {
+    public void detachPlayer(@NotNull Control playerControl) {
         if (this.playerControl == playerControl) {
             LOGGER.info("Detaching current player");
             this.playerControl = null;
