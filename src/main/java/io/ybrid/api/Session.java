@@ -108,6 +108,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * @deprecated The {@link Server} was deprecated.
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public @NotNull Server getServer() {
         return server;
     }
