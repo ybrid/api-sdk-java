@@ -148,8 +148,7 @@ public final class JSONRequest {
      * @return Returns whether the request was successful or not.
      */
     public synchronized boolean perform() throws IOException {
-        HttpURLConnection connection;
-        InputStream inputStream;
+        final @NotNull HttpURLConnection connection;
         final boolean success;
         final boolean acceptable;
 
@@ -166,7 +165,7 @@ public final class JSONRequest {
         if (requestBody != null) {
             connection.setRequestProperty("Content-Type", requestBodyContentType);
 
-            OutputStream outputStream = connection.getOutputStream();
+            final @NotNull OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody);
             outputStream.close();
         }
@@ -181,6 +180,8 @@ public final class JSONRequest {
         }
 
         if (acceptable) {
+            final @NotNull InputStream inputStream;
+
             if (success) {
                 inputStream = connection.getInputStream();
             } else {
