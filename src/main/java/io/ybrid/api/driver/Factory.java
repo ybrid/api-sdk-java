@@ -24,11 +24,16 @@ package io.ybrid.api.driver;
 
 import io.ybrid.api.Session;
 import io.ybrid.api.driver.common.Driver;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This implements a Factory for drivers. This should not be used directly.
+ * @deprecated Future versions of {@link FactorySelector} will create the driver directly.
  */
+@ApiStatus.Internal
+@ApiStatus.ScheduledForRemoval
+@Deprecated
 public interface Factory {
     /**
      * Gets a driver instance.
