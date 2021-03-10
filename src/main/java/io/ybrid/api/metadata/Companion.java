@@ -121,7 +121,7 @@ public interface Companion {
     /**
      * Returns the URI that should be contacted once the Companion is viewed.
      *
-     * @return Returns the URL to be called when the companion is viewed.
+     * @return Returns the URI to be called when the companion is viewed.
      * @see #onView()
      */
     @Nullable URI getOnViewURI();
