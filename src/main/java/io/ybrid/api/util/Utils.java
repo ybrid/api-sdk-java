@@ -31,6 +31,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -142,5 +144,24 @@ public final class Utils {
         }
 
         return fqdn.contains(".");
+    }
+
+    /**
+     * This converts a {@link URI} to an {@link URL}.
+     * All exceptions are converted to {@link RuntimeException}s.
+     * If {@code null} is given as input {@code null} is also returned.
+     *
+     * @param uri The URI to convert.
+     * @return The resulting URL.
+     */
+    @Contract(value = "null -> null", pure = true)
+    public static @Nullable URL toURL(@Nullable URI uri) {
+        if (uri == null)
+            return null;
+        try {
+            return uri.toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
