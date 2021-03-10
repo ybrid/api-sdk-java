@@ -27,11 +27,11 @@ import io.ybrid.api.bouquet.Service;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.time.Duration;
 
 public final class Metadata extends io.ybrid.api.metadata.SimpleMetadata {
-    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws MalformedURLException {
+    public Metadata(@NotNull Service service, @NotNull JSONObject json) throws URISyntaxException {
         super(new Item(json.getJSONObject("currentItem")), new Item(json.getJSONObject("nextItem")), service,
                 json.has("timeToNextItemMillis") ? TemporalValidity.makeFromNow(Duration.ofMillis(json.getLong("timeToNextItemMillis"))) : TemporalValidity.INDEFINITELY_VALID
                 );

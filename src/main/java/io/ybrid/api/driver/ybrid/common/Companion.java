@@ -25,8 +25,8 @@ package io.ybrid.api.driver.ybrid.common;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 final class Companion extends io.ybrid.api.driver.common.Companion {
     private static String getString(@NotNull JSONObject json, @NotNull String key) {
@@ -42,21 +42,21 @@ final class Companion extends io.ybrid.api.driver.common.Companion {
         return ret;
     }
 
-    private static URL getURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
+    private static URI getURI(@NotNull JSONObject json, @NotNull String key) throws URISyntaxException {
         String string = getString(json, key);
         if (string == null)
             return null;
 
-        return new URL(string);
+        return new URI(string);
     }
 
-    Companion(@NotNull JSONObject json) throws MalformedURLException {
+    Companion(@NotNull JSONObject json) throws URISyntaxException {
         alternativeText = getString(json, "altText");
         height = json.getInt("height");
         width = json.getInt("width");
         sequenceNumber = json.getInt("sequenceNumber");
-        staticResource = getURL(json, "staticResourceURL");
-        onClick = getURL(json, "onClickThroughURL");
-        onView = getURL(json, "onCreativeViewURL");
+        staticResource = getURI(json, "staticResourceURL");
+        onClick = getURI(json, "onClickThroughURL");
+        onView = getURI(json, "onCreativeViewURL");
     }
 }

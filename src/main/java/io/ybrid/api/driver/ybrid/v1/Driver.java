@@ -100,7 +100,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
 
-    private void updateMetadata() throws IOException {
+    private void updateMetadata() throws IOException, URISyntaxException {
         final JSONObject json;
 
         assertConnected();

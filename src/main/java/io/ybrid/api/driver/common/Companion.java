@@ -22,8 +22,12 @@
 
 package io.ybrid.api.driver.common;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 
 public class Companion implements io.ybrid.api.metadata.Companion {
@@ -31,17 +35,19 @@ public class Companion implements io.ybrid.api.metadata.Companion {
     protected int height;
     protected int width;
     protected int sequenceNumber;
-    protected URL staticResource;
-    protected URL onClick;
-    protected URL onView;
+    protected @Nullable URI staticResource;
+    protected @Nullable URI onClick;
+    protected @Nullable URI onView;
 
     @Override
     public void onView() throws IOException {
-        URLConnection connection = onView.openConnection();
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-        connection.connect();
-        connection.getInputStream().close();
+        if (onView != null) {
+            final @NotNull URLConnection connection = onView.toURL().openConnection();
+            connection.setDoInput(true);
+            connection.setDoOutput(false);
+            connection.connect();
+            connection.getInputStream().close();
+        }
     }
 
     @Override
@@ -64,18 +70,21 @@ public class Companion implements io.ybrid.api.metadata.Companion {
         return sequenceNumber;
     }
 
+    @Contract(pure = true)
     @Override
-    public URL getStaticResource() {
+    public @Nullable URI getStaticResourceURI() {
         return staticResource;
     }
 
+    @Contract(pure = true)
     @Override
-    public URL getOnClick() {
+    public @Nullable URI getOnClickURI() {
         return onClick;
     }
 
+    @Contract(pure = true)
     @Override
-    public URL getOnView() {
+    public @Nullable URI getOnViewURI() {
         return onView;
     }
 }

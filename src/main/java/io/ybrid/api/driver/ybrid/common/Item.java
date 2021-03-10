@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +39,7 @@ final class Item extends SimpleItem {
     protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
 
 
-    Item(@NotNull JSONObject json) throws MalformedURLException {
+    Item(@NotNull JSONObject json) throws URISyntaxException {
         super(json.has("id") && !json.getString("id").isEmpty() ? new Identifier(json.getString("id")) : new Identifier());
 
         JSONArray array;

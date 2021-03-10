@@ -22,7 +22,11 @@
 
 package io.ybrid.api.metadata;
 
+import io.ybrid.api.util.Utils;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -33,7 +37,11 @@ import java.net.URL;
 public interface Companion {
     /**
      * This should be called once the Companion was rendered.
+     * This "pings" the {@link URI} as it would be returned by {@link #getOnViewURI()}.
+     * This will do nothing if no URI is set. Therefore it is safe to always call this.
+     *
      * @throws IOException Thrown if there are any I/O-Errors.
+     * @see #getOnViewURI()
      */
     void onView() throws IOException;
 
@@ -66,22 +74,55 @@ public interface Companion {
     /**
      * Returns the URL of the Companion that should be rendered.
      * The resource can be pre-fetched and cached.
+     *
      * @return Returns the URL of the Companion.
+     * @deprecated This was replaced with {@link #getStaticResourceURI()}
      */
-    URL getStaticResource();
+    @Deprecated
+    default URL getStaticResource() {
+        return Utils.toURL(getStaticResourceURI());
+    }
 
     /**
      * This returns the URL to navigate the user to when the Companion is clicked.
      * @return Returns the URL to send the user to.
+     * @deprecated This was replaced with {@link #getOnClickURI()}
      */
-    URL getOnClick();
+    @Deprecated
+    default URL getOnClick() {
+        return Utils.toURL(getOnClickURI());
+    }
 
     /**
      * Returns the URL that should be contacted once the Companion is viewed.
      *
-     * See also {@link #onView()}.
+     * @return Returns the URL to be called when the companion is viewed.
+     * @deprecated This was replaced with {@link #getOnViewURI()}.
+     * @see #onView()
+     */
+    @Deprecated
+    default URL getOnView() {
+        return Utils.toURL(getOnViewURI());
+    }
+
+    /**
+     * Returns the URI of the Companion that should be rendered.
+     * The resource can be pre-fetched and cached.
+     * @return Returns the URI of the Companion.
+     */
+    @Nullable URI getStaticResourceURI();
+
+    /**
+     * This returns the URI to navigate the user to when the Companion is clicked.
+     * @return Returns the URI to send the user to.
+     */
+    @Nullable URI getOnClickURI();
+
+    /**
+     * Returns the URI that should be contacted once the Companion is viewed.
      *
      * @return Returns the URL to be called when the companion is viewed.
+     * @see #onView()
      */
-    URL getOnView();
+    @Nullable URI getOnViewURI();
 }

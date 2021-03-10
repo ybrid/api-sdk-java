@@ -133,7 +133,7 @@ final class State implements KnowsSubInfoState {
 
         try {
             currentMetadata = new io.ybrid.api.driver.ybrid.common.Metadata(currentService, raw);
-        } catch (MalformedURLException ignored) {
+        } catch (URISyntaxException ignored) {
         }
 
         setChanged(SubInfo.METADATA);
