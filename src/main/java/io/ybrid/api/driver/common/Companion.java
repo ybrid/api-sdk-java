@@ -31,7 +31,7 @@ import java.net.URI;
 import java.net.URLConnection;
 
 public class Companion implements io.ybrid.api.metadata.Companion {
-    protected String alternativeText;
+    protected @Nullable String alternativeText;
     protected int height;
     protected int width;
     protected int sequenceNumber;
@@ -51,7 +51,7 @@ public class Companion implements io.ybrid.api.metadata.Companion {
     }
 
     @Override
-    public String getAlternativeText() {
+    public @Nullable String getAlternativeText() {
         return alternativeText;
     }
 

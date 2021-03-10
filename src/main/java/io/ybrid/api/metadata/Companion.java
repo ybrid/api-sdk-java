@@ -51,7 +51,7 @@ public interface Companion {
      * possible for some reason.
      * @return Returns an alternative text for the Companion.
      */
-    String getAlternativeText();
+    @Nullable String getAlternativeText();
 
     /**
      * Returns the expected Height of the Companion.
