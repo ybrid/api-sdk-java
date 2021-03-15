@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 @ApiStatus.Internal
-public final class Builder {
+public final class Builder implements Cloneable {
     private static final Pattern VALIDATOR_SCHEME = Pattern.compile("^[a-z0-9.+-]+$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALIDATOR_HOSTNAME = Pattern.compile("^(?:(?:[a-z0-9!$&'()*+,;=~._-]|%[a-f0-9]{2})+|\\[[a-f0-9:.]+])$", Pattern.CASE_INSENSITIVE);
     private static final Pattern VALIDATOR_QUERY = Pattern.compile("^(?:[a-z0-9!$&'()*+,;=/?:@~._-]|%[a-f0-9]{2})+$", Pattern.CASE_INSENSITIVE);
@@ -320,6 +320,15 @@ public final class Builder {
 
     public @NotNull URL toURL() throws MalformedURLException {
         return new URL(toURIString());
+    }
+
+    @Override
+    public Builder clone() {
+        try {
+            return (Builder) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

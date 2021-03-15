@@ -32,8 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class BuilderTest {
     private static abstract class Vector {
@@ -263,5 +262,17 @@ public class BuilderTest {
 
         builder.setQuery("c", "d", "e", "f");
         assertEquals("http://example.org/a/b?c=d&e=f", builder.toURIString());
+    }
+
+    @Test
+    public void testClone() throws URISyntaxException {
+        final @NotNull Builder builder = new Builder("http://example.org/");
+        final @NotNull Builder clone = builder.clone();
+
+        assertEquals(builder.getRawHostname(), clone.getRawHostname());
+        clone.setRawHostname("localhost");
+        assertNotEquals(builder.getRawHostname(), clone.getRawHostname());
+        assertEquals(builder.getRawHostname(), "example.org");
+        assertEquals(clone.getRawHostname(), "localhost");
     }
 }
