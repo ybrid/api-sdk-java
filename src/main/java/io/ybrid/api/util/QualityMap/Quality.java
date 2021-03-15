@@ -85,8 +85,8 @@ public final class Quality implements Comparable<Quality> {
     }
 
     /**
-     * Returns weather the quality is still acceptable ({@code quality > 0.000}).
-     * @return Weather the quality is acceptable.
+     * Returns whether the quality is still acceptable ({@code quality > 0.000}).
+     * @return Whether the quality is acceptable.
      */
     @Contract(pure = true)
     public boolean isAcceptable() {
