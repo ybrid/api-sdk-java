@@ -28,12 +28,16 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.transaction.Transaction;
+import io.ybrid.api.util.MediaType;
 import io.ybrid.api.util.QualityMap.LanguageMap;
+import io.ybrid.api.util.QualityMap.MediaTypeMap;
+import io.ybrid.api.util.QualityMap.Quality;
 import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,7 +47,7 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
     protected @NotNull final Source source;
     protected @NotNull final Service initialService;
     protected @NotNull final MetadataMixer metadataMixer;
-    protected @Nullable final Map<String, Double> acceptedMediaFormats;
+    protected @Nullable final MediaTypeMap acceptedMediaTypes;
     protected @Nullable final LanguageMap acceptedLanguages;
     protected @NotNull final Transaction transaction;
     protected final @NotNull WorkaroundMap activeWorkarounds;
@@ -65,14 +69,14 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
     protected ServiceTransportDescription(@NotNull Source source,
                                           @NotNull Service initialService,
                                           @NotNull MetadataMixer metadataMixer,
-                                          @Nullable Map<String, Double> acceptedMediaFormats,
+                                          @Nullable MediaTypeMap acceptedMediaFormats,
                                           @Nullable LanguageMap acceptedLanguages,
                                           @NotNull Transaction transaction,
                                           @NotNull WorkaroundMap activeWorkarounds) {
         this.source = source;
         this.initialService = initialService;
         this.metadataMixer = metadataMixer;
-        this.acceptedMediaFormats = acceptedMediaFormats;
+        this.acceptedMediaTypes = acceptedMediaFormats;
         this.acceptedLanguages = acceptedLanguages;
         this.transaction = transaction;
         this.activeWorkarounds = activeWorkarounds;
@@ -109,9 +113,35 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
      * If this returns {@code null} no {@code Accept:}-header should be generated.
      *
      * @return List of accepted formats or {@code null}.
+     * @deprecated Use {@link #getAcceptedMediaTypes()}
      */
+    @Deprecated
     public @Nullable Map<String, Double> getAcceptedMediaFormats() {
-        return acceptedMediaFormats;
+        final @NotNull Map<String, Double> ret;
+
+        if (acceptedMediaTypes == null) {
+            return null;
+        }
+
+        ret = new HashMap<>();
+
+        for (final @NotNull Map.Entry<@NotNull MediaType, @NotNull Quality> entry : acceptedMediaTypes.entrySet()) {
+            ret.put(entry.getKey().toString(), entry.getValue().toDouble());
+        }
+
+        return ret;
+    }
+
+    /**
+     * Get the list of {@link MediaType}s accepted for this transport.
+     * <P>
+     * For HTTP based protocols:
+     * If this returns {@code null} no {@code Accept:}-header should be generated.
+     *
+     * @return List of accepted formats or {@code null}.
+     */
+    public @Nullable MediaTypeMap getAcceptedMediaTypes() {
+        return acceptedMediaTypes;
     }
 
     @Override

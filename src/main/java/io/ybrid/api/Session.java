@@ -36,6 +36,7 @@ import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
 import io.ybrid.api.transport.ServiceURITransportDescription;
 import io.ybrid.api.util.Connectable;
+import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -170,7 +171,15 @@ public final class Session implements Connectable, KnowsSubInfoState {
             case CONNECT_INITIAL_TRANSPORT:
             case RECONNECT_TRANSPORT: {
                 final @Nullable Map<String, Double> acceptedMediaFormats = playerControl != null ? playerControl.getAcceptedMediaFormats() : null;
-                final @NotNull ServiceTransportDescription transportDescription = new ServiceURITransportDescription(new Source(SourceType.TRANSPORT), getDriver().getCurrentService(), metadataMixer, acceptedMediaFormats, mediaEndpoint.getAcceptedLanguagesMap(), transaction, getActiveWorkarounds(), getDriver().getStreamURI(), null);
+                final @NotNull ServiceTransportDescription transportDescription = new ServiceURITransportDescription(new Source(SourceType.TRANSPORT),
+                        getDriver().getCurrentService(),
+                        metadataMixer,
+                        MediaTypeMap.createMap(acceptedMediaFormats),
+                        mediaEndpoint.getAcceptedLanguagesMap(),
+                        transaction,
+                        getActiveWorkarounds(),
+                        getDriver().getStreamURI(),
+                        null);
 
                 Objects.requireNonNull(playerControl).connectTransport(transportDescription);
                 break;

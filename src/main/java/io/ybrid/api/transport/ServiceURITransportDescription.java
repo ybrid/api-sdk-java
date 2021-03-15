@@ -22,19 +22,19 @@
 
 package io.ybrid.api.transport;
 
-import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.WorkaroundMap;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.message.MessageBody;
+import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.util.QualityMap.LanguageMap;
+import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.Map;
 
 /**
  * This class implements {@link URI} based {@link ServiceTransportDescription}s.
@@ -60,7 +60,7 @@ public class ServiceURITransportDescription extends ServiceTransportDescription 
     public ServiceURITransportDescription(@NotNull Source source,
                                           @NotNull Service initialService,
                                           @NotNull MetadataMixer metadataMixer,
-                                          @Nullable Map<String, Double> acceptedMediaFormats,
+                                          @Nullable MediaTypeMap acceptedMediaFormats,
                                           @Nullable LanguageMap acceptedLanguages,
                                           @NotNull Transaction transaction,
                                           @NotNull WorkaroundMap activeWorkarounds,
