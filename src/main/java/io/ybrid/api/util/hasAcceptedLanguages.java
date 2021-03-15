@@ -23,6 +23,7 @@
 package io.ybrid.api.util;
 
 import io.ybrid.api.util.QualityMap.LanguageMap;
+import io.ybrid.api.util.QualityMap.QualityMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -43,10 +44,7 @@ public interface hasAcceptedLanguages {
     @Deprecated
     @Nullable
     default Map<String, Double> getAcceptedLanguages() {
-        final @Nullable LanguageMap map = getAcceptedLanguagesMap();
-        if (map == null)
-            return null;
-        return map.toDoubleMap();
+        return Utils.transform(getAcceptedLanguagesMap(), QualityMap::toDoubleMap);
     }
 
     /**
