@@ -22,6 +22,7 @@
 
 package io.ybrid.api.util;
 
+import io.ybrid.api.util.QualityMap.LanguageMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -32,11 +33,34 @@ import java.util.Map;
 public interface hasAcceptedLanguages {
     /**
      * Get list of accepted languages.
+     * <p>
+     * For HTTP based protocols:
+     * If this returns {@code null} no {@code Accept-Language:}-header should be generated.
+     *
+     * @return List of languages accepted or {@code null}.
+     * @deprecated Use {@link #getAcceptedLanguagesMap()}
+     */
+    @Deprecated
+    @Nullable
+    default Map<String, Double> getAcceptedLanguages() {
+        final @Nullable LanguageMap map = getAcceptedLanguagesMap();
+        if (map == null)
+            return null;
+        return map.toDoubleMap();
+    }
+
+    /**
+     * Get list of accepted languages.
      * <P>
      * For HTTP based protocols:
      * If this returns {@code null} no {@code Accept-Language:}-header should be generated.
      *
      * @return List of languages accepted or {@code null}.
      */
-    @Nullable Map<String, Double> getAcceptedLanguages();
+    default @Nullable LanguageMap getAcceptedLanguagesMap() {
+        final @Nullable Map<String, Double> map = getAcceptedLanguages();
+        if (map == null)
+            return null;
+        return new LanguageMap(map);
+    }
 }
