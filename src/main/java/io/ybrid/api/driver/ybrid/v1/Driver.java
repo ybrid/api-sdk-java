@@ -37,6 +37,7 @@ import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ import java.time.Duration;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,14 +57,19 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     private io.ybrid.api.metadata.Metadata metadata;
     private PlayoutInfo playoutInfo;
-    private @NotNull String hostname;
+    private @NotNull Builder baseURI;
 
     public Driver(Session session) {
         super(session);
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
 
-        this.hostname = session.getServer().getHostname();
+        try {
+            this.baseURI = new Builder(session.getMediaEndpoint().getURI());
+            this.baseURI.setServer(session.getServer());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         this.currentService = new SimpleService();
         metadata = new InvalidMetadata(this.currentService);
 
@@ -71,12 +78,9 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
-        final @NotNull Builder builder;
+        final @NotNull Builder builder = baseURI.clone();
 
         try {
-            builder = new Builder(session.getMediaEndpoint().getURI());
-            builder.setServer(session.getServer());
-            builder.setRawHostname(hostname);
             builder.appendPath(new Path("/ctrl"));
             builder.appendPath(new Path("/" + command));
         } catch (URISyntaxException e) {
@@ -230,8 +234,8 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
-        final @NotNull Builder builder = guessPlaybackURI("icyx");
-        builder.setRawHostname(hostname);
+        final @NotNull Builder builder = baseURI.clone();
+        builder.setRawScheme(session.getServer().isSecure() ? "icyxs" : "icyx");
         builder.setQuery("sessionId", token);
         return builder.toURI();
     }
@@ -239,7 +243,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     public void connect() throws IOException {
         final @NotNull WorkaroundMap workarounds = session.getActiveWorkarounds();
         JSONObject response;
-        String hostname;
         String token;
 
         if (isConnected())
@@ -255,25 +258,52 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         this.token = token;
 
-        if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) == TriState.TRUE) {
-            hostname = null;
-        } else {
-            hostname = response.getString("host");
+        if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) != TriState.TRUE) {
+            try {
+                @NotNull Builder base;
+                @NotNull String key;
 
-            if (hostname != null) {
+                try {
+                    key = "baseURI";
+                    base = new Builder(response.getString(key));
+                } catch (JSONException | NullPointerException e) {
+                    key = "baseURL";
+                    base = new Builder(response.getString(key));
+                }
+
                 if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) == TriState.AUTOMATIC) {
-                    if (!Utils.isValidFQDN(hostname)) {
-                        LOGGER.log(Level.SEVERE, "Invalid hostname from server: " + hostname);
-                        hostname = null;
-                        workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                    if (!Utils.isValidFQDN(Objects.requireNonNull(base.getRawHostname()))) {
+                        LOGGER.log(Level.SEVERE, "Invalid hostname from server (" + key + "): " + base.getRawHostname());
+                        throw new RuntimeException();
+                    }
+                }
+
+                this.baseURI = base;
+                LOGGER.info("Got new baseURI from server (" + key + "): " + this.baseURI.toURIString());
+            } catch (Throwable k) {
+                String hostname = response.getString("host");
+
+                if (hostname != null) {
+                    if (workarounds.get(Workaround.WORKAROUND_BAD_FQDN) == TriState.AUTOMATIC) {
+                        if (!Utils.isValidFQDN(hostname)) {
+                            LOGGER.log(Level.SEVERE, "Invalid hostname from server: " + hostname);
+                            hostname = null;
+                            workarounds.enable(Workaround.WORKAROUND_BAD_FQDN);
+                        }
+                    }
+                }
+
+                /* We did not get anything useful from the server */
+                if (hostname != null) {
+                    try {
+                        baseURI.setRawHostname(hostname);
+                        LOGGER.info("Got new baseURI from server (host): " + this.baseURI.toURIString());
+                    } catch (URISyntaxException e) {
+                        throw new IOException(e);
                     }
                 }
             }
         }
-
-        /* We did not get anything useful from the server */
-        if (hostname != null)
-            this.hostname = hostname;
 
         connected = true;
         capabilities.add(Capability.AUDIO_TRANSPORT);
