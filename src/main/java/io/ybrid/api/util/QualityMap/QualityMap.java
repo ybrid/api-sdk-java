@@ -33,7 +33,7 @@ import java.util.*;
  * It supports a subset of the functions of the {@link Map} interface.
  * @param <T> The base type of the items in this map.
  */
-public final class QualityMap<T> {
+public class QualityMap<T> {
     private final @NotNull Map<@NotNull T, @NotNull Quality> map = new HashMap<>();
     private final @NotNull Style<T> style;
 
