@@ -61,7 +61,7 @@ public class LanguageMap extends QualityMap<String> {
     }
 
     /**
-     * Adds a {@link Locale.LanguageRange} to this map.
+     * Adds a {@code Locale.LanguageRange} to this map.
      * @param range The range to add.
      */
     public void put(@NotNull Locale.LanguageRange range) {
@@ -69,7 +69,7 @@ public class LanguageMap extends QualityMap<String> {
     }
 
     /**
-     * Adds a {@link Collection} of {@link Locale.LanguageRange} to this map.
+     * Adds a {@link Collection} of {@code Locale.LanguageRange} to this map.
      * @param values The ranges to add.
      */
     public void putAll(@NotNull Collection<Locale.@NotNull LanguageRange> values) {
