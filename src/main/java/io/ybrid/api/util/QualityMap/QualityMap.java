@@ -103,24 +103,28 @@ public class QualityMap<T> {
 
     /**
      * This adds a item to this map.
+     * <P>
+     * If the {@code value} is not a {@link Quality} it is automatically converted to one.
+     * The following conversions are currently supported:
+     * <ul>
+     *     <li>From {@link Quality} without conversion.</li>
+     *     <li>From {@code double} by calling {@link Quality#valueOf(double)}.</li>
+     *     <li>From {@link String} by calling {@link Quality#valueOf(String)}.</li>
+     * </ul>
      *
      * @param key The item to add.
      * @param value The quality.
-     * @see Quality#valueOf(String)
      */
-    public void put(@NotNull T key, @NotNull String value) {
-        put(key, Quality.valueOf(value));
-    }
-
-    /**
-     * This adds a item to this map.
-     *
-     * @param key The item to add.
-     * @param value The quality.
-     * @see Quality#valueOf(double)
-     */
-    public void put(@NotNull T key, double value) {
-        put(key, Quality.valueOf(value));
+    public void put(@NotNull T key, @NotNull Object value) {
+        if (value instanceof Quality) {
+            put(key, (Quality) value);
+        } else if (value instanceof Double) {
+            put(key, Quality.valueOf((Double)value));
+        } else if (value instanceof String) {
+            put(key, Quality.valueOf((String) value));
+        } else {
+            throw new IllegalArgumentException("Invalid type for key: " + key + ": " + value.getClass().getName());
+        }
     }
 
     /**
@@ -147,24 +151,13 @@ public class QualityMap<T> {
      * Adds all values from the given map to this map.
      * <P>
      * This allows adding {@link Map}s with values not being a {@link Quality}.
-     * Beside {@link Quality} {@code double}, and {@link String} is supported.
-     * {@link Quality#valueOf(double)}, and {@link Quality#valueOf(String)} is used
-     * to convert the qualities in that case.
+     * The same rules are applied as for {@link #put(Object, Object)}
      *
      * @param values The map to add the values from.
      */
     public void putAll(@NotNull Map<? extends T, ?> values) {
         for (final @NotNull Map.Entry<@NotNull ? extends T, @NotNull ?> entry : values.entrySet()) {
-            final @NotNull Object value = entry.getValue();
-            if (value instanceof Quality) {
-                put(entry.getKey(), (Quality) value);
-            } else if (value instanceof Double) {
-                put(entry.getKey(), (Double) value);
-            } else if (value instanceof String) {
-                put(entry.getKey(), (String) value);
-            } else {
-                throw new IllegalArgumentException("Invalid type for key: " + entry.getKey() + ": " + value.getClass().getName());
-            }
+            put(entry.getKey(), entry.getValue());
         }
     }
 
