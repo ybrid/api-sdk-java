@@ -37,6 +37,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * This is a utility class used internally by the Ybrid client.
@@ -168,5 +169,21 @@ public final class Utils {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Transforms a object into another in a {@code null}-aware way.
+     * @param input The input.
+     * @param transformer The {@link Function} used to do the transformation if the object is non-{@code null}.
+     * @param <I> The type of the input.
+     * @param <O> The type of the output.
+     * @return The result of the transformation or {@code null}.
+     */
+    @Contract("null, _ -> null")
+    public static <I,O> @Nullable O transform(@Nullable I input, @NotNull Function<I,O> transformer) {
+        if (input == null)
+            return null;
+
+        return transformer.apply(input);
     }
 }
