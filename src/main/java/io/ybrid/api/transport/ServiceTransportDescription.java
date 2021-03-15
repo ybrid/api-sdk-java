@@ -28,7 +28,9 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.transaction.Transaction;
+import io.ybrid.api.util.QualityMap.LanguageMap;
 import io.ybrid.api.util.hasAcceptedLanguages;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +44,7 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
     protected @NotNull final Service initialService;
     protected @NotNull final MetadataMixer metadataMixer;
     protected @Nullable final Map<String, Double> acceptedMediaFormats;
-    protected @Nullable final Map<String, Double> acceptedLanguages;
+    protected @Nullable final LanguageMap acceptedLanguages;
     protected @NotNull final Transaction transaction;
     protected final @NotNull WorkaroundMap activeWorkarounds;
 
@@ -57,9 +59,16 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
      * @param transaction The {@link Transaction} causing the creation of this transport description.
      * @param activeWorkarounds The set of active workarounds for this transport.
      * @see #getAcceptedMediaFormats()
-     * @see #getAcceptedLanguages()
+     * @see #getAcceptedLanguagesMap()
      */
-    protected ServiceTransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds) {
+    @ApiStatus.Internal
+    protected ServiceTransportDescription(@NotNull Source source,
+                                          @NotNull Service initialService,
+                                          @NotNull MetadataMixer metadataMixer,
+                                          @Nullable Map<String, Double> acceptedMediaFormats,
+                                          @Nullable LanguageMap acceptedLanguages,
+                                          @NotNull Transaction transaction,
+                                          @NotNull WorkaroundMap activeWorkarounds) {
         this.source = source;
         this.initialService = initialService;
         this.metadataMixer = metadataMixer;
@@ -106,7 +115,7 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
     }
 
     @Override
-    public @Nullable Map<String, Double> getAcceptedLanguages() {
+    public @Nullable LanguageMap getAcceptedLanguagesMap() {
         return acceptedLanguages;
     }
 

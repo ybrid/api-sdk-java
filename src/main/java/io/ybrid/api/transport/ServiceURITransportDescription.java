@@ -28,6 +28,8 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.message.MessageBody;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.transaction.Transaction;
+import io.ybrid.api.util.QualityMap.LanguageMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +56,16 @@ public class ServiceURITransportDescription extends ServiceTransportDescription 
      * @param uri The URI to connect to.
      * @param requestBody The {@link MessageBody} to send alongside the request or {@code null}.
      */
-    public ServiceURITransportDescription(@NotNull Source source, @NotNull Service initialService, @NotNull MetadataMixer metadataMixer, @Nullable Map<String, Double> acceptedMediaFormats, @Nullable Map<String, Double> acceptedLanguages, @NotNull Transaction transaction, @NotNull WorkaroundMap activeWorkarounds, @NotNull URI uri, @Nullable MessageBody requestBody) {
+    @ApiStatus.Internal
+    public ServiceURITransportDescription(@NotNull Source source,
+                                          @NotNull Service initialService,
+                                          @NotNull MetadataMixer metadataMixer,
+                                          @Nullable Map<String, Double> acceptedMediaFormats,
+                                          @Nullable LanguageMap acceptedLanguages,
+                                          @NotNull Transaction transaction,
+                                          @NotNull WorkaroundMap activeWorkarounds,
+                                          @NotNull URI uri,
+                                          @Nullable MessageBody requestBody) {
         super(source, initialService, metadataMixer, acceptedMediaFormats, acceptedLanguages, transaction, activeWorkarounds);
         this.uri = uri;
         this.requestBody = requestBody;
