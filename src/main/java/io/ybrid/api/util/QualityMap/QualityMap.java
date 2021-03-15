@@ -89,6 +89,25 @@ public class QualityMap<T> {
     }
 
     /**
+     * This creates a copy of this map with the key represented as a {@link String},
+     * and the qualities represented as {@code double}.
+     *
+     * @return The copy.
+     * @see Quality#toDouble()
+     * @see Objects#toString(Object)
+     */
+    @Contract(pure = true)
+    public @NotNull Map<String, Double> toStringDoubleMap() {
+        final @NotNull Map<String, Double> ret = new HashMap<>(size());
+
+        for (final @NotNull Map.Entry<@NotNull T, @NotNull Quality> entry : map.entrySet()) {
+            ret.put(entry.getKey().toString(), entry.getValue().toDouble());
+        }
+
+        return ret;
+    }
+
+    /**
      * This creates a copy of this map with the qualities represented as {@link String}.
      * @return The copy.
      * @see Quality#toString()

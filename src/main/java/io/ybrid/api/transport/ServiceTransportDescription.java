@@ -31,13 +31,12 @@ import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.util.MediaType;
 import io.ybrid.api.util.QualityMap.LanguageMap;
 import io.ybrid.api.util.QualityMap.MediaTypeMap;
-import io.ybrid.api.util.QualityMap.Quality;
+import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -114,22 +113,11 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
      *
      * @return List of accepted formats or {@code null}.
      * @deprecated Use {@link #getAcceptedMediaTypes()}
+     * @see MediaTypeMap#toStringDoubleMap()
      */
     @Deprecated
     public @Nullable Map<String, Double> getAcceptedMediaFormats() {
-        final @NotNull Map<String, Double> ret;
-
-        if (acceptedMediaTypes == null) {
-            return null;
-        }
-
-        ret = new HashMap<>();
-
-        for (final @NotNull Map.Entry<@NotNull MediaType, @NotNull Quality> entry : acceptedMediaTypes.entrySet()) {
-            ret.put(entry.getKey().toString(), entry.getValue().toDouble());
-        }
-
-        return ret;
+        return Utils.transform(acceptedMediaTypes, MediaTypeMap::toStringDoubleMap);
     }
 
     /**
