@@ -57,10 +57,5 @@ public interface hasAcceptedLanguages {
      *
      * @return List of languages accepted or {@code null}.
      */
-    default @Nullable LanguageMap getAcceptedLanguagesMap() {
-        final @Nullable Map<String, Double> map = getAcceptedLanguages();
-        if (map == null)
-            return null;
-        return new LanguageMap(map);
-    }
+    @Nullable LanguageMap getAcceptedLanguagesMap();
 }
