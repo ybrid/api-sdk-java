@@ -22,6 +22,8 @@
 
 package io.ybrid.api.util;
 
+import io.ybrid.api.util.QualityMap.QualityMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,7 +95,10 @@ public final class Utils {
      * Asserts a Accept:-style list is valid.
      * @param list The list to check or {@code null}.
      * @throws IllegalArgumentException Thrown if the list is not valid.
+     * @deprecated No longer needed as internally ensured by {@link QualityMap}.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
         if (list == null)
             return;

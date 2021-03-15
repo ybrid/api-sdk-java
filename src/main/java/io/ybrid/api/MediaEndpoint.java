@@ -22,7 +22,7 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.util.Utils;
+import io.ybrid.api.util.QualityMap.LanguageMap;
 import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,7 +43,7 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     private final @NotNull URI uri;
     private final @NotNull Server server;
     private @Nullable ApiVersion apiVersion = null;
-    private @Nullable Map<String, Double> acceptedLanguages = null;
+    private @Nullable LanguageMap acceptedLanguages = null;
 
     /**
      * Create a new MediaEndpoint using the given {@link Server}.
@@ -108,7 +107,7 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     }
 
     @Override
-    public @Nullable Map<String, Double> getAcceptedLanguages() {
+    public @Nullable LanguageMap getAcceptedLanguagesMap() {
         return acceptedLanguages;
     }
 
@@ -124,8 +123,11 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      */
     @Deprecated
     public void setAcceptedLanguages(@Nullable Map<String, Double> acceptedLanguages) {
-        Utils.assertValidAcceptList(acceptedLanguages);
-        this.acceptedLanguages = acceptedLanguages;
+        if (acceptedLanguages == null) {
+            this.acceptedLanguages = null;
+            return;
+        }
+        this.acceptedLanguages = new LanguageMap(acceptedLanguages);
     }
 
     /**
@@ -133,20 +135,19 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      * @param list The list of languages or null.
      */
     public void setAcceptedLanguages(@Nullable List<Locale.LanguageRange> list) {
-        Map<String, Double> newList;
-
         if (list == null) {
             this.acceptedLanguages = null;
             return;
         }
+        this.acceptedLanguages = new LanguageMap(list);
+    }
 
-        newList = new HashMap<>();
-
-        for (Locale.LanguageRange range : list)
-            newList.put(range.getRange(), range.getWeight());
-
-        Utils.assertValidAcceptList(newList);
-        this.acceptedLanguages = newList;
+    /**
+     * Sets the list of languages requested by the user and their corresponding weights.
+     * @param list The list of languages or null.
+     */
+    public void setAcceptedLanguages(@Nullable LanguageMap list) {
+        this.acceptedLanguages = list;
     }
 
     @Override
