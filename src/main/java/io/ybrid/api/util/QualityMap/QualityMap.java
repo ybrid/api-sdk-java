@@ -26,7 +26,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * The QualityMap implements a map used to store items with a given {@link Quality} assigned.
@@ -99,6 +102,25 @@ public class QualityMap<T> {
         }
 
         return ret;
+    }
+
+    /**
+     * Converts this to a list suitable for a HTTP Accept:-style header.
+     * @return The {@link String} constructed or {@code null} if the map is empty.
+     */
+    public @Nullable String toHTTPHeaderLikeString() {
+        final @NotNull StringBuilder ret = new StringBuilder();
+
+        if (isEmpty())
+            return null;
+
+        for (final @NotNull Map.Entry<@NotNull T, @NotNull Quality> entry : map.entrySet()) {
+            if (ret.length() > 0)
+                ret.append(", ");
+            ret.append(entry.getKey().toString()).append("; q=").append(entry.getValue().toString());
+        }
+
+        return ret.toString();
     }
 
     /**
