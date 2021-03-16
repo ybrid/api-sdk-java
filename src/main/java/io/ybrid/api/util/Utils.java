@@ -186,4 +186,21 @@ public final class Utils {
 
         return transformer.apply(input);
     }
+
+    /**
+     * This returns the first non-{@code null} value passed or {@code null} if no non-{@code null} values are passed.
+     * @param inputs The values to check.
+     * @param <K> The common type of all values.
+     * @return The result of the operation or {@code null}.
+     */
+    @Contract(pure = true)
+    @SafeVarargs
+    public static <K> @Nullable K firstOf(@Nullable K... inputs) {
+        for (final @Nullable K current : inputs) {
+            if (current != null)
+                return current;
+        }
+
+        return null;
+    }
 }

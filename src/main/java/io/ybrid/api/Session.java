@@ -22,8 +22,8 @@
 
 package io.ybrid.api;
 
-import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.driver.Driver;
+import io.ybrid.api.driver.FactorySelector;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
@@ -45,7 +45,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -171,11 +170,15 @@ public final class Session implements Connectable, KnowsSubInfoState {
         switch (request.getCommand()) {
             case CONNECT_INITIAL_TRANSPORT:
             case RECONNECT_TRANSPORT: {
-                final @Nullable Map<String, Double> acceptedMediaFormats = Utils.transform(playerControl, Control::getAcceptedMediaFormats);
+                final @Nullable MediaTypeMap acceptedMediaTypes = Utils.transform(playerControl,
+                        c -> Utils.firstOf(
+                                c.getAcceptedMediaTypes(),
+                                MediaTypeMap.createMap(c.getAcceptedMediaFormats())
+                        ));
                 final @NotNull ServiceTransportDescription transportDescription = new ServiceURITransportDescription(new Source(SourceType.TRANSPORT),
                         getDriver().getCurrentService(),
                         metadataMixer,
-                        MediaTypeMap.createMap(acceptedMediaFormats),
+                        acceptedMediaTypes,
                         mediaEndpoint.getAcceptedLanguagesMap(),
                         transaction,
                         getActiveWorkarounds(),

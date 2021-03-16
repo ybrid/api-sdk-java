@@ -27,6 +27,8 @@ import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.RequestBasedTransaction;
 import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
+import io.ybrid.api.util.MediaType;
+import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,8 +63,21 @@ public interface Control {
      *
      * If this returns null no {@code Accept:}-header should be generated.
      * @return List of supported formats or null.
+     * @deprecated Implementations should implement {@link #getAcceptedMediaTypes()}.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     default @Nullable Map<String, Double> getAcceptedMediaFormats() {
+        return null;
+    }
+
+    /**
+     * Get the list of {@link MediaType}s supported by the player.
+     *
+     * If this returns null no {@code Accept:}-header should be generated.
+     * @return List of supported formats or null.
+     */
+    default @Nullable MediaTypeMap getAcceptedMediaTypes() {
         return null;
     }
 
