@@ -22,6 +22,9 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This enum is used to identify the mode of a swap.
  */
@@ -35,13 +38,14 @@ public enum SwapMode {
      */
     FADE2END("fade2end");
 
-    private final String onWire;
+    private final @NotNull String onWire;
 
-    SwapMode(String onWire) {
+    SwapMode(@NotNull String onWire) {
         this.onWire = onWire;
     }
 
-    public String getOnWire() {
+    @ApiStatus.Internal
+    public @NotNull String getOnWire() {
         return onWire;
     }
 }

@@ -22,6 +22,9 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This enum is used to identify a specific version of the Ybrid® API.
  */
@@ -50,7 +53,8 @@ public enum ApiVersion {
      * @param input The on-wire representation to convert.
      * @return The corresponding enum value.
      */
-    public static ApiVersion fromWire(String input) {
+    @ApiStatus.Internal
+    public static ApiVersion fromWire(@NotNull String input) {
         switch (input) {
             case "v1":
                 return YBRID_V1;
