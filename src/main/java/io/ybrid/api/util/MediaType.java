@@ -38,8 +38,30 @@ import java.util.Set;
 public final class MediaType implements Serializable {
     private static final long serialVersionUID = -2955670942461535881L;
 
+    /* --------[ Special Media Types ]-------- */
+    /**
+     * Any Media type, used for {@code Accept:}-Headers.
+     */
     public static final @NotNull MediaType MEDIA_TYPE_ANY = new MediaType("*/*");
+    /* --------[ Official Media Types ]-------- */
+    /**
+     * Any stream of octets. Often used as fallback.
+     */
+    public static final @NotNull MediaType MEDIA_TYPE_APPLICATION_OCTET_STREAM = new MediaType("application/octet-stream");
+    /**
+     * Ogg with any content.
+     */
+    public static final @NotNull MediaType MEDIA_TYPE_APPLICATION_OGG = new MediaType("application/ogg");
+    /**
+     * Ogg with audio content.
+     */
+    public static final @NotNull MediaType MEDIA_TYPE_AUDIO_OGG = new MediaType("audio/ogg");
+    /**
+     * MP3.
+     */
+    public static final @NotNull MediaType MEDIA_TYPE_AUDIO_MPEG = new MediaType("audio/mpeg");
 
+    /* --------[ Other things ]-------- */
     /**
      * The {@link Style} used for {@link QualityMap}.
      */
