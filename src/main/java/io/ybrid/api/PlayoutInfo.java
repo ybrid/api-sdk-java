@@ -33,8 +33,10 @@ public interface PlayoutInfo extends Serializable {
     /**
      * Returns the information on the current swap state.
      * @return Returns the current SwapInfo.
+     * @deprecated Access via {@link CapabilitySet}-API.
      */
     @NotNull
+    @Deprecated
     SwapInfo getSwapInfo();
 
     /**
@@ -93,6 +95,7 @@ public interface PlayoutInfo extends Serializable {
 
             @Override
             @NotNull
+            @Deprecated
             public SwapInfo getSwapInfo() {
                 return parent.getSwapInfo();
             }

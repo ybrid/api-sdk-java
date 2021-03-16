@@ -108,7 +108,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
 
         if (state.hasChanged(SubInfo.PLAYOUT)) {
             PlayoutInfo playoutInfo = state.getPlayoutInfo();
-            if (playoutInfo.getSwapInfo().canSwap()) {
+            if (Objects.requireNonNull(state.getSwapInfo()).canSwap()) {
                 capabilities.add(Capability.SWAP_ITEM);
             } else {
                 capabilities.remove(Capability.SWAP_ITEM);
