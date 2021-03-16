@@ -135,8 +135,11 @@ public interface Control {
      * @param command The {@link Command} to execute.
      * @return The resulting transaction.
      * @see SimpleCommand
+     * @deprecated Use {@link #createTransaction(Request)}.
      */
     @ApiStatus.NonExtendable
+    @ApiStatus.ScheduledForRemoval
+    @Deprecated
     default @NotNull Transaction createTransaction(@NotNull Command<?> command) {
         return createTransaction(command.makeRequest());
     }
