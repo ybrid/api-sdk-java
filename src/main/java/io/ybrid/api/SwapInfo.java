@@ -22,6 +22,8 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.io.Serializable;
 
 /**
@@ -37,7 +39,10 @@ public interface SwapInfo extends Serializable {
     /**
      * Returns the number of swaps the client is expected to be allowed before the server refuses them.
      * @return Returns the number of swaps the user can do.
+     * @deprecated This should no longer be used.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     int getSwapsLeft();
 
     /**
@@ -45,7 +50,10 @@ public interface SwapInfo extends Serializable {
      *
      * This can be used to update the user interface to provide a swap button only when expected to work.
      * @return Whether the next swap is expected to be successful.
+     * @deprecated Use {@link CapabilitySet#contains(Capability)} with {@link Capability#SWAP_ITEM}.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     default boolean canSwap() {
         return getSwapsLeft() != 0;
     }
