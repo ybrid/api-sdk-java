@@ -23,6 +23,7 @@
 package io.ybrid.api.metadata;
 
 import io.ybrid.api.util.Utils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -79,6 +80,7 @@ public interface Companion {
      * @deprecated This was replaced with {@link #getStaticResourceURI()}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     default URL getStaticResource() {
         return Utils.toURL(getStaticResourceURI());
     }
@@ -89,6 +91,7 @@ public interface Companion {
      * @deprecated This was replaced with {@link #getOnClickURI()}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     default URL getOnClick() {
         return Utils.toURL(getOnClickURI());
     }
@@ -101,6 +104,7 @@ public interface Companion {
      * @see #onView()
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     default URL getOnView() {
         return Utils.toURL(getOnViewURI());
     }

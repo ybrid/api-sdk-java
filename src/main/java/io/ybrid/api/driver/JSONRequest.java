@@ -24,6 +24,7 @@ package io.ybrid.api.driver;
 
 import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -44,6 +45,7 @@ import java.util.logging.Logger;
  *
  * This class only performs I/O operations in {@link #perform()}.
  */
+@ApiStatus.Internal
 public final class JSONRequest {
     static final Logger LOGGER = Logger.getLogger(JSONRequest.class.getName());
 

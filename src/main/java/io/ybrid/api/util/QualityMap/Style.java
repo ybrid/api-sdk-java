@@ -22,6 +22,7 @@
 
 package io.ybrid.api.util.QualityMap;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +32,7 @@ import java.lang.reflect.Array;
  * This interface is used to implement different styles of {@link QualityMap}s.
  * @param <T> The base type used by the {@link QualityMap}.
  */
+@ApiStatus.Internal
 public interface Style<T> {
     /**
      * Gets wildcards for the given value. Ordered from most exact to least exact match.

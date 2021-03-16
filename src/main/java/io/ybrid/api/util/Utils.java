@@ -88,6 +88,7 @@ public final class Utils {
      * @return The content of the input stream as {@link JSONObject}.
      * @throws IOException Thrown on I/O-Error on the {@code inputStream}.
      */
+    @ApiStatus.Internal
     public static JSONObject slurpToJSONObject(InputStream inputStream) throws IOException {
         return new JSONObject(slurpToString(inputStream));
     }
@@ -100,6 +101,7 @@ public final class Utils {
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
+    @ApiStatus.Internal
     public static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
         if (list == null)
             return;
@@ -114,6 +116,7 @@ public final class Utils {
      * @param hostname The hostname to check.
      * @throws MalformedURLException Thrown if the hostname is invalid.
      */
+    @ApiStatus.Internal
     @Contract(value = "null -> fail", pure = true)
     public static void assertValidHostname(@Nullable String hostname) throws MalformedURLException {
         if (hostname == null)
@@ -127,6 +130,7 @@ public final class Utils {
      * @param port The port to check.
      * @throws MalformedURLException Thrown if the port is invalid.
      */
+    @ApiStatus.Internal
     @Contract(pure = true)
     public static void assertValidPort(int port) throws MalformedURLException {
         if (port < 0 || port > 65535)
@@ -139,6 +143,8 @@ public final class Utils {
      * @param fqdn The FQDN to test.
      * @return Whether the argument is a valid FQDN.
      */
+    @ApiStatus.Internal
+    @Contract(pure = true)
     public static boolean isValidFQDN(@NotNull String fqdn) {
         if (fqdn.equals("localhost") || fqdn.equals("localhost.localdomain") || fqdn.equals("127.0.0.1") || fqdn.equals("::1"))
             return false;

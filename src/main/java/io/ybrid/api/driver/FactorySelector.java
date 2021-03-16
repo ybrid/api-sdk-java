@@ -28,6 +28,7 @@ import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.Server;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
@@ -44,6 +45,7 @@ import java.util.logging.Logger;
  *
  * This should not be used directly.
  */
+@ApiStatus.Internal
 public final class FactorySelector {
     private static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
 

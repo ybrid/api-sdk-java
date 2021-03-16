@@ -23,6 +23,7 @@
 package io.ybrid.api.util;
 
 import io.ybrid.api.message.MessageBody;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,7 @@ import java.util.*;
 /**
  * This class implements a renderer for the {@code application/x-www-form-urlencoded} media type.
  */
+@ApiStatus.Internal
 public class XWWWFormUrlEncodedBuilder implements MessageBody {
     private static final @NotNull String UTF_8_NAME = StandardCharsets.UTF_8.name();
 

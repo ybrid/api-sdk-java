@@ -29,6 +29,7 @@ import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.transaction.Request;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+@ApiStatus.Internal
 public interface Driver extends Closeable, KnowsSubInfoState {
     @NotNull Bouquet getBouquet();
 
