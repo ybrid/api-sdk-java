@@ -26,12 +26,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 /**
  * This is the base class for all commands.
  * This should not be used directly rather should command classes be implemented using Enums.
  * @param <C> The command type.
  */
-public interface Command<C extends Command<C>> {
+public interface Command<C extends Command<C>> extends Serializable {
     /**
      * Gets the number of arguments requests for this command requires.
      * @return The number of required arguments.
