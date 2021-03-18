@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -173,6 +174,26 @@ public final class Utils {
         try {
             return uri.toURL();
         } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * This converts a {@link URL} to an {@link URI}.
+     * All exceptions are converted to {@link RuntimeException}s.
+     * If {@code null} is given as input {@code null} is also returned.
+     *
+     * @param url The {@link URL} to convert.
+     * @return The resulting {@code URI}.
+     */
+    @Contract(value = "null -> null", pure = true)
+    @ApiStatus.Internal
+    public static @Nullable URI toURI(@Nullable URL url) {
+        if (url == null)
+            return null;
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

@@ -44,7 +44,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
@@ -235,10 +234,10 @@ final class State implements KnowsSubInfoState {
         }
     }
 
-    private @Nullable URL jsonToURL(@NotNull JSONObject json, @NotNull String key) throws MalformedURLException {
+    private @Nullable URI jsonToURI(@NotNull JSONObject json, @NotNull String key) throws URISyntaxException {
         final @Nullable String value = json.getString(key);
         if (value != null && !value.isEmpty()) {
-            return new URL(value);
+            return new URI(value);
         } else {
             return null;
         }
@@ -277,10 +276,10 @@ final class State implements KnowsSubInfoState {
                     }
                 }
 
-                service = new SimpleService(displayName, new Identifier(identifier), jsonToURL(json, "iconURL"), null);
+                service = new SimpleService(displayName, new Identifier(identifier), jsonToURI(json, "iconURL"), null);
 
                 services.put(service.getIdentifier(), service);
-            } catch (MalformedURLException ignored) {
+            } catch (URISyntaxException ignored) {
             }
         }
 

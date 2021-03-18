@@ -23,12 +23,13 @@
 package io.ybrid.api.bouquet;
 
 import io.ybrid.api.util.Identifier;
+import io.ybrid.api.util.Utils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class SimpleService implements Service {
@@ -37,19 +38,24 @@ public class SimpleService implements Service {
     final @Nullable URI icon;
     final @Nullable String genre;
 
-    public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URL icon, @Nullable String genre) {
+    public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URI icon, @Nullable String genre) {
         this.displayName = displayName;
         this.identifier = identifier;
-        try {
-            this.icon = icon.toURI();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        this.icon = icon;
         this.genre = genre;
     }
 
+    /**
+     * @deprecated Use {@link #SimpleService(String, Identifier, URI, String)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URL icon, @Nullable String genre) {
+        this(displayName, identifier, Utils.toURI(icon), genre);
+    }
+
     public SimpleService(@NotNull String displayName, @NotNull Identifier identifier) {
-        this(displayName, identifier, null, null);
+        this(displayName, identifier, (URI)null, null);
     }
 
     public SimpleService() {
