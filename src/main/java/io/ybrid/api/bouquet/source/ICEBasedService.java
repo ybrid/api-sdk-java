@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -86,7 +85,7 @@ public class ICEBasedService implements SourceServiceMetadata {
     }
 
     @Override
-    public @Nullable URL getIcon() {
+    public @Nullable URI getIconURI() {
         return null;
     }
 

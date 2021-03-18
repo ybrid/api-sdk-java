@@ -22,8 +22,10 @@
 
 package io.ybrid.api.bouquet;
 
+import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.hasDisplayName;
 import io.ybrid.api.util.hasIdentifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,9 +41,20 @@ public interface Service extends hasIdentifier, hasDisplayName {
     /**
      * Get an icon that can be displayed by the user interface next to the display of the service.
      * @return Returns an URL to a icon for the service or null.
+     * @deprecated Use {@link #getIconURI()}.
      */
-    @Nullable
-    URL getIcon();
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    default @Nullable URL getIcon() {
+        return Utils.toURL(getIconURI());
+    }
+
+    /**
+     * Get an icon that can be displayed by the user interface next to the display of the service.
+     * @return Returns an {@link URI} to a icon for the service or {@code null}.
+     */
+    @Contract(pure = true)
+    @Nullable URI getIconURI();
 
     /**
      * This returns the genre of the service as a string that can be presented to the user.

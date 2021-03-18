@@ -27,18 +27,24 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class SimpleService implements Service {
     final @NotNull String displayName;
     final @NotNull Identifier identifier;
-    final @Nullable URL icon;
+    final @Nullable URI icon;
     final @Nullable String genre;
 
     public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URL icon, @Nullable String genre) {
         this.displayName = displayName;
         this.identifier = identifier;
-        this.icon = icon;
+        try {
+            this.icon = icon.toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         this.genre = genre;
     }
 
@@ -51,7 +57,7 @@ public class SimpleService implements Service {
     }
 
     @Override
-    public @Nullable URL getIcon() {
+    public @Nullable URI getIconURI() {
         return icon;
     }
 
