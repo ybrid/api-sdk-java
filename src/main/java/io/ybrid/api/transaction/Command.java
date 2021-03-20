@@ -22,6 +22,7 @@
 
 package io.ybrid.api.transaction;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,7 +72,7 @@ public interface Command<C extends Command<C>> extends Serializable {
      * @return The newly created request.
      */
     @Contract("_ -> new")
-    default @NotNull Request<C> makeRequest(@Nullable Object argument) throws IllegalArgumentException {
+    default @NotNull Request<C> makeRequest(@Nullable Serializable argument) throws IllegalArgumentException {
         if (numberOfArguments() != 1)
             throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 1");
 
@@ -79,6 +80,19 @@ public interface Command<C extends Command<C>> extends Serializable {
             throw new IllegalArgumentException("Invalid type of argument 0 for request command " + this);
 
         //noinspection unchecked
-        return new Request<>((C) this, new Object[]{argument});
+        return new Request<>((C) this, new Serializable[]{argument});
+    }
+
+    /**
+     * Builds a new {@link Request} for this Command with one arguments.
+     * @param argument The argument to pass as part of the request.
+     * @return The newly created request.
+     * @deprecated Use {@link #makeRequest(Serializable)}.
+     */
+    @Deprecated
+    @Contract("_ -> new")
+    @ApiStatus.ScheduledForRemoval
+    default @NotNull Request<C> makeRequest(@Nullable Object argument) throws IllegalArgumentException {
+        return makeRequest((Serializable) argument);
     }
 }

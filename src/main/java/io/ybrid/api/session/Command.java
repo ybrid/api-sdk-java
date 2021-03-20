@@ -28,10 +28,13 @@ import io.ybrid.api.SwapMode;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Sync;
+import io.ybrid.api.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumSet;
@@ -89,7 +92,7 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
     /**
      * Swaps to the given {@link Service}.
      */
-    SWAP_SERVICE(true, Service.class),
+    SWAP_SERVICE(true, new Class[]{Service.class, Identifier.class}),
     /**
      * Swaps back to the main {@link Service}.
      */
@@ -142,7 +145,16 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
     }
 
     @Override
-    public @NotNull Request makeRequest(@Nullable Object argument) throws IllegalArgumentException {
+    public @NotNull Request makeRequest(@Nullable Serializable argument) throws IllegalArgumentException {
+        if (argument instanceof Service)
+            argument = ((Service) argument).getIdentifier();
         return new Request(io.ybrid.api.transaction.Command.super.makeRequest(argument));
+    }
+
+    @Deprecated
+    @Override
+    @ApiStatus.ScheduledForRemoval
+    public @NotNull Request makeRequest(@Nullable Object argument) throws IllegalArgumentException {
+        return makeRequest((Serializable) argument);
     }
 }
