@@ -24,6 +24,8 @@ package io.ybrid.api.player;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 /**
  * This enum implements basic player control commands.
  */
@@ -42,12 +44,8 @@ public enum SimpleCommand implements Command<SimpleCommand> {
     STOP;
 
     @Override
-    public int numberOfArguments() {
-        return 0;
-    }
-
-    @Override
-    public boolean isArgumentValid(int index, @Nullable Object argument) {
-        return false;
+    public void assertArgumentListValid(@Nullable Serializable[] arguments) throws IllegalArgumentException {
+        if (arguments.length != 0)
+            throw new IllegalArgumentException("Command does not accept parameters");
     }
 }

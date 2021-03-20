@@ -38,20 +38,51 @@ public interface Command<C extends Command<C>> extends Serializable {
     /**
      * Gets the number of arguments requests for this command requires.
      * @return The number of required arguments.
+     * @deprecated Implementations should only use {@link #assertArgumentListValid(Serializable[])}
      */
+    @Deprecated
     @Contract(pure = true)
-    int numberOfArguments();
+    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.OverrideOnly
+    default int numberOfArguments() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Checks whether a object is valid as argument for the given Command.
      * This includes checks for type, and nullability.
      *
-     * @param index The index of the argument starting with 0 for the first argument.
+     * @param index    The index of the argument starting with 0 for the first argument.
      * @param argument The object to check.
      * @return Whether the object is valid as argument.
+     * @deprecated Implementations should only use {@link #assertArgumentListValid(Serializable[])}
      */
+    @Deprecated
     @Contract(pure = true)
-    boolean isArgumentValid(int index, @Nullable Object argument);
+    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.OverrideOnly
+    default boolean isArgumentValid(int index, @Nullable Object argument) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Checks whether a list of arguments is valid for the given Command.
+     * This must check both the number of arguments as well as their type,
+     * and value (including nullability).
+     *
+     * @param arguments The list of arguments.
+     * @throws IllegalArgumentException Thrown when the argument list is invalid
+     */
+    @Contract(value = "null -> fail; !null -> _", pure = true)
+    default void assertArgumentListValid(@Nullable Serializable[] arguments) throws IllegalArgumentException {
+        if (numberOfArguments() != arguments.length)
+            throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 1");
+
+        for (int i = 0; i < arguments.length; i++) {
+            if (!isArgumentValid(i, arguments[i]))
+                throw new IllegalArgumentException("Invalid type of argument " + i + " for request command " + this);
+        }
+    }
 
     /**
      * Builds a new {@link Request} for this Command with no arguments.
@@ -59,8 +90,7 @@ public interface Command<C extends Command<C>> extends Serializable {
      */
     @Contract(" -> new")
     default @NotNull Request<C> makeRequest() throws IllegalArgumentException {
-        if (numberOfArguments() != 0)
-            throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 0");
+        assertArgumentListValid(new Serializable[0]);
 
         //noinspection unchecked
         return new Request<>((C) this, null);
@@ -73,14 +103,12 @@ public interface Command<C extends Command<C>> extends Serializable {
      */
     @Contract("_ -> new")
     default @NotNull Request<C> makeRequest(@Nullable Serializable argument) throws IllegalArgumentException {
-        if (numberOfArguments() != 1)
-            throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 1");
+        final @Nullable Serializable[] arguments = new Serializable[]{argument};
 
-        if (!isArgumentValid(0, argument))
-            throw new IllegalArgumentException("Invalid type of argument 0 for request command " + this);
+        assertArgumentListValid(arguments);
 
         //noinspection unchecked
-        return new Request<>((C) this, new Serializable[]{argument});
+        return new Request<>((C) this, arguments);
     }
 
     /**

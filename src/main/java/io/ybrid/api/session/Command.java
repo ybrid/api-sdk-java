@@ -30,7 +30,6 @@ import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +37,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumSet;
+import java.util.Objects;
 
 public enum Command implements io.ybrid.api.transaction.Command<Command> {
     /**
@@ -115,29 +115,37 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
         this.argumentTypes = null;
     }
 
-    @Override
-    @Contract(pure = true)
-    public int numberOfArguments() {
-        return argumentTypes == null ? 0 : 1;
-    }
+    private void assertArgumentCount(int got) {
+        if (argumentTypes == null) {
+            if (got != 0)
+                throw new IllegalArgumentException("No arguments expected");
 
-    @Override
-    @Contract(pure = true)
-    public boolean isArgumentValid(int index, @Nullable Object argument) {
-        if (index < 0 || index >= numberOfArguments())
-            throw new IllegalArgumentException("Argument index is out of range for request command " + this + ", command takes " + numberOfArguments() + " arguments but index " + index + " was passed");
-
-        if (argument == null) {
-            return !argumentNotNull;
-        } else {
-            //noinspection NullableProblems
-            for (final @NotNull Class<?> type : argumentTypes) {
-                if (type.isInstance(argument))
-                    return true;
-            }
-            return false;
+            return;
         }
+
+        if (got != 1)
+            throw new IllegalArgumentException("Unexpected number of arguments for command " + this + ": got " + got + " but expected 1");
     }
+
+    @Override
+    public void assertArgumentListValid(@Nullable Serializable[] arguments) throws IllegalArgumentException {
+        assertArgumentCount(arguments.length);
+
+        if (arguments.length == 0)
+            return;
+
+        if (arguments[0] == null && argumentNotNull) {
+            throw new IllegalArgumentException("Invalid null argument: " + this + " does not accept null as argument");
+        }
+
+        //noinspection NullableProblems
+        for (final @NotNull Class<?> type : Objects.requireNonNull(argumentTypes)) {
+            if (type.isInstance(arguments[0]))
+                return;
+        }
+        throw new IllegalArgumentException("Invalid type passed for command " + this);
+    }
+
 
     @Override
     public @NotNull Request makeRequest() throws IllegalArgumentException {
