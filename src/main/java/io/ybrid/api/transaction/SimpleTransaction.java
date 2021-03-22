@@ -30,8 +30,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 abstract class SimpleTransaction implements Transaction {
+    static final Logger LOGGER = Logger.getLogger(SimpleTransaction.class.getName());
+
     private final @NotNull Identifier identifier = new Identifier();
     private final @NotNull Set<@NotNull Runnable> onControlComplete = new HashSet<>();
     private final @NotNull Set<@NotNull Runnable> onAudioComplete = new HashSet<>();
@@ -41,6 +44,10 @@ abstract class SimpleTransaction implements Transaction {
     private boolean controlComplete = false;
     private boolean audioComplete = false;
     private @Nullable Throwable error = null;
+
+    private void log(@NotNull String message) {
+        LOGGER.fine("[Transaction " + getIdentifier().toString() + "] " + message);
+    }
 
     /**
      * The method executed as the transaction's task.
@@ -69,12 +76,15 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     protected void signalControlComplete() {
+        log("control is complete");
         synchronized (this) {
             if (signaledControlComplete)
                 return;
             signaledControlComplete = true;
         }
+        log("signaling control complete");
         signal(onControlComplete);
+        log("signaled control complete");
     }
 
     /**
@@ -82,12 +92,15 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     protected void signalAudioComplete() {
+        log("audio is complete");
         synchronized (this) {
             if (signaledAudioComplete)
                 return;
             signaledAudioComplete = true;
         }
+        log("signaling audio complete");
         signal(onAudioComplete);
+        log("signaled audio complete");
     }
 
     @Override
@@ -144,11 +157,13 @@ abstract class SimpleTransaction implements Transaction {
                 return;
 
             running = true;
+            log("Running...");
             try {
                 execute();
             } catch (Throwable e) {
                 error = e;
             }
+            log("... control completed");
             controlComplete = true;
             running = false;
         }
