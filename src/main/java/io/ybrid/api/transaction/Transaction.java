@@ -104,4 +104,16 @@ public interface Transaction extends hasIdentifier, Runnable {
         if (getError() != null)
             throw new TransactionExecutionException(this, "The transaction has failed.");
     }
+
+    /**
+     * Waits for the transaction to reach the control complete state.
+     * @throws InterruptedException Thrown as by {@link Object#wait()}
+     */
+    void waitControlComplete() throws InterruptedException;
+
+    /**
+     * Waits for the transaction to reach the audio complete state.
+     * @throws InterruptedException Thrown as by {@link Object#wait()}
+     */
+    void waitAudioComplete() throws InterruptedException;
 }

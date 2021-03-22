@@ -30,6 +30,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 abstract class SimpleTransaction implements Transaction {
@@ -175,5 +177,41 @@ abstract class SimpleTransaction implements Transaction {
         if (controlComplete || running || error != null)
             return;
         new Thread(this, "Transaction " + identifier.toString()).start();
+    }
+
+    private void waitForComplete(@NotNull Supplier<Boolean> isComplete, @NotNull Consumer<Runnable> callbackConsumer) throws InterruptedException {
+        final @NotNull Object bus = new Object();
+
+        // this is just for speed up:
+        if (isComplete.get())
+            return;
+
+        // now the real code:
+        synchronized (this) {
+            callbackConsumer.accept(() -> {
+                synchronized (bus) {
+                    bus.notify();
+                }
+                log("sent notify");
+            });
+
+            if (isComplete.get())
+                return;
+        }
+        log("registered callback");
+
+        synchronized (bus) {
+            bus.wait();
+        }
+    }
+
+    @Override
+    public void waitControlComplete() throws InterruptedException {
+        waitForComplete(this::isControlComplete, this::onControlComplete);
+    }
+
+    @Override
+    public void waitAudioComplete() throws InterruptedException {
+        waitForComplete(this::isAudioComplete, this::onAudioComplete);
     }
 }
