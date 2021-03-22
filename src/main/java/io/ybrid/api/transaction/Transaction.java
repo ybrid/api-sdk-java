@@ -23,6 +23,7 @@
 package io.ybrid.api.transaction;
 
 import io.ybrid.api.util.hasIdentifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,4 +90,18 @@ public interface Transaction extends hasIdentifier, Runnable {
      * until the transaction has been completed.
      */
     void runInBackground();
+
+    /**
+     * Asserts that this transaction has been completed successfully.
+     * If the transaction has not completed at all (not been started yet or still running)
+     * this will also throw an exception.
+     * @throws TransactionExecutionException Thrown if the transaction has not completed successfully.
+     */
+    @ApiStatus.NonExtendable
+    default void assertSuccess() throws TransactionExecutionException {
+        if (!isControlComplete())
+            throw new TransactionExecutionException(this, "The transaction has not been completed.");
+        if (getError() != null)
+            throw new TransactionExecutionException(this, "The transaction has failed.");
+    }
 }
