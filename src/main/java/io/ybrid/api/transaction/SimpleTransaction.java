@@ -53,10 +53,13 @@ abstract class SimpleTransaction implements Transaction {
     protected abstract void execute() throws Exception;
 
     private void signal(@NotNull Collection<@NotNull Runnable> callbacks) {
-        for (@NotNull Runnable runnable : callbacks) {
-            try {
-                runnable.run();
-            } catch (Throwable ignored) {
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (callbacks) {
+            for (@NotNull Runnable runnable : callbacks) {
+                try {
+                    runnable.run();
+                } catch (Throwable ignored) {
+                }
             }
         }
     }
@@ -89,12 +92,16 @@ abstract class SimpleTransaction implements Transaction {
 
     @Override
     public void onControlComplete(@NotNull Runnable runnable) {
-        onControlComplete.add(runnable);
+        synchronized (onControlComplete) {
+            onControlComplete.add(runnable);
+        }
     }
 
     @Override
     public void onAudioComplete(@NotNull Runnable runnable) {
-        onAudioComplete.add(runnable);
+        synchronized (onAudioComplete) {
+            onAudioComplete.add(runnable);
+        }
     }
 
     @Override
