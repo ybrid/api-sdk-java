@@ -134,8 +134,12 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
         if (arguments.length == 0)
             return;
 
-        if (arguments[0] == null && argumentNotNull) {
-            throw new IllegalArgumentException("Invalid null argument: " + this + " does not accept null as argument");
+        if (arguments[0] == null) {
+            if (argumentNotNull) {
+                throw new IllegalArgumentException("Invalid null argument: " + this + " does not accept null as argument");
+            } else {
+                return;
+            }
         }
 
         //noinspection NullableProblems
