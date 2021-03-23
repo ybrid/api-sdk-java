@@ -220,7 +220,7 @@ final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public void executeRequest(@NotNull Request<Command> request) throws Exception {
+    public void executeRequest(@NotNull Request<Command> request) throws Throwable {
         switch (request.getCommand()) {
             case CONNECT:
                 connect();

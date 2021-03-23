@@ -59,7 +59,7 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     public void close() throws IOException {
         try {
             executeRequest(Command.DISCONNECT.makeRequest());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new IOException(e);
         }
     }
@@ -154,7 +154,7 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     }
 
     @Override
-    public void executeRequest(@NotNull Request<Command> request) throws Exception {
+    public void executeRequest(@NotNull Request<Command> request) throws Throwable {
         switch (request.getCommand()) {
             case DISCONNECT:
                 connected = false;

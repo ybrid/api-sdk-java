@@ -37,7 +37,7 @@ public final class SessionTransaction extends RequestBasedTransaction<Request<Co
 
     @ApiStatus.Internal
     public interface Executor {
-        void execute(@NotNull SessionTransaction transaction) throws Exception;
+        void execute(@NotNull SessionTransaction transaction) throws Throwable;
     }
 
     /**
@@ -67,7 +67,7 @@ public final class SessionTransaction extends RequestBasedTransaction<Request<Co
 
     @Override
     @ApiStatus.Internal
-    protected void execute() throws Exception {
+    protected void execute() throws Throwable {
         executor.execute(this);
     }
 

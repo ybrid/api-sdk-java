@@ -53,7 +53,7 @@ public interface Driver extends Closeable, KnowsSubInfoState {
 
     void clearChanged(@NotNull SubInfo what);
 
-    void executeRequest(@NotNull Request<Command> request) throws Exception;
+    void executeRequest(@NotNull Request<Command> request) throws Throwable;
 
     boolean isConnected();
 

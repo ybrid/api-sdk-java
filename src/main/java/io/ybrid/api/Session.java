@@ -161,7 +161,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
         }
     }
 
-    private void executeSessionTransaction(@NotNull SessionTransaction transaction) throws Exception {
+    private void executeSessionTransaction(@NotNull SessionTransaction transaction) throws Throwable {
         final @NotNull Request<Command> request = transaction.getRequest();
 
         // Ensure we run all transactions with a valid driver.

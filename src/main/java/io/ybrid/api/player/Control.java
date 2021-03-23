@@ -100,9 +100,9 @@ public interface Control {
      * The default implementation throws {@link UnsupportedOperationException}.
      *
      * @param transaction The transaction to execute.
-     * @throws Exception Any exception thrown while executing the request.
+     * @throws Throwable Any exception thrown while executing the request.
      */
-    default <C extends Command<C>> void executeTransaction(@NotNull RequestBasedTransaction<Request<C>> transaction) throws Exception {
+    default <C extends Command<C>> void executeTransaction(@NotNull RequestBasedTransaction<Request<C>> transaction) throws Throwable {
         throw new UnsupportedOperationException();
     }
 
@@ -120,7 +120,7 @@ public interface Control {
     default <C extends Command<C>> @NotNull Transaction createTransaction(@NotNull Request<C> request) {
         return new RequestBasedTransaction<Request <C>>(request) {
             @Override
-            protected void execute() throws Exception {
+            protected void execute() throws Throwable {
                 Control.this.executeTransaction(this);
             }
         };

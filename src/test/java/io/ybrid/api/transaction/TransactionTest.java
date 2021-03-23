@@ -31,7 +31,7 @@ public class TransactionTest {
     private @NotNull Transaction createTransaction(@NotNull Runnable runnable) {
         return new SimpleTransaction() {
             @Override
-            protected void execute() throws Exception {
+            protected void execute() throws Throwable {
                 runnable.run();
             }
         };

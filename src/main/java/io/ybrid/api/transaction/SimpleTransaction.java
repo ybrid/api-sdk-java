@@ -59,7 +59,7 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     @ApiStatus.OverrideOnly
-    protected abstract void execute() throws Exception;
+    protected abstract void execute() throws Throwable;
 
     private void signal(@NotNull Collection<@NotNull Runnable> callbacks) {
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
