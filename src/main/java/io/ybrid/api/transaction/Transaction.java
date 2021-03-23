@@ -24,6 +24,7 @@ package io.ybrid.api.transaction;
 
 import io.ybrid.api.util.hasIdentifier;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,12 +49,14 @@ public interface Transaction extends hasIdentifier, Runnable {
      * Queries whether the transaction has completed the control phase.
      * @return Whether the transaction completed the control phase.
      */
+    @Contract(pure = true)
     boolean isControlComplete();
 
     /**
      * Queries whether the transaction has completed and the result is audible.
      * @return Whether the transaction completed and is audible.
      */
+    @Contract(pure = true)
     boolean isAudioComplete();
 
     /**
@@ -66,6 +69,7 @@ public interface Transaction extends hasIdentifier, Runnable {
      * Queries whether the current transaction is running.
      * @return Whether the transaction is running.
      */
+    @Contract(pure = true)
     boolean isRunning();
 
     /**
@@ -73,6 +77,7 @@ public interface Transaction extends hasIdentifier, Runnable {
      * This returns {@code null} if no error has been thrown yet.
      * @return The error or {@code null}.
      */
+    @Contract(pure = true)
     @Nullable Throwable getError();
 
     /**
