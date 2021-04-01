@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class TransactionTest {
     private @NotNull Transaction createTransaction(@NotNull Runnable runnable) {
@@ -119,5 +120,22 @@ public class TransactionTest {
         transaction.waitControlComplete();
         System.out.println("after transaction thread main");
         transaction.setAudioComplete();
+    }
+
+    @Test
+    public void testAsync() {
+        final @NotNull Transaction transaction = createTransaction(() -> {});
+        final boolean[] status = new boolean[1];
+
+        transaction.run();
+        transaction.setAudioComplete();
+
+        transaction.onControlComplete(() -> status[0] = true);
+        assertTrue(status[0]);
+
+        status[0] = false;
+
+        transaction.onAudioComplete(() -> status[0] = true);
+        assertTrue(status[0]);
     }
 }

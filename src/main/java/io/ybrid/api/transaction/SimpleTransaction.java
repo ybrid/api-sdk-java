@@ -83,13 +83,15 @@ abstract class SimpleTransaction implements Transaction {
     @ApiStatus.Internal
     protected void signalControlComplete() {
         log("control is complete");
-        synchronized (this) {
-            if (signaledControlComplete)
-                return;
-            signaledControlComplete = true;
+        synchronized (onControlComplete) {
+            synchronized (this) {
+                if (signaledControlComplete)
+                    return;
+                signaledControlComplete = true;
+            }
+            log("signaling control complete");
+            signal(onControlComplete);
         }
-        log("signaling control complete");
-        signal(onControlComplete);
         log("signaled control complete");
     }
 
@@ -99,19 +101,23 @@ abstract class SimpleTransaction implements Transaction {
     @ApiStatus.Internal
     protected void signalAudioComplete() {
         log("audio is complete");
-        synchronized (this) {
-            if (signaledAudioComplete)
-                return;
-            signaledAudioComplete = true;
+        synchronized (onAudioComplete) {
+            synchronized (this) {
+                if (signaledAudioComplete)
+                    return;
+                signaledAudioComplete = true;
+            }
+            log("signaling audio complete");
+            signal(onAudioComplete);
         }
-        log("signaling audio complete");
-        signal(onAudioComplete);
         log("signaled audio complete");
     }
 
     @Override
     public void onControlComplete(@NotNull Runnable runnable) {
         synchronized (onControlComplete) {
+            if (signaledControlComplete)
+                runnable.run();
             onControlComplete.add(runnable);
         }
     }
@@ -119,6 +125,8 @@ abstract class SimpleTransaction implements Transaction {
     @Override
     public void onAudioComplete(@NotNull Runnable runnable) {
         synchronized (onAudioComplete) {
+            if (signaledAudioComplete)
+                runnable.run();
             onAudioComplete.add(runnable);
         }
     }
