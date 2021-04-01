@@ -48,7 +48,11 @@ abstract class SimpleTransaction implements Transaction {
     private @Nullable Throwable error = null;
 
     private void log(@NotNull String message) {
-        LOGGER.fine("[Transaction " + getIdentifier().toString() + "] " + message);
+        if (this instanceof RequestBasedTransaction) {
+            LOGGER.info("[Transaction " + getIdentifier().toString() + " (" + ((RequestBasedTransaction<?>) this).getRequest().getCommand() + ")" + "] " + message);
+        } else {
+            LOGGER.info("[Transaction " + getIdentifier().toString() + "] " + message);
+        }
     }
 
     /**
