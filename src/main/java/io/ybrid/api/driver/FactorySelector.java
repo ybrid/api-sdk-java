@@ -50,6 +50,21 @@ import java.util.logging.Logger;
 public final class FactorySelector {
     private static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
 
+    @ApiStatus.Internal
+    private static final class Result {
+        final public @NotNull EnumSet<ApiVersion> set;
+        final public @NotNull String method;
+
+        public Result(@NotNull EnumSet<ApiVersion> set, @NotNull String method) {
+            this.set = set;
+            this.method = method;
+        }
+
+        private boolean can(@NotNull ApiVersion version) {
+            return set.contains(version);
+        }
+    }
+
     /**
      * Gets a {@link Factory} based on the parameters.
      * This method may access the network.
@@ -59,50 +74,50 @@ public final class FactorySelector {
      * @return The instance of the {@link Factory} to use.
      */
     public static @NotNull Factory getFactory(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
-        EnumSet<ApiVersion> set = getSupportedVersions(server, mediaEndpoint);
+        final @NotNull Result result = getSupportedVersions(server, mediaEndpoint);
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.info("Supported versions for " + mediaEndpoint.getURI() +
                     " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
-                    " = " + set);
+                    " = " + result.set + " by " + result.method);
         }
 
-        if (set.contains(ApiVersion.YBRID_V2_BETA))
+        if (result.can(ApiVersion.YBRID_V2_BETA))
             return new io.ybrid.api.driver.ybrid.v2.Factory();
 
-        if (set.contains(ApiVersion.YBRID_V1))
+        if (result.can(ApiVersion.YBRID_V1))
             return new io.ybrid.api.driver.ybrid.v1.Factory();
 
-        if (set.contains(ApiVersion.ICY))
+        if (result.can(ApiVersion.ICY))
             return new io.ybrid.api.driver.icy.Factory();
 
-        if (set.contains(ApiVersion.PLAIN))
+        if (result.can(ApiVersion.PLAIN))
             return new io.ybrid.api.driver.plain.Factory();
 
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
+    private static Result getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
         if (mediaEndpoint.getForcedApiVersion() != null) {
-            return EnumSet.of(mediaEndpoint.getForcedApiVersion());
+            return new Result(EnumSet.of(mediaEndpoint.getForcedApiVersion()), "force on MediaEndpoint");
         }
 
         if (server.getForcedApiVersion() != null) {
-            return EnumSet.of(server.getForcedApiVersion());
+            return new Result(EnumSet.of(server.getForcedApiVersion()), "force on Server");
         }
 
         try {
-            return getSupportedVersionsFromOptions(server, mediaEndpoint);
+            return new Result(getSupportedVersionsFromOptions(server, mediaEndpoint), "OPTIONS");
         } catch (Exception ignored) {
         }
 
         try {
-            return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint);
+            return new Result(getSupportedVersionsFromYbridV2Server(server, mediaEndpoint), "Ybrid v2 request");
         } catch (Exception ignored) {
         }
 
         // Best guess:
-        return EnumSet.of(ApiVersion.PLAIN);
+        return new Result(EnumSet.of(ApiVersion.PLAIN), "using default");
     }
 
     private static EnumSet<ApiVersion> getSupportedVersionsFromOptions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
