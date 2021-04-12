@@ -29,7 +29,6 @@ import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.player.Control;
 import io.ybrid.api.session.Command;
-import io.ybrid.api.session.PlayerControl;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
@@ -215,9 +214,9 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     /**
-     * Attaches a new player by setting the player's {@link PlayerControl} interface.
+     * Attaches a new player by setting the player's {@link Control} interface.
      *
-     * @param playerControl The player's {@link PlayerControl} interface.
+     * @param playerControl The player's {@link Control} interface.
      */
     public void attachPlayer(@NotNull Control playerControl) {
         if (this.playerControl == playerControl)
@@ -234,9 +233,9 @@ public final class Session implements Connectable, KnowsSubInfoState {
     }
 
     /**
-     * Detaches a player by using the player's {@link PlayerControl} interface.
+     * Detaches a player by using the player's {@link Control} interface.
      *
-     * @param playerControl The player's {@link PlayerControl} interface.
+     * @param playerControl The player's {@link Control} interface.
      */
     public void detachPlayer(@NotNull Control playerControl) {
         if (this.playerControl == playerControl) {
