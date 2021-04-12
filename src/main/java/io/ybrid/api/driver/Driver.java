@@ -33,13 +33,12 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Closeable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 @ApiStatus.Internal
-public interface Driver extends Closeable, KnowsSubInfoState {
+public interface Driver extends KnowsSubInfoState {
     @NotNull Bouquet getBouquet();
 
     @NotNull PlayoutInfo getPlayoutInfo();

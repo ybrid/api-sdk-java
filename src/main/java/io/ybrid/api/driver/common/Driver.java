@@ -55,15 +55,6 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     protected String token;
     protected Service currentService;
 
-    @Override
-    public void close() throws IOException {
-        try {
-            executeRequest(Command.DISCONNECT.makeRequest());
-        } catch (Throwable e) {
-            throw new IOException(e);
-        }
-    }
-
     protected Driver(Session session) {
         this.session = session;
     }

@@ -311,9 +311,4 @@ public final class Session implements Connectable, KnowsSubInfoState {
             driver.clearChanged(SubInfo.VALIDITY);
         return driver.isValid();
     }
-
-    @Override
-    public void close() throws IOException {
-        getDriver().close();
-    }
 }
