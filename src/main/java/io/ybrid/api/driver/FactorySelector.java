@@ -30,6 +30,7 @@ import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -91,6 +92,11 @@ public final class FactorySelector {
         }
 
         try {
+            return getSupportedVersionsFromOptions(server, mediaEndpoint);
+        } catch (Exception ignored) {
+        }
+
+        try {
             return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint);
         } catch (Exception ignored) {
         }
@@ -99,16 +105,25 @@ public final class FactorySelector {
         return EnumSet.of(ApiVersion.PLAIN);
     }
 
+    private static EnumSet<ApiVersion> getSupportedVersionsFromOptions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+        return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint, null, "OPTIONS");
+    }
+
     private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+        return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint, new Path("/ctrl/v2/session/info"), "GET");
+    }
+
+    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method) throws IOException, URISyntaxException {
         final EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
         final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
         final @NotNull JSONRequest request;
         JSONArray supportedVersions;
 
         builder.setServer(server);
-        builder.appendPath(new Path("/ctrl/v2/session/info"));
+        if (pathSuffix != null)
+            builder.appendPath(pathSuffix);
 
-        request = new JSONRequest(builder.toURL(), "GET");
+        request = new JSONRequest(builder.toURL(), method);
         request.perform();
 
         supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
