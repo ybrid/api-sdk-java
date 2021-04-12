@@ -62,7 +62,7 @@ public final class FactorySelector {
         EnumSet<ApiVersion> set = getSupportedVersions(server, mediaEndpoint);
 
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("Supported versions for " + mediaEndpoint.getURI().toString() +
+            LOGGER.info("Supported versions for " + mediaEndpoint.getURI() +
                     " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
                     " = " + set);
         }
