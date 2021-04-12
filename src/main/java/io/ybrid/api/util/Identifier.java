@@ -104,6 +104,19 @@ public final class Identifier implements Serializable {
         }
     }
 
+    /**
+     * Returns a identifier of the given type with the same value as this one.
+     * If this identifier is already of {@code newType} {@code this} is returned.
+     * @param newType Thew new type to use.
+     * @return {@code this} or the new identifier.
+     */
+    public @NotNull Identifier toType(@NotNull Class<?> newType) {
+        if (typeIsA(newType))
+            return this;
+
+        return new Identifier(identifier, newType);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
