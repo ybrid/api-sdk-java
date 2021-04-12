@@ -25,12 +25,10 @@ package io.ybrid.api;
 import io.ybrid.api.transport.ServiceTransportDescription;
 import io.ybrid.api.transport.ServiceURITransportDescription;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -38,22 +36,6 @@ import java.net.URL;
 public class NetworkHelper {
     private static final URI[] aliases = {
     };
-
-    /**
-     * This is a helper method allowing creation of URL objects in static
-     * initialisation of this class.
-     * This helper only transforms any {@link MalformedURLException} into a {@link IllegalArgumentException}.
-     * @param url The URL as {@link String}.
-     * @return The URL as {@link URL}.
-     */
-    @Contract("_ -> new")
-    private static @NotNull URL newURL(@NotNull String url) {
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 
     /**
      * Checks whether tests can access the network.
