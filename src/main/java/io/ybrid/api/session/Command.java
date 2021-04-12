@@ -60,7 +60,7 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
     /**
      * Requests the refresh of a set of {@link SubInfo}.
      */
-    REFRESH(true, new Class[]{EnumSet.class, Sync.class}),
+    REFRESH(true, new Class[]{EnumSet.class, Identifier.class}),
     /**
      * Winds back to the live position of the stream.
      */
@@ -167,6 +167,8 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
     @Override
     @ApiStatus.ScheduledForRemoval
     public @NotNull Request makeRequest(@Nullable Object argument) throws IllegalArgumentException {
+        if (argument instanceof Sync)
+            argument = ((Sync) argument).getIdentifier();
         return makeRequest((Serializable) argument);
     }
 }

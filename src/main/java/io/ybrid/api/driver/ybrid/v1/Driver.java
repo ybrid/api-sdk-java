@@ -31,6 +31,7 @@ import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Command;
 import io.ybrid.api.transaction.Request;
+import io.ybrid.api.util.Identifier;
 import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.uri.Builder;
@@ -173,7 +174,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
                 final @NotNull Object arg = request.getArgumentNotNull(0);
                 final @NotNull EnumSet<SubInfo> infos;
 
-                if (arg instanceof Sync) {
+                if ((arg instanceof Identifier) && ((Identifier) arg).typeIsA(Sync.class)) {
                     infos = EnumSet.of(SubInfo.METADATA, SubInfo.PLAYOUT);
                 } else {
                     //noinspection unchecked
