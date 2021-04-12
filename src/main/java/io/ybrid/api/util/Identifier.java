@@ -22,6 +22,7 @@
 
 package io.ybrid.api.util;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,6 +65,7 @@ public final class Identifier implements Serializable {
      * @deprecated Use {@link #Identifier(String, Class)}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public Identifier(@NotNull String identifier) {
         this(identifier, Object.class);
     }
@@ -73,6 +75,7 @@ public final class Identifier implements Serializable {
      * @deprecated Use {@link #Identifier(Class)}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public Identifier() {
         this(UUID.randomUUID().toString(), Object.class);
     }
