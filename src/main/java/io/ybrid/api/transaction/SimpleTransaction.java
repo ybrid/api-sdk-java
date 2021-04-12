@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 abstract class SimpleTransaction implements Transaction {
     static final Logger LOGGER = Logger.getLogger(SimpleTransaction.class.getName());
 
-    private final @NotNull Identifier identifier = new Identifier();
+    private final @NotNull Identifier identifier = new Identifier(SimpleTransaction.class);
     private final @NotNull Set<@NotNull Runnable> onControlComplete = new HashSet<>();
     private final @NotNull Set<@NotNull Runnable> onAudioComplete = new HashSet<>();
     private boolean signaledControlComplete = false;

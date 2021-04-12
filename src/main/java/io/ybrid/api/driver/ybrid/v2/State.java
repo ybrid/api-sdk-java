@@ -276,7 +276,7 @@ final class State implements KnowsSubInfoState {
                     }
                 }
 
-                service = new SimpleService(displayName, new Identifier(identifier), jsonToURI(json, "iconURL"), null);
+                service = new SimpleService(displayName, new Identifier(identifier, SimpleService.class), jsonToURI(json, "iconURL"), null);
 
                 services.put(service.getIdentifier(), service);
             } catch (URISyntaxException ignored) {
@@ -293,7 +293,7 @@ final class State implements KnowsSubInfoState {
             if (primary == null) {
                 defaultService = null;
             } else {
-                defaultService = services.get(new Identifier(primary));
+                defaultService = services.get(new Identifier(primary, Service.class));
             }
         } else {
             // No default service provided. Try to reuse the old one.
@@ -311,7 +311,7 @@ final class State implements KnowsSubInfoState {
         if (active == null) {
             currentService = null;
         } else {
-            currentService = services.get(new Identifier(active));
+            currentService = services.get(new Identifier(active, Service.class));
             if (currentMetadata == null) {
                 currentMetadata = new InvalidMetadata(currentService);
             }

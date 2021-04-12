@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public final class Sync implements hasIdentifier {
-    private final @NotNull Identifier identifier = new Identifier();
+    private final @NotNull Identifier identifier = new Identifier(Sync.class);
     private final @NotNull Source source;
     private final @Nullable Sync parent;
     private @Nullable Sync child;

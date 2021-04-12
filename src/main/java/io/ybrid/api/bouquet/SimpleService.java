@@ -40,7 +40,7 @@ public class SimpleService implements Service {
 
     public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URI icon, @Nullable String genre) {
         this.displayName = displayName;
-        this.identifier = identifier;
+        this.identifier = identifier.toType(SimpleService.class);
         this.icon = icon;
         this.genre = genre;
     }
@@ -59,7 +59,7 @@ public class SimpleService implements Service {
     }
 
     public SimpleService() {
-        this("default", new Identifier());
+        this("default", new Identifier(SimpleService.class));
     }
 
     @Override

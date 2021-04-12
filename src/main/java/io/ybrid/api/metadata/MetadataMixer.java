@@ -100,7 +100,7 @@ public final class MetadataMixer implements Consumer<@NotNull Sync>, KnowsSubInf
         if (track instanceof hasIdentifier)
             return new SimpleItem(((hasIdentifier) track).getIdentifier(), track);
 
-        return new SimpleItem(new Identifier(), track);
+        return new SimpleItem(new Identifier(SimpleItem.class), track);
     }
 
     public @NotNull Metadata resolveMetadata(@NotNull Sync sync) {
@@ -108,7 +108,7 @@ public final class MetadataMixer implements Consumer<@NotNull Sync>, KnowsSubInf
         @Nullable Item currentItem = trackToItem(upgraded.getCurrentTrack());
 
         if (currentItem == null)
-            currentItem = new SimpleItem(new Identifier());
+            currentItem = new SimpleItem(new Identifier(SimpleItem.class));
 
         return new SimpleMetadata(currentItem,
                 trackToItem(upgraded.getNextTrack()),

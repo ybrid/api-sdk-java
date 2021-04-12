@@ -37,7 +37,7 @@ public class SimpleItem implements Item {
     protected @Nullable Duration playbackLength;
 
     public SimpleItem(@NotNull Identifier identifier) {
-        this.identifier = identifier;
+        this.identifier = identifier.toType(SimpleItem.class);
     }
 
     public SimpleItem(@NotNull Identifier identifier, @Nullable String artist, @Nullable String title) {
@@ -55,7 +55,7 @@ public class SimpleItem implements Item {
     }
 
     public SimpleItem(@NotNull Identifier identifier, @NotNull TrackMetadata trackMetadata) {
-        this.identifier = identifier;
+        this(identifier);
         addMetadata(METADATA_DESCRIPTION, trackMetadata.getComment());
         if (trackMetadata instanceof BasicTrackMetadata) {
             addMetadata(METADATA_TITLE, ((BasicTrackMetadata) trackMetadata).getTitle());

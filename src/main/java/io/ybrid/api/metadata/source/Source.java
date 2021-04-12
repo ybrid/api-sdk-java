@@ -43,7 +43,7 @@ public final class Source implements hasIdentifier {
      */
     public Source(@NotNull SourceType type, @NotNull Identifier identifier) {
         this.type = type;
-        this.identifier = identifier;
+        this.identifier = identifier.toType(Source.class);
     }
 
     /**
@@ -52,7 +52,7 @@ public final class Source implements hasIdentifier {
      * @param type The type of the Source.
      */
     public Source(@NotNull SourceType type) {
-        this(type, new Identifier());
+        this(type, new Identifier(Source.class));
     }
 
     /**

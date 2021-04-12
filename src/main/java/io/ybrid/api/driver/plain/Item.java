@@ -27,6 +27,6 @@ import io.ybrid.api.metadata.SimpleItem;
 
 public class Item extends SimpleItem {
     public Item() {
-        super(new Identifier());
+        super(new Identifier(Item.class));
     }
 }

@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class InvalidMetadata implements Metadata {
     private final @NotNull Service service;
-    private final @NotNull Item currentItem = new SimpleItem(new Identifier());
+    private final @NotNull Item currentItem = new SimpleItem(new Identifier(SimpleItem.class));
 
     /**
      * Main constructor.

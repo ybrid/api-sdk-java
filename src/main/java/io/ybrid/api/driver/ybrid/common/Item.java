@@ -40,7 +40,7 @@ final class Item extends SimpleItem {
 
 
     Item(@NotNull JSONObject json) throws URISyntaxException {
-        super(json.has("id") && !json.getString("id").isEmpty() ? new Identifier(json.getString("id")) : new Identifier());
+        super(json.has("id") && !json.getString("id").isEmpty() ? new Identifier(json.getString("id"), Item.class) : new Identifier(Item.class));
 
         JSONArray array;
         String type;
