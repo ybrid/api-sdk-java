@@ -39,15 +39,15 @@ import static org.junit.Assert.*;
 public class SessionTest {
     @Test
     public void GetStreamURLPositive() throws IOException {
-        for (URI mediaEndpointURI : NetworkHelper.getAliases()) {
-            final MediaEndpoint alias;
+        for (URI mediaEndpointURI : NetworkHelper.getEndpoints()) {
+            final MediaEndpoint mediaEndpoint;
             final Session session;
             final ServiceTransportDescription[] transportDescription = new ServiceTransportDescription[1];
 
-            alias = new MediaEndpoint(mediaEndpointURI);
-            assertNotNull(alias);
+            mediaEndpoint = new MediaEndpoint(mediaEndpointURI);
+            assertNotNull(mediaEndpoint);
 
-            session = alias.createSession();
+            session = mediaEndpoint.createSession();
             assertNotNull(session);
 
             session.connect();

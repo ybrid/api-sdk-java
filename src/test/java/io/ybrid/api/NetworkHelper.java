@@ -34,7 +34,7 @@ import java.net.URL;
 
 @SuppressWarnings("ConstantConditions")
 public class NetworkHelper {
-    private static final URI[] aliases = {
+    private static final URI[] endpoints = {
     };
 
     /**
@@ -44,7 +44,7 @@ public class NetworkHelper {
      */
     @Contract(pure = true)
     public static boolean isOnline() {
-        return aliases.length > 0;
+        return endpoints.length > 0;
     }
 
     /**
@@ -52,10 +52,10 @@ public class NetworkHelper {
      * @return The {@link URL} of the alias or null if no online tests should be preformed.
      */
     @Contract(pure = true)
-    public static @Nullable URI getDefaultAlias() {
+    public static @Nullable URI getDefaultEndpoint() {
         if (!isOnline())
             return null;
-        return aliases[0];
+        return endpoints[0];
     }
 
     /**
@@ -64,8 +64,8 @@ public class NetworkHelper {
      * @return The array of Aliases used for tests.
      */
     @Contract(pure = true)
-    public static URI[] getAliases() {
-        return aliases;
+    public static URI[] getEndpoints() {
+        return endpoints;
     }
 
     /**
