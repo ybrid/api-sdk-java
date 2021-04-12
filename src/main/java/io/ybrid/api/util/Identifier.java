@@ -22,6 +22,7 @@
 
 package io.ybrid.api.util;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -35,22 +36,69 @@ public final class Identifier implements Serializable {
     private static final long serialVersionUID = -3059154610234338954L;
 
     private final @NotNull String identifier;
+    private final @NotNull Class<?> type;
 
     /**
      * Main constructor.
      * @param identifier The identifier to use as string.
+     * @param type Type of the identifier.
      */
-    public Identifier(@NotNull String identifier) {
+    public Identifier(@NotNull String identifier, @NotNull Class<?> type) {
         if (identifier.isEmpty())
             throw new IllegalArgumentException("Empty string passed as identifier");
         this.identifier = identifier;
+        this.type = type;
     }
 
     /**
      * Constructs a new random identifier.
+     * @param type Type of the identifier.
      */
+    public Identifier(@NotNull Class<?> type) {
+        this(UUID.randomUUID().toString(), type);
+    }
+
+    /**
+     * Main constructor.
+     * @param identifier The identifier to use as string.
+     * @deprecated Use {@link #Identifier(String, Class)}
+     */
+    @Deprecated
+    public Identifier(@NotNull String identifier) {
+        this(identifier, Object.class);
+    }
+
+    /**
+     * Constructs a new random identifier.
+     * @deprecated Use {@link #Identifier(Class)}
+     */
+    @Deprecated
     public Identifier() {
-        this(UUID.randomUUID().toString());
+        this(UUID.randomUUID().toString(), Object.class);
+    }
+
+    /**
+     * Gets the type of this identifier.
+     * @return The type.
+     */
+    @Contract(pure = true)
+    public @NotNull Class<?> getType() {
+        return type;
+    }
+
+    /**
+     * Checks if the type of this identifier is a sub-class of the given {@code superClass}.
+     * @param superClass The super-class to check for.
+     * @return Whether this identifiers type is a sub-class of the given super-class.
+     */
+    @Contract(pure = true)
+    public boolean typeIsA(@NotNull Class<?> superClass) {
+        try {
+            type.asSubclass(superClass);
+            return true;
+        } catch (ClassCastException e) {
+            return false;
+        }
     }
 
     @Override
