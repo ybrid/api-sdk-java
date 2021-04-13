@@ -44,4 +44,11 @@ public abstract class RequestBasedTransaction<R extends Request<?>> extends Simp
     public @NotNull R getRequest() {
         return request;
     }
+
+    @Override
+    public void run() {
+        super.run();
+        if (!request.getCommand().hasAudioAction())
+            setAudioComplete(CompletionState.NO_ACTION);
+    }
 }

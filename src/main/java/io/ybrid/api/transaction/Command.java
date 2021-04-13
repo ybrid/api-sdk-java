@@ -66,6 +66,24 @@ public interface Command<C extends Command<C>> extends Serializable {
     }
 
     /**
+     * Returns whether the command has a audio related action.
+     * <P>
+     * For commands with audio actions the user can hear the action.
+     * Examples include the user hearing the the audio jump to the new position on seek.
+     * For commands with no such action the user can not tell the command to be performed.
+     * Examples for this include pure control messages such as keep-alive messages or metadata
+     * requests.
+     * <P>
+     * The default implementation returns {@code false}.
+     *
+     * @return Whether this command has a audio action.
+     */
+    @ApiStatus.Experimental
+    default boolean hasAudioAction() {
+        return true;
+    }
+
+    /**
      * Checks whether a list of arguments is valid for the given Command.
      * This must check both the number of arguments as well as their type,
      * and value (including nullability).
