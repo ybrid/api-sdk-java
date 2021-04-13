@@ -88,7 +88,7 @@ public final class FactorySelector {
         if (result.can(ApiVersion.YBRID_V1))
             return new io.ybrid.api.driver.ybrid.v1.Factory();
 
-        if (result.can(ApiVersion.ICY))
+        if (result.can(ApiVersion.ICY) || result.can(ApiVersion.ICECAST_V2_4) || result.can(ApiVersion.ICECAST_V2_5_BETA))
             return new io.ybrid.api.driver.icy.Factory();
 
         if (result.can(ApiVersion.PLAIN))
