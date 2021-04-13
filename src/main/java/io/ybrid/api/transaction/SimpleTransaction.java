@@ -82,7 +82,7 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     protected void signalControlComplete() {
-        log("control is complete");
+        log("control is complete [" + controlComplete + "]");
         synchronized (this) {
             if (signaledControlComplete)
                 return;
@@ -98,7 +98,7 @@ abstract class SimpleTransaction implements Transaction {
      */
     @ApiStatus.Internal
     protected void signalAudioComplete() {
-        log("audio is complete");
+        log("audio is complete [" + audioComplete + "]");
         synchronized (this) {
             if (signaledAudioComplete)
                 return;
