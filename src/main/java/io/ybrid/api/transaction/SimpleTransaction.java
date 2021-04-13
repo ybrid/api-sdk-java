@@ -49,9 +49,9 @@ abstract class SimpleTransaction implements Transaction {
 
     private void log(@NotNull String message) {
         if (this instanceof RequestBasedTransaction) {
-            LOGGER.info("[Transaction " + getIdentifier().toString() + " (" + ((RequestBasedTransaction<?>) this).getRequest().getCommand() + ")" + "] " + message);
+            LOGGER.info("[Transaction " + getIdentifier() + " (" + ((RequestBasedTransaction<?>) this).getRequest().getCommand() + ")" + "] " + message);
         } else {
-            LOGGER.info("[Transaction " + getIdentifier().toString() + "] " + message);
+            LOGGER.info("[Transaction " + getIdentifier() + "] " + message);
         }
     }
 
@@ -184,7 +184,7 @@ abstract class SimpleTransaction implements Transaction {
     public synchronized void runInBackground() {
         if (controlComplete || running || error != null)
             return;
-        new Thread(this, "Transaction " + identifier.toString()).start();
+        new Thread(this, "Transaction " + identifier).start();
     }
 
     private void waitForComplete(@NotNull Supplier<Boolean> isComplete, @NotNull Consumer<Runnable> callbackConsumer) throws InterruptedException {
