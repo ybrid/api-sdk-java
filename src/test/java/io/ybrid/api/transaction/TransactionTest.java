@@ -25,8 +25,7 @@ package io.ybrid.api.transaction;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TransactionTest {
     private @NotNull Transaction createTransaction(@NotNull Runnable runnable) {
@@ -137,5 +136,18 @@ public class TransactionTest {
 
         transaction.onAudioComplete(() -> status[0] = true);
         assertTrue(status[0]);
+    }
+
+    @Test
+    public void testFailBeforeAudio() {
+        final @NotNull Transaction transaction = createTransaction(() -> {throw new RuntimeException();});
+
+        assertEquals(CompletionState.INCOMPLETE, transaction.getControlCompletionState());
+        assertEquals(CompletionState.INCOMPLETE, transaction.getAudioCompletionState());
+        assertNull(transaction.getError());
+        transaction.run();
+        assertNotNull(transaction.getError());
+        assertEquals(CompletionState.DONE, transaction.getControlCompletionState());
+        assertEquals(CompletionState.CANCELED, transaction.getAudioCompletionState());
     }
 }

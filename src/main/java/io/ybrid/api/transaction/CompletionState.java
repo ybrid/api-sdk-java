@@ -40,6 +40,12 @@ public enum CompletionState {
      */
     NO_ACTION,
     /**
+     * The completion state was reached by the action being canceled.
+     * @see Transaction#getError()
+     */
+    @ApiStatus.Experimental
+    CANCELED,
+    /**
      * The completion state was reached by an estimation (e.g. using a typical response delay).
      * @see #TIMEOUT
      */

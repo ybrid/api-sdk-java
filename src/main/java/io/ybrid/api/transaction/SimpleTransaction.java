@@ -183,6 +183,8 @@ abstract class SimpleTransaction implements Transaction {
             running = false;
         }
         signalControlComplete();
+        if (error != null)
+            setAudioComplete(CompletionState.CANCELED);
     }
 
     @Override
