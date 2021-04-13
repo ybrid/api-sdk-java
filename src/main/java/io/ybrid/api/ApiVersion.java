@@ -44,7 +44,15 @@ public enum ApiVersion {
     /**
      * Beta of version 2 of the Ybrid® API.
      */
-    YBRID_V2_BETA;
+    YBRID_V2_BETA,
+    /**
+     * Versions 2.4.0 to at least 2.4.4 of Icecast.
+     */
+    ICECAST_V2_4,
+    /**
+     * Beta/Development versions 2.5.x of Icecast.
+     */
+    ICECAST_V2_5_BETA;
 
     /** Returns the enum constant of this type with the specified on-wire representation.
      *
