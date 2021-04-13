@@ -43,74 +43,77 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
     /**
      * Connects the {@link Session}.
      */
-    CONNECT,
+    CONNECT(false),
     /**
      * Disconnects the {@link Session}.
      */
-    DISCONNECT,
+    DISCONNECT(false),
     /**
      * Requests a initial transport being connected.
      */
-    CONNECT_INITIAL_TRANSPORT,
+    CONNECT_INITIAL_TRANSPORT(true),
     /**
      * Requests a new transport to be connected. This can be used
      * e.g. when the connection to the current transport was lost.
      */
-    RECONNECT_TRANSPORT,
+    RECONNECT_TRANSPORT(true),
     /**
      * Requests the refresh of a set of {@link SubInfo}.
      */
-    REFRESH(true, new Class[]{EnumSet.class, Identifier.class}),
+    REFRESH(false, true, new Class[]{EnumSet.class, Identifier.class}),
     /**
      * Winds back to the live position of the stream.
      */
-    WIND_TO_LIVE,
+    WIND_TO_LIVE(true),
     /**
      * Winds to a specific {@link Instant} on the stream.
      */
-    WIND_TO(true, Instant.class),
+    WIND_TO(true, true, Instant.class),
     /**
      * Winds by a specific {@link Duration} on the stream.
      */
-    WIND_BY(true, Duration.class),
+    WIND_BY(true, true, Duration.class),
     /**
      * Skips forward to next item of a given {@link ItemType} or the next item if {@code null}.
      */
-    SKIP_FORWARD(false, ItemType.class),
+    SKIP_FORWARD(true, false, ItemType.class),
     /**
      * Skips backwards to previous item of a given {@link ItemType} or the previous item if {@code null}.
      */
-    SKIP_BACKWARD(false, ItemType.class),
+    SKIP_BACKWARD(true, false, ItemType.class),
     /**
      * Swaps the item using the given {@link SwapMode}.
      */
-    SWAP_ITEM(true, SwapMode.class),
+    SWAP_ITEM(true, true, SwapMode.class),
     /**
      * Swaps back to the main item.
      */
-    SWAP_TO_MAIN_ITEM,
+    SWAP_TO_MAIN_ITEM(true),
     /**
      * Swaps to the given {@link Service}.
      */
-    SWAP_SERVICE(true, new Class[]{Service.class, Identifier.class}),
+    SWAP_SERVICE(true, true, new Class[]{Service.class, Identifier.class}),
     /**
      * Swaps back to the main {@link Service}.
      */
-    SWAP_TO_MAIN_SERVICE;
+    SWAP_TO_MAIN_SERVICE(true);
 
+    private final boolean hasAudioAction;
     private final boolean argumentNotNull;
     private final @Nullable Class<?>[] argumentTypes;
 
-    Command(boolean argumentNotNull, @NotNull Class<?>[] argumentTypes) {
+    Command(boolean hasAudioAction, boolean argumentNotNull, @NotNull Class<?>[] argumentTypes) {
+        this.hasAudioAction = hasAudioAction;
         this.argumentNotNull = argumentNotNull;
         this.argumentTypes = argumentTypes;
     }
 
-    Command(boolean argumentNotNull, @NotNull Class<?> argumentType) {
-        this(argumentNotNull, new Class[]{argumentType});
+    Command(boolean hasAudioAction, boolean argumentNotNull, @NotNull Class<?> argumentType) {
+        this(true, argumentNotNull, new Class[]{argumentType});
     }
 
-    Command() {
+    Command(boolean hasAudioAction) {
+        this.hasAudioAction = hasAudioAction;
         this.argumentNotNull = false;
         this.argumentTypes = null;
     }
@@ -125,6 +128,12 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
 
         if (got != 1)
             throw new IllegalArgumentException("Unexpected number of arguments for command " + this + ": got " + got + " but expected 1");
+    }
+
+    @ApiStatus.Experimental
+    @Override
+    public boolean hasAudioAction() {
+        return hasAudioAction;
     }
 
     @Override

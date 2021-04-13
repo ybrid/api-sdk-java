@@ -22,6 +22,7 @@
 
 package io.ybrid.api.player;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -33,15 +34,27 @@ public enum SimpleCommand implements Command<SimpleCommand> {
     /**
      * Prepares the player as if calling a standard {@code prepare()}-method.
      */
-    PREPARE,
+    PREPARE(false),
     /**
      * Starts playback.
      */
-    PLAY,
+    PLAY(true),
     /**
      * Stops playback.
      */
-    STOP;
+    STOP(true);
+
+    private final boolean hasAudioAction;
+
+    SimpleCommand(boolean hasAudioAction) {
+        this.hasAudioAction = hasAudioAction;
+    }
+
+    @ApiStatus.Experimental
+    @Override
+    public boolean hasAudioAction() {
+        return hasAudioAction;
+    }
 
     @Override
     public void assertArgumentListValid(@Nullable Serializable[] arguments) throws IllegalArgumentException {
