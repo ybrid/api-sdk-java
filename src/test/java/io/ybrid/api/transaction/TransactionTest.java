@@ -119,7 +119,7 @@ public class TransactionTest {
         System.out.println("after transaction scheduling thread main");
         transaction.waitControlComplete();
         System.out.println("after transaction thread main");
-        transaction.setAudioComplete();
+        transaction.setAudioComplete(CompletionState.DONE);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class TransactionTest {
         final boolean[] status = new boolean[1];
 
         transaction.run();
-        transaction.setAudioComplete();
+        transaction.setAudioComplete(CompletionState.DONE);
 
         transaction.onControlComplete(() -> status[0] = true);
         assertTrue(status[0]);

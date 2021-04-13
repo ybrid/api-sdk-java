@@ -50,20 +50,50 @@ public interface Transaction extends hasIdentifier, Runnable {
      * @return Whether the transaction completed the control phase.
      */
     @Contract(pure = true)
-    boolean isControlComplete();
+    default boolean isControlComplete() {
+        return !getControlCompletionState().equals(CompletionState.INCOMPLETE);
+    }
 
     /**
      * Queries whether the transaction has completed and the result is audible.
      * @return Whether the transaction completed and is audible.
      */
     @Contract(pure = true)
-    boolean isAudioComplete();
+    default boolean isAudioComplete() {
+        return !getAudioCompletionState().equals(CompletionState.INCOMPLETE);
+    }
+
+    /**
+     * Queries the {@link CompletionState} for the control part of the transaction.
+     * @return The corresponding {@link CompletionState}.
+     */
+    @Contract(pure = true)
+    @NotNull CompletionState getControlCompletionState();
+
+    /**
+     * Queries the {@link CompletionState} for the control part of the transaction.
+     * @return The corresponding {@link CompletionState}.
+     */
+    @Contract(pure = true)
+    @NotNull CompletionState getAudioCompletionState();
 
     /**
      * Informs the transaction that the change is now audible.
      * This is to be called by the player when the audio reached the point the result of of this transaction is audible.
+     *
+     * @deprecated Use {@link #setAudioComplete(CompletionState)}
      */
-    void setAudioComplete();
+    @Deprecated
+    default void setAudioComplete() {
+        setAudioComplete(CompletionState.DONE);
+    }
+
+    /**
+     * Informs the transaction that the change is now audible.
+     * This is to be called by the player when the audio reached the point the result of of this transaction is audible.
+     * @param completionState The completion state.
+     */
+    void setAudioComplete(@NotNull CompletionState completionState);
 
     /**
      * Queries whether the current transaction is running.

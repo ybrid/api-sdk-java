@@ -43,8 +43,8 @@ abstract class SimpleTransaction implements Transaction {
     private boolean signaledControlComplete = false;
     private boolean signaledAudioComplete = false;
     private boolean running = false;
-    private boolean controlComplete = false;
-    private boolean audioComplete = false;
+    private @NotNull CompletionState controlComplete = CompletionState.INCOMPLETE;
+    private @NotNull CompletionState audioComplete = CompletionState.INCOMPLETE;
     private @Nullable Throwable error = null;
 
     private void log(@NotNull String message) {
@@ -128,20 +128,25 @@ abstract class SimpleTransaction implements Transaction {
     }
 
     @Override
-    public boolean isControlComplete() {
+    public @NotNull CompletionState getControlCompletionState() {
         return controlComplete;
     }
 
     @Override
-    public boolean isAudioComplete() {
+    public @NotNull CompletionState getAudioCompletionState() {
         return audioComplete;
     }
 
     @Override
-    public synchronized void setAudioComplete() {
-        if (audioComplete)
+    public void setAudioComplete(@NotNull CompletionState completionState) {
+        if (!audioComplete.equals(CompletionState.INCOMPLETE))
             return;
-        audioComplete = true;
+
+        audioComplete = audioComplete.upgrade(completionState);
+
+        if (audioComplete.equals(CompletionState.INCOMPLETE))
+            return;
+
         signalAudioComplete();
     }
 
@@ -163,7 +168,7 @@ abstract class SimpleTransaction implements Transaction {
     @Override
     public void run() {
         synchronized (this) {
-            if (controlComplete || running || error != null)
+            if (isControlComplete() || running || error != null)
                 return;
 
             running = true;
@@ -174,7 +179,7 @@ abstract class SimpleTransaction implements Transaction {
                 error = e;
             }
             log("... control completed");
-            controlComplete = true;
+            controlComplete = controlComplete.upgrade(CompletionState.DONE);
             running = false;
         }
         signalControlComplete();
@@ -182,7 +187,7 @@ abstract class SimpleTransaction implements Transaction {
 
     @Override
     public synchronized void runInBackground() {
-        if (controlComplete || running || error != null)
+        if (isControlComplete() || running || error != null)
             return;
         new Thread(this, "Transaction " + identifier).start();
     }
