@@ -1,0 +1,19 @@
+1.1.1 - 2021-03-10
+    * Reorganized huge parts of the driver infrastructure (Invisible to the user)
+    * Newly ScheduledForRemoval:
+        * Server class
+        * Session.getServer()
+        * Server related methods in MediaEndpoint
+        * Methods in interface Companion: getStaticResource(), getOnClick(), and getOnView(). There are URI based replacements.
+    * Converted all JUnit3-style tests to JUnit4-style tests
+    * Moved class PlayerControl to player.Control
+    * Unified Transactions
+    * Added player transactions (performed via player Control)
+    * Hardening
+    * Dependencies were updated
+
+1.1.0 - 2021-03-02
+    * Initial stable release
+    * New Workarounds: WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME, WORKAROUND_INVALID_PLAYBACK_URI
+    * Newly deprecated classes: Server
+    * Dependencies were updated
