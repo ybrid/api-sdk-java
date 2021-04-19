@@ -1,3 +1,29 @@
+1.1.2 - UNRELEASED
+    * baseURI/baseURL support in Ybrid® “v1” driver
+    * Newly added Classes: Quality, MediaType, MediaTypeMap, LanguageMap
+    * Interface hasAcceptedLanguages, and class MediaEndpoint now use LanguageMap
+    * Newly deprecated:
+        * hasAcceptedLanguages.getAcceptedLanguages() (replaced by getAcceptedLanguagesMap())
+        * ServiceTransportDescription.getAcceptedMediaFormats() (replaced by getAcceptedMediaTypes())
+        * PlayoutInfo.getSwapInfo() (Capability interface should be used)
+        * SwapInfo.getSwapsLeft(), and canSwap() (Capability interface should be used)
+    * Newly ScheduledForRemoval:
+        * Control.getAcceptedMediaFormats() (replaced by getAcceptedMediaTypes())
+        * Control.createTransaction(Command)
+        * Command.numberOfArguments(), amd Command.isArgumentValid(int, Objet)
+          (replaced by assertArgumentListValid(Serializable[]))
+        * Constructors Identifier(), and Identifier(String) (replaced by identifier(Class<?>), and
+          Identifier(String, Class<?>))
+    * Document the status of drivers as internal
+    * Marked a number of internal API as such
+    * All Arguments to the Request<?> class must be Serializable.
+    * Added TransactionExecutionException (extends RuntimeException)
+    * Improved Transaction Interface
+    * Freshly registered on*Complete-callbacks are now run even if the transaction completed in the past
+    * Added type attribute to Identifier
+    * Support finding ApiVersion by OPTIONS request
+    * Added ApiVersions for Icecast streams
+
 1.1.1 - 2021-03-10
     * Reorganized huge parts of the driver infrastructure (Invisible to the user)
     * Newly ScheduledForRemoval:
