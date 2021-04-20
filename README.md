@@ -29,7 +29,7 @@ Then you also need to add the following dependency:
         <dependency>
             <groupId>io.ybrid</groupId>
             <artifactId>api-sdk-java</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
 ```
 
