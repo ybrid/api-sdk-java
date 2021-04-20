@@ -22,11 +22,13 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Classes implementing this interface can be asked for the status of sub information.
  */
+@ApiStatus.Experimental
 public interface KnowsSubInfoState {
     /**
      * Checks whether the information given by {@code what} have changed

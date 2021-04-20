@@ -22,9 +22,12 @@
 
 package io.ybrid.api;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * This enum is used with {@link KnowsSubInfoState} to address a specific sub information.
  */
+@ApiStatus.Experimental
 public enum SubInfo {
     /**
      * References {@link SwapInfo}.
