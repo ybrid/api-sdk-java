@@ -56,5 +56,9 @@ public enum Workaround {
     /**
      * Workaround used for servers that provide a invalid playback URI.
      */
-    WORKAROUND_INVALID_PLAYBACK_URI;
+    WORKAROUND_INVALID_PLAYBACK_URI,
+    /**
+     * Workaround used to force failed {@link ApiVersion} detection to assume {@link ApiVersion#ICY}.
+     */
+    WORKAROUND_GUESS_ICY;
 }

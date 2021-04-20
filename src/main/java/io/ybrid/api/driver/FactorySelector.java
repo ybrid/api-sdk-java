@@ -26,6 +26,8 @@ package io.ybrid.api.driver;
 import io.ybrid.api.ApiVersion;
 import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.Server;
+import io.ybrid.api.Workaround;
+import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.ApiStatus;
@@ -115,6 +117,9 @@ public final class FactorySelector {
             return new Result(getSupportedVersionsFromYbridV2Server(server, mediaEndpoint), "Ybrid v2 request");
         } catch (Exception ignored) {
         }
+
+        if (mediaEndpoint.getWorkarounds().get(Workaround.WORKAROUND_GUESS_ICY).equals(TriState.TRUE))
+            return new Result(EnumSet.of(ApiVersion.ICY), "using default");
 
         // Best guess:
         return new Result(EnumSet.of(ApiVersion.PLAIN), "using default");

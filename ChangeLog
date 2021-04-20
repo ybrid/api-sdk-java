@@ -25,6 +25,7 @@
     * Added type attribute to Identifier
     * Support finding ApiVersion by OPTIONS request
     * Added ApiVersions for Icecast streams
+    * New Workarounds: WORKAROUND_GUESS_ICY
 
 1.1.1 - 2021-03-10
     * Reorganized huge parts of the driver infrastructure (Invisible to the user)
