@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 @ApiStatus.Internal
 abstract public class Request {
     static private final Logger LOGGER = Logger.getLogger(Request.class.getName());
+    static private final int TIMEOUT = 3*1000;
 
     protected final @NotNull URL url;
     protected final @NotNull String requestMethod;
@@ -137,6 +138,8 @@ abstract public class Request {
         connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
         connection.setDoInput(true);
         connection.setDoOutput(requestBody != null);
+        connection.setConnectTimeout(TIMEOUT);
+        connection.setReadTimeout(TIMEOUT);
 
         if (requestBody != null) {
             connection.setRequestProperty("Content-Type", requestBodyContentType);
