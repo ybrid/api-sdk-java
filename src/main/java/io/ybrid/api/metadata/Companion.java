@@ -22,6 +22,7 @@
 
 package io.ybrid.api.metadata;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -41,6 +42,7 @@ public interface Companion {
      * @throws IOException Thrown if there are any I/O-Errors.
      * @see #getOnViewURI()
      */
+    @ApiStatus.Experimental
     void onView() throws IOException;
 
     /**
