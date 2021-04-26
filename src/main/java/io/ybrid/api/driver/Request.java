@@ -47,6 +47,13 @@ abstract public class Request {
     protected final @Nullable String requestBodyContentType;
     protected final byte[] requestBody;
 
+    /**
+     * Performs the actual request.
+     *
+     * This call can be re-called safely to re-send the same request.
+     *
+     * @return Returns whether the request was successful or not.
+     */
     abstract public boolean perform() throws IOException;
 
     /**

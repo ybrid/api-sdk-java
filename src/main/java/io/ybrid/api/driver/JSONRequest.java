@@ -123,13 +123,6 @@ public final class JSONRequest extends Request {
         super(url, requestMethod, requestBody);
     }
 
-    /**
-     * Performs the actual request.
-     *
-     * This call can be re-called safely to re-send the same request.
-     *
-     * @return Returns whether the request was successful or not.
-     */
     @Override
     public synchronized boolean perform() throws IOException {
         final @NotNull HttpURLConnection connection;
