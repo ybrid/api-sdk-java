@@ -23,9 +23,7 @@
 package io.ybrid.api.util.QualityMap;
 
 import io.ybrid.api.util.MediaType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -52,29 +50,5 @@ public class MediaTypeMap extends QualityMap<MediaType> {
      */
     public MediaTypeMap(@NotNull Map<? extends MediaType, ?> initialValues) {
         super(MediaType.STYLE, initialValues);
-    }
-
-    @ApiStatus.Internal
-    public static @Nullable MediaTypeMap createMap(@Nullable Map<?, ?> values) {
-        final @NotNull MediaTypeMap ret;
-
-        if (values == null)
-            return null;
-
-        ret = new MediaTypeMap();
-        for (final @NotNull Map.Entry<?, ?> entry : values.entrySet()) {
-            final @NotNull Object key = entry.getKey();
-            final @NotNull Object value = entry.getKey();
-
-            if (key instanceof MediaType) {
-                ret.put((MediaType) key, value);
-            } else if (key instanceof String) {
-                ret.put(new MediaType((String) key), value);
-            } else {
-                throw new IllegalArgumentException("Bad type for key: " + key);
-            }
-        }
-
-        return ret;
     }
 }

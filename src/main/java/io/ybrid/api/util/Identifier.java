@@ -22,7 +22,6 @@
 
 package io.ybrid.api.util;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,27 +56,6 @@ public final class Identifier implements Serializable {
      */
     public Identifier(@NotNull Class<?> type) {
         this(UUID.randomUUID().toString(), type);
-    }
-
-    /**
-     * Main constructor.
-     * @param identifier The identifier to use as string.
-     * @deprecated Use {@link #Identifier(String, Class)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public Identifier(@NotNull String identifier) {
-        this(identifier, Object.class);
-    }
-
-    /**
-     * Constructs a new random identifier.
-     * @deprecated Use {@link #Identifier(Class)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public Identifier() {
-        this(UUID.randomUUID().toString(), Object.class);
     }
 
     /**

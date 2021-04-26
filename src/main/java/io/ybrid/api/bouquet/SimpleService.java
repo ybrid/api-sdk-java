@@ -23,14 +23,11 @@
 package io.ybrid.api.bouquet;
 
 import io.ybrid.api.util.Identifier;
-import io.ybrid.api.util.Utils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.net.URL;
 
 public class SimpleService implements Service {
     final @NotNull String displayName;
@@ -43,15 +40,6 @@ public class SimpleService implements Service {
         this.identifier = identifier.toType(SimpleService.class);
         this.icon = icon;
         this.genre = genre;
-    }
-
-    /**
-     * @deprecated Use {@link #SimpleService(String, Identifier, URI, String)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public SimpleService(@NotNull String displayName, @NotNull Identifier identifier, @Nullable URL icon, @Nullable String genre) {
-        this(displayName, identifier, Utils.toURI(icon), genre);
     }
 
     public SimpleService(@NotNull String displayName, @NotNull Identifier identifier) {

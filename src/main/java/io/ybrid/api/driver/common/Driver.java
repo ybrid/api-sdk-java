@@ -60,12 +60,10 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     }
 
     protected final @NotNull Builder guessPlaybackURI(@NotNull String protocol) throws MalformedURLException, URISyntaxException {
-        final @NotNull Server server = session.getServer();
+        final @NotNull Server server = session.getMediaEndpoint().getServer();
         final @NotNull Builder builder = new Builder(session.getMediaEndpoint().getURI());
 
         assertConnected();
-
-        builder.setServer(server);
 
         if (server.isSecure())
             protocol += "s";

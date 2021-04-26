@@ -34,8 +34,9 @@ abstract public class SwapInfo implements io.ybrid.api.SwapInfo {
         return nextSwapReturnsToMain;
     }
 
-    public int getSwapsLeft() {
-        return swapsLeft;
+    @Override
+    public boolean canSwap() {
+        return swapsLeft != 0;
     }
 
     @Override

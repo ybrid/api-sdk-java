@@ -33,6 +33,7 @@ import io.ybrid.api.util.ClockManager;
 import io.ybrid.api.util.Identifier;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +51,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-final class Driver extends io.ybrid.api.driver.common.Driver {
+@ApiStatus.Internal
+final public class Driver extends io.ybrid.api.driver.common.Driver {
     private static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     private static final @NotNull Path COMMAND_PREFIX = Path.create("/ctrl/v2");

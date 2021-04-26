@@ -23,10 +23,7 @@
 package io.ybrid.api.driver;
 
 
-import io.ybrid.api.ApiVersion;
-import io.ybrid.api.MediaEndpoint;
-import io.ybrid.api.Server;
-import io.ybrid.api.Workaround;
+import io.ybrid.api.*;
 import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
@@ -44,13 +41,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class selects a {@link Factory} based on a given {@link Server} and {@link MediaEndpoint}.
+ * This class selects a {@link Driver} based on a given {@link MediaEndpoint} (via {@link Session}).
  *
  * This should not be used directly.
  */
 @ApiStatus.Internal
-public final class FactorySelector {
-    private static final Logger LOGGER = Logger.getLogger(FactorySelector.class.getName());
+public final class DriverSelector {
+    private static final Logger LOGGER = Logger.getLogger(DriverSelector.class.getName());
 
     @ApiStatus.Internal
     private static final class Result {
@@ -68,53 +65,48 @@ public final class FactorySelector {
     }
 
     /**
-     * Gets a {@link Factory} based on the parameters.
+     * Gets a {@link Driver} based on the parameters.
      * This method may access the network.
      *
-     * @param server The {@link Server} to use.
-     * @param mediaEndpoint The {@link MediaEndpoint} to use.
-     * @return The instance of the {@link Factory} to use.
+     * @param session The {@link Session} to use.
+     * @return The instance of the {@link Driver} to use.
      */
-    public static @NotNull Factory getFactory(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
-        final @NotNull Result result = getSupportedVersions(server, mediaEndpoint);
+    public static @NotNull Driver getFactory(@NotNull Session session) throws MalformedURLException {
+        @NotNull MediaEndpoint mediaEndpoint = session.getMediaEndpoint();
+        final @NotNull Result result = getSupportedVersions(mediaEndpoint);
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.info("Supported versions for " + mediaEndpoint.getURI() +
-                    " on " + server.getProtocol() + "://" + server.getHostname() + ":" + server.getPort() +
                     " = " + result.set + " by " + result.method);
         }
 
         if (result.can(ApiVersion.YBRID_V2_BETA))
-            return new io.ybrid.api.driver.ybrid.v2.Factory();
+            return new io.ybrid.api.driver.ybrid.v2.Driver(session);
 
         if (result.can(ApiVersion.YBRID_V1))
-            return new io.ybrid.api.driver.ybrid.v1.Factory();
+            return new io.ybrid.api.driver.ybrid.v1.Driver(session);
 
         if (result.can(ApiVersion.ICY) || result.can(ApiVersion.ICECAST_V2_4) || result.can(ApiVersion.ICECAST_V2_5_BETA))
-            return new io.ybrid.api.driver.icy.Factory();
+            return new io.ybrid.api.driver.icy.Driver(session);
 
         if (result.can(ApiVersion.PLAIN))
-            return new io.ybrid.api.driver.plain.Factory();
+            return new io.ybrid.api.driver.plain.Driver(session);
 
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
-    private static Result getSupportedVersions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
+    private static Result getSupportedVersions(@NotNull MediaEndpoint mediaEndpoint) {
         if (mediaEndpoint.getForcedApiVersion() != null) {
             return new Result(EnumSet.of(mediaEndpoint.getForcedApiVersion()), "force on MediaEndpoint");
         }
 
-        if (server.getForcedApiVersion() != null) {
-            return new Result(EnumSet.of(server.getForcedApiVersion()), "force on Server");
-        }
-
         try {
-            return new Result(getSupportedVersionsFromOptions(server, mediaEndpoint), "OPTIONS");
+            return new Result(getSupportedVersionsFromOptions(mediaEndpoint), "OPTIONS");
         } catch (Exception ignored) {
         }
 
         try {
-            return new Result(getSupportedVersionsFromYbridV2Server(server, mediaEndpoint), "Ybrid v2 request");
+            return new Result(getSupportedVersionsFromYbridV2Server(mediaEndpoint), "Ybrid v2 request");
         } catch (Exception ignored) {
         }
 
@@ -125,21 +117,20 @@ public final class FactorySelector {
         return new Result(EnumSet.of(ApiVersion.PLAIN), "using default");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromOptions(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
-        return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint, null, "OPTIONS");
+    private static EnumSet<ApiVersion> getSupportedVersionsFromOptions(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+        return getSupportedVersionsFromYbridV2Server(mediaEndpoint, null, "OPTIONS");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
-        return getSupportedVersionsFromYbridV2Server(server, mediaEndpoint, new Path("/ctrl/v2/session/info"), "GET");
+    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+        return getSupportedVersionsFromYbridV2Server(mediaEndpoint, new Path("/ctrl/v2/session/info"), "GET");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method) throws IOException, URISyntaxException {
+    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method) throws IOException, URISyntaxException {
         final EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
         final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
         final @NotNull JSONRequest request;
         JSONArray supportedVersions;
 
-        builder.setServer(server);
         if (pathSuffix != null)
             builder.appendPath(pathSuffix);
 

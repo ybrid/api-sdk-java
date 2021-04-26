@@ -22,13 +22,10 @@
 
 package io.ybrid.api.metadata;
 
-import io.ybrid.api.util.Utils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 
 /**
  * This interface is implemented by Companions.
@@ -71,43 +68,6 @@ public interface Companion {
      * @return Returns the index of the Companion.
      */
     int getSequenceNumber();
-
-    /**
-     * Returns the URL of the Companion that should be rendered.
-     * The resource can be pre-fetched and cached.
-     *
-     * @return Returns the URL of the Companion.
-     * @deprecated This was replaced with {@link #getStaticResourceURI()}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    default URL getStaticResource() {
-        return Utils.toURL(getStaticResourceURI());
-    }
-
-    /**
-     * This returns the URL to navigate the user to when the Companion is clicked.
-     * @return Returns the URL to send the user to.
-     * @deprecated This was replaced with {@link #getOnClickURI()}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    default URL getOnClick() {
-        return Utils.toURL(getOnClickURI());
-    }
-
-    /**
-     * Returns the URL that should be contacted once the Companion is viewed.
-     *
-     * @return Returns the URL to be called when the companion is viewed.
-     * @deprecated This was replaced with {@link #getOnViewURI()}.
-     * @see #onView()
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    default URL getOnView() {
-        return Utils.toURL(getOnViewURI());
-    }
 
     /**
      * Returns the URI of the Companion that should be rendered.

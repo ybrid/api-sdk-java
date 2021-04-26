@@ -27,37 +27,10 @@ import org.junit.Test;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class ServerTest {
-    @Test
-    public void CreateSimplePositive() throws MalformedURLException {
-        URL[] urls = {new URL("http://localhost/")};
-
-        for (URL url : urls) {
-            Server server = new Server(url);
-
-            assertNotNull(server);
-            assertEquals(server.getHostname(), url.getHost());
-        }
-    }
-
-    @Test
-    public void CreateSimpleNegative() throws MalformedURLException {
-        URL[] urls = {new URL("file:///dev/null")};
-
-        for (URL url : urls) {
-            try {
-                new Server(url);
-                fail("Object creation successful.");
-            } catch (Exception e) {
-                /* NOOP */
-            }
-        }
-    }
-
     @Test
     public void GetStreamSessionPositive() throws MalformedURLException, URISyntaxException {
         String hostname = "localhost";

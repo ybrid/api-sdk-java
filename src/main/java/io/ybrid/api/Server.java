@@ -24,7 +24,6 @@ package io.ybrid.api;
 
 import io.ybrid.api.util.Connectable;
 import io.ybrid.api.util.Utils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,24 +39,7 @@ import java.net.URL;
  */
 @Deprecated
 public final class Server implements Connectable, ApiUser {
-    /**
-     * The default port used for Ybrid servers.
-     * @deprecated This is scheduled to be removed as this class is deprecated.
-     */
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    public static final int DEFAULT_PORT = 80;
-    /**
-     * The default security setting for Ybrid servers.
-     * @deprecated This is scheduled to be removed as this class is deprecated.
-     */
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    public static final boolean DEFAULT_SECURE = false;
-
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
-    private final @NotNull String hostname;
-    private final int port;
     private final boolean secure;
     private @Nullable ApiVersion apiVersion = null;
 
@@ -68,16 +50,7 @@ public final class Server implements Connectable, ApiUser {
      * @throws MalformedURLException Thrown if there is any problem found with the parameters.
      */
     public Server(@NotNull URL baseURL) throws MalformedURLException {
-        int newPort;
-
-        newPort = baseURL.getPort();
-        if (newPort < 0)
-            newPort = baseURL.getDefaultPort();
-
         Utils.assertValidHostname(baseURL.getHost());
-        Utils.assertValidPort(newPort);
-        this.hostname = baseURL.getHost();
-        this.port = newPort;
         switch (baseURL.getProtocol()) {
             case "http":
                 this.secure = false;
@@ -91,24 +64,6 @@ public final class Server implements Connectable, ApiUser {
     }
 
     /**
-     * Get the name of the host used to contact the server.
-     * @return Returns the hostname.
-     */
-    public @NotNull String getHostname() {
-        return hostname;
-    }
-
-    /**
-     * Get the port used to contact the server.
-     * @return Returns the port number.
-     * @deprecated This class is deprecated. For a replacement see {@link MediaEndpoint#getURI()}.
-     */
-    @Deprecated
-    public int getPort() {
-        return port;
-    }
-
-    /**
      * Get whether the connection should be established securely.
      * @return Whether contacting the server securely.
      * @deprecated This class is deprecated. For a replacement see {@link MediaEndpoint#getURI()}.
@@ -116,33 +71,6 @@ public final class Server implements Connectable, ApiUser {
     @Deprecated
     public boolean isSecure() {
         return secure;
-    }
-
-    /**
-     * Gets the transport protocol used.
-     * @return Returns the name of the protocol.
-     * @deprecated This class is deprecated. For a replacement see {@link MediaEndpoint#getURI()}.
-     */
-    @Deprecated
-    public @NotNull String getProtocol() {
-        return isSecure() ? "https" : "http";
-    }
-
-    /**
-     * Create a new unconnected {@link Session} for the given {@link MediaEndpoint}.
-     *
-     * This may connect if needed. See {@link #connect()}.
-     *
-     * @param mediaEndpoint The {@link MediaEndpoint} to connect to.
-     * @return Returns the newly created {@link Session}.
-     * @throws MalformedURLException Thrown if there is any problem found with the parameters.
-     * @deprecated This is scheduled to be removed as this class is deprecated. Use {@link MediaEndpoint#createSession()}.
-     */
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    public @NotNull Session createSession(@NotNull MediaEndpoint mediaEndpoint) throws MalformedURLException {
-        connect();
-        return new Session(this, mediaEndpoint);
     }
 
     @Override

@@ -70,9 +70,4 @@ public final class SessionTransaction extends RequestBasedTransaction<Request<Co
     protected void execute() throws Throwable {
         executor.execute(this);
     }
-
-    @Override
-    public @NotNull io.ybrid.api.session.Request getRequest() {
-        return new io.ybrid.api.session.Request(super.getRequest());
-    }
 }

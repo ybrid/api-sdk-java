@@ -27,8 +27,9 @@ import io.ybrid.api.SubInfo;
 import io.ybrid.api.SwapMode;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
-import io.ybrid.api.metadata.Sync;
+import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.Identifier;
+import io.ybrid.api.util.hasIdentifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -161,23 +162,16 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
 
 
     @Override
-    public @NotNull Request makeRequest() throws IllegalArgumentException {
-        return new Request(io.ybrid.api.transaction.Command.super.makeRequest());
-    }
-
-    @Override
-    public @NotNull Request makeRequest(@Nullable Serializable argument) throws IllegalArgumentException {
+    public @NotNull Request<Command> makeRequest(@Nullable Serializable argument) throws IllegalArgumentException {
         if (argument instanceof Service)
             argument = ((Service) argument).getIdentifier();
-        return new Request(io.ybrid.api.transaction.Command.super.makeRequest(argument));
+        return io.ybrid.api.transaction.Command.super.makeRequest(argument);
     }
 
-    @Deprecated
-    @Override
-    @ApiStatus.ScheduledForRemoval
-    public @NotNull Request makeRequest(@Nullable Object argument) throws IllegalArgumentException {
-        if (argument instanceof Sync)
-            argument = ((Sync) argument).getIdentifier();
-        return makeRequest((Serializable) argument);
+    @ApiStatus.Experimental
+    public @NotNull Request<Command> makeRequest(@Nullable hasIdentifier argument) {
+        if (argument instanceof Serializable || argument == null)
+            return makeRequest((Serializable) argument);
+        return makeRequest(Objects.requireNonNull(argument).getIdentifier());
     }
 }

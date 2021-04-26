@@ -22,7 +22,6 @@
 
 package io.ybrid.api.util;
 
-import io.ybrid.api.util.QualityMap.QualityMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +36,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -95,24 +93,6 @@ public final class Utils {
     }
 
     /**
-     * Asserts a Accept:-style list is valid.
-     * @param list The list to check or {@code null}.
-     * @throws IllegalArgumentException Thrown if the list is not valid.
-     * @deprecated No longer needed as internally ensured by {@link QualityMap}.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    @ApiStatus.Internal
-    public static void assertValidAcceptList(@Nullable Map<String, Double> list) throws IllegalArgumentException {
-        if (list == null)
-            return;
-
-        for (double weight : list.values())
-            if (weight < 0 || weight > 1)
-                throw new IllegalArgumentException("Invalid weight=" + weight + ", must be in range [0,1]");
-    }
-
-    /**
      * Asserts the given hostname is valid.
      * @param hostname The hostname to check.
      * @throws MalformedURLException Thrown if the hostname is invalid.
@@ -124,18 +104,6 @@ public final class Utils {
             throw new MalformedURLException("Bad hostname: null");
         if (!hostname.matches("^[a-zA-Z0-9:.-]+$"))
             throw new MalformedURLException("Bad hostname: \"" + hostname + "\"");
-    }
-
-    /**
-     * Asserts the given port is valid.
-     * @param port The port to check.
-     * @throws MalformedURLException Thrown if the port is invalid.
-     */
-    @ApiStatus.Internal
-    @Contract(pure = true)
-    public static void assertValidPort(int port) throws MalformedURLException {
-        if (port < 0 || port > 65535)
-            throw new MalformedURLException("Bad port: " + port);
     }
 
     /**

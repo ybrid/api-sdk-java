@@ -22,8 +22,6 @@
 
 package io.ybrid.api.transaction;
 
-import io.ybrid.api.util.Utils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,46 +33,22 @@ import java.util.Objects;
  * This class represents a single request to the {@link io.ybrid.api.Session} or related objects.
  * It provides a uniform way to make API requests.
  * <P>
- * Instances can be created using {@link Command#makeRequest()}, and {@link Command#makeRequest(Object)}.
+ * Instances can be created using {@link Command#makeRequest()}, and {@link Command#makeRequest(Serializable)}.
  */
 public class Request<C extends Command<C>> implements Serializable {
     private final @NotNull C command;
     private final @Nullable Serializable[] arguments;
 
-    private static Serializable[] cloneArrayTypeCorrect(final Object[] input) {
-        final Serializable[] ret = new Serializable[input.length];
-
-        //noinspection SuspiciousSystemArraycopy
-        System.arraycopy(input, 0, ret, 0, input.length);
-
-        return ret;
-    }
-
     /**
      * Internal constructor.
      * @param command The command to request.
      * @param arguments The argument list for the request or {@code null}.
      * @see Command#makeRequest()
-     * @see Command#makeRequest(Object)
+     * @see Command#makeRequest(Serializable)
      */
     protected Request(@NotNull C command, @Nullable Serializable[] arguments) {
         this.command = command;
         this.arguments = arguments;
-    }
-
-    /**
-     * Internal constructor.
-     * @param command The command to request.
-     * @param arguments The argument list for the request or {@code null}.
-     * @see Command#makeRequest()
-     * @see Command#makeRequest(Object)
-     * @deprecated Use {@link #Request(Command, Serializable[])}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    protected Request(@NotNull C command, @Nullable Object[] arguments) {
-        this.command = command;
-        this.arguments = Utils.transform(arguments, Request::cloneArrayTypeCorrect);
     }
 
     /**

@@ -42,8 +42,8 @@ public class PlayoutInfo implements io.ybrid.api.PlayoutInfo {
             }
 
             @Override
-            public int getSwapsLeft() {
-                return 0;
+            public boolean canSwap() {
+                return false;
             }
         };
     }

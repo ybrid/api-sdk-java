@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * An MediaEndpoint represents a entry point on a {@link Server}.
@@ -41,27 +40,8 @@ import java.util.Map;
 public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull URI uri;
-    private final @NotNull Server server;
     private @Nullable ApiVersion apiVersion = null;
     private @Nullable LanguageMap acceptedLanguages = null;
-
-    /**
-     * Create a new MediaEndpoint using the given {@link Server}.
-     *
-     * @param uri The {@link URI} of the MediaEndpoint.
-     * @param server The {@link Server} to use for contacting the MediaEndpoint.
-     * @deprecated Deprecated as {@link Server} was deprecated.
-     */
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    public MediaEndpoint(@NotNull URI uri, @Nullable Server server) throws MalformedURLException {
-        this.uri = uri;
-        if (server != null) {
-            this.server = server;
-        } else {
-            this.server = new Server(uri.toURL());
-        }
-    }
 
     /**
      * Create a new MediaEndpoint using the given {@link URI}.
@@ -69,7 +49,7 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      * @param uri The {@link URI} of the MediaEndpoint.
      */
     public MediaEndpoint(@NotNull URI uri) throws MalformedURLException {
-        this(uri, null);
+        this.uri = uri;
     }
 
     /**
@@ -90,7 +70,11 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     @ApiStatus.ScheduledForRemoval
     @Deprecated
     public @NotNull Server getServer() {
-        return server;
+        try {
+            return new Server(uri.toURL());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -102,32 +86,12 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
      * @throws MalformedURLException Thrown if any error is found in the MediaEndpoint' URL.
      */
     public @NotNull Session createSession() throws MalformedURLException {
-        server.connect();
-        return new Session(server, this);
+        return new Session(this);
     }
 
     @Override
     public @Nullable LanguageMap getAcceptedLanguagesMap() {
         return acceptedLanguages;
-    }
-
-    /**
-     * Sets the list of languages requested by the user.
-     *
-     * This function is only still included for older versions of Android
-     * (before {@code android.os.Build.VERSION_CODES.O})
-     * and might be removed at any time.
-     *
-     * @param acceptedLanguages List of languages to set or null.
-     * @deprecated Use {@link #setAcceptedLanguages(List)} instead.
-     */
-    @Deprecated
-    public void setAcceptedLanguages(@Nullable Map<String, Double> acceptedLanguages) {
-        if (acceptedLanguages == null) {
-            this.acceptedLanguages = null;
-            return;
-        }
-        this.acceptedLanguages = new LanguageMap(acceptedLanguages);
     }
 
     /**

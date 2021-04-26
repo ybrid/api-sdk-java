@@ -25,6 +25,8 @@ package io.ybrid.api.session;
 import io.ybrid.api.metadata.ItemType;
 import org.junit.Test;
 
+import java.io.Serializable;
+
 import static org.junit.Assert.assertThrows;
 
 public class CommandTest {
@@ -36,8 +38,8 @@ public class CommandTest {
 
     @Test
     public void makeRequestOneArg() {
-        assertThrows(IllegalArgumentException.class, () -> Command.CONNECT.makeRequest(null));
-        Command.SKIP_FORWARD.makeRequest(null);
+        assertThrows(IllegalArgumentException.class, () -> Command.CONNECT.makeRequest((Serializable) null));
+        Command.SKIP_FORWARD.makeRequest((Serializable) null);
 
         assertThrows(IllegalArgumentException.class, () -> Command.CONNECT.makeRequest(ItemType.COMEDY));
         Command.SKIP_FORWARD.makeRequest(ItemType.COMEDY);

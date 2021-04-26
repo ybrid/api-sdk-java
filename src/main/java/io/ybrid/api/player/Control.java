@@ -33,8 +33,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-
 /**
  * This interface defines the communication channel from the {@link Session} to the player.
  */
@@ -56,19 +54,6 @@ public interface Control {
      */
     default void onDetach(@NotNull Session session) {
         // no-op
-    }
-
-    /**
-     * Get the list of media formats supported by the player.
-     *
-     * If this returns null no {@code Accept:}-header should be generated.
-     * @return List of supported formats or null.
-     * @deprecated Implementations should implement {@link #getAcceptedMediaTypes()}.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    default @Nullable Map<String, Double> getAcceptedMediaFormats() {
-        return null;
     }
 
     /**
@@ -124,23 +109,5 @@ public interface Control {
                 Control.this.executeTransaction(this);
             }
         };
-    }
-
-    /**
-     * Creates a new Transaction for the given {@link Command}.
-     * The resulting transaction will be executed on this Control.
-     * <P>
-     * <B>Note:</B> Most implementations should not override this.
-     *
-     * @param command The {@link Command} to execute.
-     * @return The resulting transaction.
-     * @see SimpleCommand
-     * @deprecated Use {@link #createTransaction(Request)}.
-     */
-    @ApiStatus.NonExtendable
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    default @NotNull Transaction createTransaction(@NotNull Command<?> command) {
-        return createTransaction(command.makeRequest());
     }
 }

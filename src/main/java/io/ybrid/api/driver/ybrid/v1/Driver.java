@@ -36,6 +36,7 @@ import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@ApiStatus.Internal
 public final class Driver extends io.ybrid.api.driver.common.Driver {
     private static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
@@ -67,7 +69,6 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
 
         try {
             this.baseURI = new Builder(session.getMediaEndpoint().getURI());
-            this.baseURI.setServer(session.getServer());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -236,7 +237,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
         final @NotNull Builder builder = baseURI.clone();
-        builder.setRawScheme(session.getServer().isSecure() ? "icyxs" : "icyx");
+        builder.setRawScheme(session.getMediaEndpoint().getServer().isSecure() ? "icyxs" : "icyx");
         builder.setQuery("sessionId", token);
         return builder.toURI();
     }

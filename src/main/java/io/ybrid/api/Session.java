@@ -23,7 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.driver.Driver;
-import io.ybrid.api.driver.FactorySelector;
+import io.ybrid.api.driver.DriverSelector;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
@@ -37,7 +37,6 @@ import io.ybrid.api.transport.ServiceURITransportDescription;
 import io.ybrid.api.util.Connectable;
 import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import io.ybrid.api.util.Utils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +58,6 @@ public final class Session implements Connectable, KnowsSubInfoState {
     private final @NotNull Source source = new Source(SourceType.SESSION);
     private final @NotNull WorkaroundMap activeWorkarounds = new WorkaroundMap();
     private final @NotNull MetadataMixer metadataMixer;
-    private final @NotNull Server server;
     private final @NotNull MediaEndpoint mediaEndpoint;
     private @Nullable Control playerControl = null;
     private @Nullable Driver driver;
@@ -70,7 +68,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
         LOGGER.info("Connecting driver...");
         try {
-            this.driver = FactorySelector.getFactory(server, mediaEndpoint).getDriver(this);
+            this.driver = DriverSelector.getFactory(this);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -79,13 +77,11 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return driver;
     }
 
-    Session(@NotNull Server server, @NotNull MediaEndpoint mediaEndpoint) {
-        this.server = server;
+    Session(@NotNull MediaEndpoint mediaEndpoint) {
         this.mediaEndpoint = mediaEndpoint;
         this.metadataMixer = new MetadataMixer(this);
 
         activeWorkarounds.merge(mediaEndpoint.getWorkarounds());
-        activeWorkarounds.merge(server.getWorkarounds());
     }
 
     /**
@@ -104,32 +100,8 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return mediaEndpoint;
     }
 
-    /**
-     * Gets the {@link Server} object used to communicate with the server.
-     * @return Returns the {@link Server} object.
-     * @deprecated The {@link Server} was deprecated.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    public @NotNull Server getServer() {
-        return server;
-    }
-
     public @NotNull CapabilitySet getCapabilities() {
         return getDriver().getCapabilities();
-    }
-
-    /**
-     * Creates a transaction for this session.
-     * @param request The request for the transaction.
-     * @return The newly created transaction.
-     * @deprecated Use {@link #createTransaction(Request)} instead.
-     */
-    @Deprecated
-    @Contract("_ -> new")
-    @ApiStatus.ScheduledForRemoval
-    public @NotNull SessionTransaction createTransaction(@NotNull io.ybrid.api.session.Request request) {
-        return new SessionTransaction(this, request, this::executeSessionTransaction);
     }
 
     @Contract("_ -> new")
@@ -170,10 +142,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
             case CONNECT_INITIAL_TRANSPORT:
             case RECONNECT_TRANSPORT: {
                 final @Nullable MediaTypeMap acceptedMediaTypes = Utils.transform(playerControl,
-                        c -> Utils.firstOf(
-                                c.getAcceptedMediaTypes(),
-                                MediaTypeMap.createMap(c.getAcceptedMediaFormats())
-                        ));
+                        Control::getAcceptedMediaTypes);
                 final @NotNull ServiceTransportDescription transportDescription = new ServiceURITransportDescription(new Source(SourceType.TRANSPORT),
                         getDriver().getCurrentService(),
                         metadataMixer,

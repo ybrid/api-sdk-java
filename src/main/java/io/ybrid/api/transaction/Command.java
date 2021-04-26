@@ -36,36 +36,6 @@ import java.io.Serializable;
  */
 public interface Command<C extends Command<C>> extends Serializable {
     /**
-     * Gets the number of arguments requests for this command requires.
-     * @return The number of required arguments.
-     * @deprecated Implementations should only use {@link #assertArgumentListValid(Serializable[])}
-     */
-    @Deprecated
-    @Contract(pure = true)
-    @ApiStatus.ScheduledForRemoval
-    @ApiStatus.OverrideOnly
-    default int numberOfArguments() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Checks whether a object is valid as argument for the given Command.
-     * This includes checks for type, and nullability.
-     *
-     * @param index    The index of the argument starting with 0 for the first argument.
-     * @param argument The object to check.
-     * @return Whether the object is valid as argument.
-     * @deprecated Implementations should only use {@link #assertArgumentListValid(Serializable[])}
-     */
-    @Deprecated
-    @Contract(pure = true)
-    @ApiStatus.ScheduledForRemoval
-    @ApiStatus.OverrideOnly
-    default boolean isArgumentValid(int index, @Nullable Object argument) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Returns whether the command has a audio related action.
      * <P>
      * For commands with audio actions the user can hear the action.
@@ -93,13 +63,7 @@ public interface Command<C extends Command<C>> extends Serializable {
      */
     @Contract(value = "null -> fail; !null -> _", pure = true)
     default void assertArgumentListValid(@Nullable Serializable[] arguments) throws IllegalArgumentException {
-        if (numberOfArguments() != arguments.length)
-            throw new IllegalArgumentException("Invalid number of arguments for request command " + this + ", expected " + numberOfArguments() + " but got 1");
-
-        for (int i = 0; i < arguments.length; i++) {
-            if (!isArgumentValid(i, arguments[i]))
-                throw new IllegalArgumentException("Invalid type of argument " + i + " for request command " + this);
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -127,18 +91,5 @@ public interface Command<C extends Command<C>> extends Serializable {
 
         //noinspection unchecked
         return new Request<>((C) this, arguments);
-    }
-
-    /**
-     * Builds a new {@link Request} for this Command with one arguments.
-     * @param argument The argument to pass as part of the request.
-     * @return The newly created request.
-     * @deprecated Use {@link #makeRequest(Serializable)}.
-     */
-    @Deprecated
-    @Contract("_ -> new")
-    @ApiStatus.ScheduledForRemoval
-    default @NotNull Request<C> makeRequest(@Nullable Object argument) throws IllegalArgumentException {
-        return makeRequest((Serializable) argument);
     }
 }

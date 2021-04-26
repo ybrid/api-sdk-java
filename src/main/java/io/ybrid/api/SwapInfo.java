@@ -37,15 +37,6 @@ public interface SwapInfo extends Serializable {
     boolean isNextSwapReturnToMain();
 
     /**
-     * Returns the number of swaps the client is expected to be allowed before the server refuses them.
-     * @return Returns the number of swaps the user can do.
-     * @deprecated This should no longer be used.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    int getSwapsLeft();
-
-    /**
      * Returns whether the object expects the next swap to be successful.
      *
      * This can be used to update the user interface to provide a swap button only when expected to work.
@@ -54,7 +45,5 @@ public interface SwapInfo extends Serializable {
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval
-    default boolean canSwap() {
-        return getSwapsLeft() != 0;
-    }
+    boolean canSwap();
 }
