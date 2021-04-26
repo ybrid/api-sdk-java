@@ -36,6 +36,8 @@ import java.util.Objects;
  * Instances can be created using {@link Command#makeRequest()}, and {@link Command#makeRequest(Serializable)}.
  */
 public class Request<C extends Command<C>> implements Serializable {
+    private static final long serialVersionUID = 8979449049194236047L;
+
     private final @NotNull C command;
     private final @Nullable Serializable[] arguments;
 
