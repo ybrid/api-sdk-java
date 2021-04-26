@@ -23,7 +23,6 @@
 package io.ybrid.api.driver;
 
 import io.ybrid.api.util.Utils;
-import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +33,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -46,13 +44,9 @@ import java.util.logging.Logger;
  * This class only performs I/O operations in {@link #perform()}.
  */
 @ApiStatus.Internal
-public final class JSONRequest {
+public final class JSONRequest extends Request {
     static final Logger LOGGER = Logger.getLogger(JSONRequest.class.getName());
 
-    private final @NotNull URL url;
-    private final @NotNull String requestMethod;
-    private final @Nullable String requestBodyContentType;
-    private final byte[] requestBody;
     private @Nullable JSONObject responseBody = null;
 
     @SuppressWarnings("RedundantIfStatement")
@@ -83,14 +77,7 @@ public final class JSONRequest {
      * @param requestBody Request body or null.
      */
     public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable String requestBodyContentType, byte[] requestBody) throws IllegalArgumentException {
-        this.url = url;
-        this.requestMethod = requestMethod;
-
-        if ((requestBodyContentType == null) != (requestBody == null))
-            throw new IllegalArgumentException("requestBodyContentType, and requestBody must both be null or none-null");
-
-        this.requestBodyContentType = requestBodyContentType;
-        this.requestBody = requestBody;
+        super(url, requestMethod, requestBodyContentType, requestBody);
     }
 
     /**
@@ -103,7 +90,7 @@ public final class JSONRequest {
      * @param requestBody Request body or null.
      */
     public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable String requestBodyContentType, @Nullable String requestBody) throws IllegalArgumentException {
-        this(url, requestMethod, requestBodyContentType, requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8));
+        super(url, requestMethod, requestBodyContentType, requestBody);
     }
 
     /**
@@ -113,7 +100,7 @@ public final class JSONRequest {
      * @param requestMethod Request method to be used if protocol uses HTTP-style methods.
      */
     public JSONRequest(@NotNull URL url, @NotNull String requestMethod) throws IllegalArgumentException {
-        this(url, requestMethod, null, (byte[])null);
+        super(url, requestMethod);
     }
 
     /**
@@ -125,21 +112,7 @@ public final class JSONRequest {
      * @param requestMethod Request method to be used if protocol uses HTTP-style methods.
      */
     public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable Map<String, String> requestBody) throws IllegalArgumentException {
-        this.url = url;
-        this.requestMethod = requestMethod;
-
-        if (requestBody == null) {
-            this.requestBodyContentType = null;
-            this.requestBody = null;
-        } else {
-            final XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
-
-            builder.append(requestBody);
-
-            this.requestBodyContentType = builder.getMediaType();
-
-            this.requestBody = builder.getBytes();
-        }
+        super(url, requestMethod, requestBody);
     }
 
     /**
@@ -149,6 +122,7 @@ public final class JSONRequest {
      *
      * @return Returns whether the request was successful or not.
      */
+    @Override
     public synchronized boolean perform() throws IOException {
         final @NotNull HttpURLConnection connection;
         final boolean success;
@@ -205,13 +179,5 @@ public final class JSONRequest {
      */
     public synchronized @Nullable JSONObject getResponseBody() {
         return responseBody;
-    }
-
-    /**
-     * Gets the {@link URL} used for the request.
-     * @return The URL used.
-     */
-    public @NotNull URL getUrl() {
-        return url;
     }
 }
