@@ -159,7 +159,7 @@ public final class JSONRequest {
 
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(requestMethod);
-        connection.setRequestProperty("Accept", "application/json, *; q=0");
+        connection.setRequestProperty("Accept", "application/json, */*; q=0");
         connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
         connection.setDoInput(true);
         connection.setDoOutput(requestBody != null);
