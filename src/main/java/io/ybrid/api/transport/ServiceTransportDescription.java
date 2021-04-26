@@ -31,13 +31,10 @@ import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.util.MediaType;
 import io.ybrid.api.util.QualityMap.LanguageMap;
 import io.ybrid.api.util.QualityMap.MediaTypeMap;
-import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 /**
  * This is the base class for all transport descriptions.
@@ -61,7 +58,6 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
      * @param acceptedLanguages List of accepted languages or {@code null}.
      * @param transaction The {@link Transaction} causing the creation of this transport description.
      * @param activeWorkarounds The set of active workarounds for this transport.
-     * @see #getAcceptedMediaFormats()
      * @see #getAcceptedLanguagesMap()
      */
     @ApiStatus.Internal
@@ -103,21 +99,6 @@ public abstract class ServiceTransportDescription implements hasAcceptedLanguage
      */
     public @NotNull MetadataMixer getMetadataMixer() {
         return metadataMixer;
-    }
-
-    /**
-     * Get the list of media formats accepted for this transport.
-     * <P>
-     * For HTTP based protocols:
-     * If this returns {@code null} no {@code Accept:}-header should be generated.
-     *
-     * @return List of accepted formats or {@code null}.
-     * @deprecated Use {@link #getAcceptedMediaTypes()}
-     * @see MediaTypeMap#toStringDoubleMap()
-     */
-    @Deprecated
-    public @Nullable Map<String, Double> getAcceptedMediaFormats() {
-        return Utils.transform(acceptedMediaTypes, MediaTypeMap::toStringDoubleMap);
     }
 
     /**

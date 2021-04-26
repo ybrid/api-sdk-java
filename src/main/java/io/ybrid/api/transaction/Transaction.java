@@ -80,17 +80,6 @@ public interface Transaction extends hasIdentifier, Runnable {
     /**
      * Informs the transaction that the change is now audible.
      * This is to be called by the player when the audio reached the point the result of of this transaction is audible.
-     *
-     * @deprecated Use {@link #setAudioComplete(CompletionState)}
-     */
-    @Deprecated
-    default void setAudioComplete() {
-        setAudioComplete(CompletionState.DONE);
-    }
-
-    /**
-     * Informs the transaction that the change is now audible.
-     * This is to be called by the player when the audio reached the point the result of of this transaction is audible.
      * @param completionState The completion state.
      */
     void setAudioComplete(@NotNull CompletionState completionState);

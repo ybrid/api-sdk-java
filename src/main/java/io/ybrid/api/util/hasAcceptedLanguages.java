@@ -23,30 +23,12 @@
 package io.ybrid.api.util;
 
 import io.ybrid.api.util.QualityMap.LanguageMap;
-import io.ybrid.api.util.QualityMap.QualityMap;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 /**
  * Interface implemented by classes providing a list of accepted languages.
  */
 public interface hasAcceptedLanguages {
-    /**
-     * Get list of accepted languages.
-     * <p>
-     * For HTTP based protocols:
-     * If this returns {@code null} no {@code Accept-Language:}-header should be generated.
-     *
-     * @return List of languages accepted or {@code null}.
-     * @deprecated Use {@link #getAcceptedLanguagesMap()}
-     */
-    @Deprecated
-    @Nullable
-    default Map<String, Double> getAcceptedLanguages() {
-        return Utils.transform(getAcceptedLanguagesMap(), QualityMap::toDoubleMap);
-    }
-
     /**
      * Get list of accepted languages.
      * <P>
