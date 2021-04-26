@@ -221,12 +221,11 @@ public final class Session implements Connectable, KnowsSubInfoState {
      * This map can be updated by the caller if needed.
      * However special care must be taken when doing so to avoid data corruption.
      * Generally applications that wish to communicate workaround settings
-     * should use {@link MediaEndpoint#getWorkarounds()} or {@link Server#getWorkarounds()}.
+     * should use {@link MediaEndpoint#getWorkarounds()}.
      * Those methods are always safe to use.
      *
      * @return The map of active workarounds.
      * @see MediaEndpoint#getWorkarounds()
-     * @see Server#getWorkarounds()
      */
     public @NotNull WorkaroundMap getActiveWorkarounds() {
         return activeWorkarounds;

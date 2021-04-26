@@ -25,6 +25,7 @@ package io.ybrid.api;
 import io.ybrid.api.util.QualityMap.LanguageMap;
 import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * An MediaEndpoint represents a entry point on a {@link Server}.
+ * An MediaEndpoint represents a entry point.
  * The MediaEndpoint can be used to open a {@link Session} and a stream.
  */
 public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
@@ -60,27 +61,23 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
         return uri;
     }
 
-    /**
-     * Returns the {@link Server} used by this MediaEndpoint.
-     * If no {@link Server} has been passed to the Constructor it is automatically created.
-     *
-     * @return Returns the {@link Server} object of this MediaEndpoint.
-     * @deprecated Deprecated as {@link Server} was deprecated.
-     */
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    public @NotNull Server getServer() {
-        try {
-            return new Server(uri.toURL());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+    @Contract(pure = true)
+    @ApiStatus.Internal
+    public boolean isSecure() throws IllegalArgumentException {
+        switch (uri.getScheme()) {
+            case "http":
+            case "icyx":
+                return false;
+            case "https":
+            case "icyxs":
+                return true;
+            default:
+                throw new IllegalArgumentException("Unsupported scheme: " + uri.getScheme());
         }
     }
 
     /**
      * Create a {@link Session} using this MediaEndpoint.
-     *
-     * This may will connect the used {@link Server} if needed.
      *
      * @return Returns a newly created and unconnected {@link Session}.
      * @throws MalformedURLException Thrown if any error is found in the MediaEndpoint' URL.

@@ -43,7 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -235,9 +234,9 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Override
-    public @NotNull URI getStreamURI() throws MalformedURLException, URISyntaxException {
+    public @NotNull URI getStreamURI() throws IllegalArgumentException, URISyntaxException {
         final @NotNull Builder builder = baseURI.clone();
-        builder.setRawScheme(session.getMediaEndpoint().getServer().isSecure() ? "icyxs" : "icyx");
+        builder.setRawScheme(session.getMediaEndpoint().isSecure() ? "icyxs" : "icyx");
         builder.setQuery("sessionId", token);
         return builder.toURI();
     }

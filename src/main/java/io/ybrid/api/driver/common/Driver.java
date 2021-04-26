@@ -59,13 +59,13 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
         this.session = session;
     }
 
-    protected final @NotNull Builder guessPlaybackURI(@NotNull String protocol) throws MalformedURLException, URISyntaxException {
-        final @NotNull Server server = session.getMediaEndpoint().getServer();
-        final @NotNull Builder builder = new Builder(session.getMediaEndpoint().getURI());
+    protected final @NotNull Builder guessPlaybackURI(@NotNull String protocol) throws IllegalArgumentException, URISyntaxException {
+        final @NotNull MediaEndpoint mediaEndpoint = session.getMediaEndpoint();
+        final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
 
         assertConnected();
 
-        if (server.isSecure())
+        if (mediaEndpoint.isSecure())
             protocol += "s";
 
         builder.setRawScheme(protocol);
