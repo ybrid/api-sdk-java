@@ -22,6 +22,9 @@
 
 package io.ybrid.api.driver;
 
+import io.ybrid.api.util.MediaType;
+import io.ybrid.api.util.QualityMap.MediaTypeMap;
+import io.ybrid.api.util.QualityMap.Quality;
 import io.ybrid.api.util.Utils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +33,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
@@ -46,6 +48,12 @@ import java.util.logging.Logger;
 @ApiStatus.Internal
 public final class JSONRequest extends Request {
     static final Logger LOGGER = Logger.getLogger(JSONRequest.class.getName());
+    static private final @NotNull MediaTypeMap acceptableMediaTypes = new MediaTypeMap();
+
+    static {
+        acceptableMediaTypes.put(new MediaType("application/json"), Quality.MOST_ACCEPTABLE);
+        acceptableMediaTypes.put(MediaType.MEDIA_TYPE_ANY, Quality.NOT_ACCEPTABLE);
+    }
 
     private @Nullable JSONObject responseBody = null;
 
@@ -131,20 +139,7 @@ public final class JSONRequest extends Request {
         // We set this to null early, so we can just throw an exception in this method at will.
         responseBody = null;
 
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(requestMethod);
-        connection.setRequestProperty("Accept", "application/json, */*; q=0");
-        connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
-        connection.setDoInput(true);
-        connection.setDoOutput(requestBody != null);
-
-        if (requestBody != null) {
-            connection.setRequestProperty("Content-Type", requestBodyContentType);
-
-            final @NotNull OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(requestBody);
-            outputStream.close();
-        }
+        connection = (HttpURLConnection) createRequest(acceptableMediaTypes);
 
         success = connection.getResponseCode() == HttpURLConnection.HTTP_OK;
         acceptable = isAcceptable(connection);

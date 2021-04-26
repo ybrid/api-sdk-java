@@ -22,13 +22,17 @@
 
 package io.ybrid.api.driver;
 
+import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -118,5 +122,30 @@ abstract public class Request {
      */
     public @NotNull URL getUrl() {
         return url;
+    }
+
+    protected @NotNull URLConnection createRequest(@Nullable MediaTypeMap accepted) throws IOException {
+        final @NotNull URLConnection connection = url.openConnection();
+
+        if (connection instanceof HttpURLConnection) {
+            ((HttpURLConnection) connection).setRequestMethod(requestMethod);
+        }
+
+        if (accepted != null)
+            connection.setRequestProperty("Accept", accepted.toHTTPHeaderLikeString());
+
+        connection.setRequestProperty("Accept-Charset", "utf-8, *; q=0");
+        connection.setDoInput(true);
+        connection.setDoOutput(requestBody != null);
+
+        if (requestBody != null) {
+            connection.setRequestProperty("Content-Type", requestBodyContentType);
+
+            final @NotNull OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(requestBody);
+            outputStream.close();
+        }
+
+        return connection;
     }
 }
