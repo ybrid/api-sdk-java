@@ -32,6 +32,8 @@ import java.net.URLConnection;
 
 @ApiStatus.Internal
 public class PingRequest extends Request {
+    private static final long serialVersionUID = -6000111678816645645L;
+
     public PingRequest(@NotNull URL url) {
         super(url, "GET");
     }

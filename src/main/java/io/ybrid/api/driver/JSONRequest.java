@@ -47,6 +47,7 @@ import java.util.logging.Logger;
  */
 @ApiStatus.Internal
 public final class JSONRequest extends Request {
+    static private final long serialVersionUID = -7211568165710281552L;
     static final Logger LOGGER = Logger.getLogger(JSONRequest.class.getName());
     static private final @NotNull MediaTypeMap acceptableMediaTypes = new MediaTypeMap();
 

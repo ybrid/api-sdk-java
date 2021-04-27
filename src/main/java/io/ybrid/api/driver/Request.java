@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -38,7 +39,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 @ApiStatus.Internal
-abstract public class Request {
+abstract public class Request implements Serializable {
+    static private final long serialVersionUID = 5427230184745202352L;
     static private final Logger LOGGER = Logger.getLogger(Request.class.getName());
     static private final int TIMEOUT = 3*1000;
 
