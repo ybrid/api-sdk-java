@@ -36,6 +36,10 @@ import java.time.Duration;
  */
 public enum GenericCommand implements Command<GenericCommand> {
     /**
+     * No-operation.
+     */
+    NOOP(new Class[0][0]),
+    /**
      * Sleeps for a given {@link Duration}.
      */
     SLEEP(new Class[][]{new Class[]{Duration.class}}),
@@ -79,12 +83,20 @@ public enum GenericCommand implements Command<GenericCommand> {
             return;
         }
 
+        if (arguments != null && arguments.length == 0 && validArguments.length == 0)
+            return;
+
         throw new IllegalArgumentException();
     }
 
     @ApiStatus.Internal
     public static Transaction createTransaction(@NotNull Request<GenericCommand> request) {
         switch (request.getCommand()) {
+            case NOOP:
+                return new RequestBasedTransaction<Request<GenericCommand>>(request) {
+                    @Override
+                    protected void execute() {}
+                };
             case SLEEP:
                 return new RequestBasedTransaction<Request<GenericCommand>>(request) {
                     @Override
