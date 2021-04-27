@@ -22,11 +22,13 @@
 
 package io.ybrid.api.transaction;
 
+import io.ybrid.api.driver.PingRequest;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.time.Duration;
 
 /**
@@ -36,7 +38,11 @@ public enum GenericCommand implements Command<GenericCommand> {
     /**
      * Sleeps for a given {@link Duration}.
      */
-    SLEEP(new Class[][]{new Class[]{Duration.class}});
+    SLEEP(new Class[][]{new Class[]{Duration.class}}),
+    /**
+     * Pings a URI by fetching it (ignoring any returned response).
+     */
+    PING_REQUEST(new Class[][]{new Class[]{URI.class}});
 
     private final @NotNull Class<? extends Serializable>[][] validArguments;
 
@@ -84,6 +90,14 @@ public enum GenericCommand implements Command<GenericCommand> {
                     @Override
                     protected void execute() throws Throwable {
                         Thread.sleep(((Duration)getRequest().getArgumentNotNull(0)).toMillis());
+                    }
+                };
+            case PING_REQUEST:
+                return new RequestBasedTransaction<Request<GenericCommand>>(request) {
+                    @Override
+                    protected void execute() throws Throwable {
+                        final @NotNull URI uri = (URI) getRequest().getArgumentNotNull(0);
+                        PingRequest.perform(uri);
                     }
                 };
             default:
