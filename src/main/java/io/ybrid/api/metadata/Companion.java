@@ -22,10 +22,10 @@
 
 package io.ybrid.api.metadata;
 
-import org.jetbrains.annotations.ApiStatus;
+import io.ybrid.api.transaction.GenericCommand;
+import io.ybrid.api.transaction.Request;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -34,17 +34,6 @@ import java.net.URI;
  * Companions are visual elements to be displayed alongside Items that are currently playing.
  */
 public interface Companion {
-    /**
-     * This should be called once the Companion was rendered.
-     * This "pings" the {@link URI} as it would be returned by {@link #getOnViewURI()}.
-     * This will do nothing if no URI is set. Therefore it is safe to always call this.
-     *
-     * @throws IOException Thrown if there are any I/O-Errors.
-     * @see #getOnViewURI()
-     */
-    @ApiStatus.Experimental
-    void onView() throws IOException;
-
     /**
      * Returns an text that should be used as alternative to the image. It may be displayed while the image
      * is still loading of after loading failed. It can also be displayed if a graphical representation is not
@@ -88,7 +77,23 @@ public interface Companion {
      * Returns the URI that should be contacted once the Companion is viewed.
      *
      * @return Returns the URI to be called when the companion is viewed.
-     * @see #onView()
+     * @see #createOnViewRequest()
      */
     @Nullable URI getOnViewURI();
+
+    /**
+     * This creates a {@link Request} to be ran once the Companion was rendered.
+     * This "pings" the {@link URI} as it would be returned by {@link #getOnViewURI()}.
+     * This will do nothing if no URI is set. Therefore it is safe to always call this.
+     *
+     * @see #getOnViewURI()
+     */
+    default Request<?> createOnViewRequest() {
+        final @Nullable URI uri = getOnViewURI();
+        if (uri == null) {
+            return GenericCommand.NOOP.makeRequest();
+        } else {
+            return GenericCommand.PING_REQUEST.makeRequest(uri);
+        }
+    }
 }

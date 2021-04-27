@@ -39,13 +39,6 @@ public class Companion implements io.ybrid.api.metadata.Companion {
     protected @Nullable URI onView;
 
     @Override
-    public void onView() throws IOException {
-        if (onView != null) {
-            PingRequest.perform(onView);
-        }
-    }
-
-    @Override
     public @Nullable String getAlternativeText() {
         return alternativeText;
     }
