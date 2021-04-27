@@ -29,6 +29,7 @@ import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.player.Control;
 import io.ybrid.api.session.Command;
+import io.ybrid.api.transaction.GenericCommand;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.SessionTransaction;
 import io.ybrid.api.transaction.Transaction;
@@ -122,11 +123,16 @@ public final class Session implements Connectable, KnowsSubInfoState {
      */
     @Contract("_ -> new")
     public @NotNull Transaction createTransaction(@NotNull Request<?> request) {
-        if (request.getCommand() instanceof Command) {
+        final @NotNull io.ybrid.api.transaction.Command<?> command = request.getCommand();
+
+        if (command instanceof Command) {
             //noinspection unchecked
             return new SessionTransaction(this, (Request<Command>) request, this::executeSessionTransaction);
-        } else if (request.getCommand() instanceof io.ybrid.api.player.Command) {
+        } else if (command instanceof io.ybrid.api.player.Command) {
             return createPlayerTransaction(request);
+        } else if (command instanceof GenericCommand) {
+            //noinspection unchecked
+            return GenericCommand.createTransaction((Request<GenericCommand>) request);
         } else {
             throw new IllegalArgumentException("Unsupported request: " + request);
         }
