@@ -34,6 +34,11 @@ import java.net.URLConnection;
 public class PingRequest extends Request {
     private static final long serialVersionUID = -6000111678816645645L;
 
+    @SuppressWarnings("unused")
+    public PingRequest(@NotNull Request request) {
+        super(request);
+    }
+
     public PingRequest(@NotNull URL url) {
         super(url, "GET");
     }

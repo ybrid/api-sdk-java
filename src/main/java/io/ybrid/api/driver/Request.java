@@ -25,6 +25,7 @@ package io.ybrid.api.driver;
 import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import io.ybrid.api.util.XWWWFormUrlEncodedBuilder;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +58,18 @@ abstract public class Request implements Serializable {
      * @return Returns whether the request was successful or not.
      */
     abstract public boolean perform() throws IOException;
+
+    /**
+     * Copy constructor.
+     * Copy constructors based on this class SHOULD only copy parameters not results.
+     * This way the copy constructor can be used to get a "clean" copy (in contrast to clone() that will
+     * copy all of the state).
+     * @param request The request to copy.
+     */
+    @Contract(pure = true)
+    public Request(@NotNull Request request) {
+        this(request.url, request.requestMethod, request.requestBodyContentType, request.requestBody);
+    }
 
     /**
      * Creates a new Request.

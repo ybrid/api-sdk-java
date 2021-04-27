@@ -77,6 +77,11 @@ public final class JSONRequest extends Request {
         return false;
     }
 
+    @SuppressWarnings("unused")
+    public JSONRequest(@NotNull Request request) {
+        super(request);
+    }
+
     /**
      * Creates a new JSON request without a request body.
      *
