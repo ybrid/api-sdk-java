@@ -32,10 +32,6 @@ import java.net.URLConnection;
 
 @ApiStatus.Internal
 public class PingRequest extends Request {
-    public PingRequest(@NotNull URL url, @NotNull String requestMethod) throws IllegalArgumentException {
-        super(url, requestMethod);
-    }
-
     public PingRequest(@NotNull URL url) {
         super(url, "GET");
     }
@@ -46,11 +42,6 @@ public class PingRequest extends Request {
         connection.connect();
         connection.getInputStream().close();
         return true;
-    }
-
-    static public boolean perform(@NotNull URL url) throws IOException {
-        final @NotNull PingRequest request = new PingRequest(url);
-        return request.perform();
     }
 
     static public boolean perform(@NotNull URI uri) throws IOException {

@@ -77,31 +77,6 @@ public final class JSONRequest extends Request {
     }
 
     /**
-     * Creates a new JSON request.
-     *
-     * @param url URL to request.
-     * @param requestMethod Request method to be used if protocol uses HTTP-style methods.
-     * @param requestBodyContentType Content-type of the request body or null.
-     * @param requestBody Request body or null.
-     */
-    public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable String requestBodyContentType, byte[] requestBody) throws IllegalArgumentException {
-        super(url, requestMethod, requestBodyContentType, requestBody);
-    }
-
-    /**
-     * Creates a new JSON request using a {@link String} as request body.
-     * The String is sent encoded as UTF-8. The {@code requestBodyContentType} parameter must reflect this.
-     *
-     * @param url URL to request.
-     * @param requestMethod Request method to be used if protocol uses HTTP-style methods.
-     * @param requestBodyContentType Content-type of the request body or null.
-     * @param requestBody Request body or null.
-     */
-    public JSONRequest(@NotNull URL url, @NotNull String requestMethod, @Nullable String requestBodyContentType, @Nullable String requestBody) throws IllegalArgumentException {
-        super(url, requestMethod, requestBodyContentType, requestBody);
-    }
-
-    /**
      * Creates a new JSON request without a request body.
      *
      * @param url URL to request.
