@@ -55,7 +55,7 @@ public final class JSONRequest extends Request {
         acceptableMediaTypes.put(MediaType.MEDIA_TYPE_ANY, Quality.NOT_ACCEPTABLE);
     }
 
-    private @Nullable JSONObject responseBody = null;
+    private @Nullable String responseBody = null;
 
     @SuppressWarnings("RedundantIfStatement")
     private static boolean isAcceptable(@NotNull HttpURLConnection connection) {
@@ -127,7 +127,7 @@ public final class JSONRequest extends Request {
                 inputStream = connection.getErrorStream();
             }
 
-            responseBody = Utils.slurpToJSONObject(inputStream);
+            responseBody = Utils.slurpToString(inputStream);
             inputStream.close();
         }
 
@@ -141,6 +141,6 @@ public final class JSONRequest extends Request {
      * @return The response or null.
      */
     public synchronized @Nullable JSONObject getResponseBody() {
-        return responseBody;
+        return Utils.transform(responseBody, JSONObject::new);
     }
 }

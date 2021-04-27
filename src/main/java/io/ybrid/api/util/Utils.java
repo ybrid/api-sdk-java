@@ -26,7 +26,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,19 +76,6 @@ public final class Utils {
     public static byte[] slurpToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream result = slurp(inputStream);
         return result.toByteArray();
-    }
-
-    /**
-     * Slurps a {@link InputStream} into {@link JSONObject}.
-     * The encoding is expected to be UTF-8.
-     *
-     * @param inputStream The input stream to slurp.
-     * @return The content of the input stream as {@link JSONObject}.
-     * @throws IOException Thrown on I/O-Error on the {@code inputStream}.
-     */
-    @ApiStatus.Internal
-    public static JSONObject slurpToJSONObject(InputStream inputStream) throws IOException {
-        return new JSONObject(slurpToString(inputStream));
     }
 
     /**
