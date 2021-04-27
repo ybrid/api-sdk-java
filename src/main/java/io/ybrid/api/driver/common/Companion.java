@@ -22,13 +22,12 @@
 
 package io.ybrid.api.driver.common;
 
+import io.ybrid.api.driver.PingRequest;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLConnection;
 
 public class Companion implements io.ybrid.api.metadata.Companion {
     protected @Nullable String alternativeText;
@@ -42,11 +41,7 @@ public class Companion implements io.ybrid.api.metadata.Companion {
     @Override
     public void onView() throws IOException {
         if (onView != null) {
-            final @NotNull URLConnection connection = onView.toURL().openConnection();
-            connection.setDoInput(true);
-            connection.setDoOutput(false);
-            connection.connect();
-            connection.getInputStream().close();
+            PingRequest.perform(onView);
         }
     }
 
