@@ -256,7 +256,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
 
     @Override
     public void connect() throws IOException {
-        final @NotNull Transaction transaction = createTransaction((Request<?>) Command.CONNECT.makeRequest());
+        final @NotNull Transaction transaction = createTransaction(Command.CONNECT.makeRequest());
         final @Nullable Throwable error;
 
         transaction.run();
@@ -274,7 +274,7 @@ public final class Session implements Connectable, KnowsSubInfoState {
     @Override
     public void disconnect() {
         try {
-            createTransaction((Request<?>) Command.DISCONNECT.makeRequest()).run();
+            createTransaction(Command.DISCONNECT.makeRequest()).run();
         } catch (Exception e) {
             e.printStackTrace();
         }
