@@ -41,7 +41,7 @@ import java.util.Locale;
 public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     private final @NotNull WorkaroundMap workarounds = new WorkaroundMap();
     private final @NotNull URI uri;
-    private @Nullable ApiVersion apiVersion = null;
+    private @Nullable MediaProtocol mediaProtocol = null;
     private @Nullable LanguageMap acceptedLanguages = null;
 
     /**
@@ -112,13 +112,13 @@ public final class MediaEndpoint implements ApiUser, hasAcceptedLanguages {
     }
 
     @Override
-    public void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException {
-        this.apiVersion = version;
+    public void forceMediaProtocol(@Nullable MediaProtocol version) throws IllegalArgumentException, IllegalStateException {
+        this.mediaProtocol = version;
     }
 
     @Override
-    public @Nullable ApiVersion getForcedApiVersion() {
-        return apiVersion;
+    public @Nullable MediaProtocol getForcedMediaProtocol() {
+        return mediaProtocol;
     }
 
     @Override

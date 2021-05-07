@@ -31,20 +31,20 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface ApiUser {
     /**
-     * Sets the {@link ApiVersion} to use.
+     * Sets the {@link MediaProtocol} to use.
      * @param version The version to use.
      * @throws IllegalArgumentException Thrown if the argument is unsupported in any way.
      * @throws IllegalStateException Thrown if the object is in the wrong state to change the version. Such as the object is already connected.
      */
-    void forceApiVersion(@Nullable ApiVersion version) throws IllegalArgumentException, IllegalStateException;
+    void forceMediaProtocol(@Nullable MediaProtocol version) throws IllegalArgumentException, IllegalStateException;
 
     /**
-     * Returns the {@link ApiVersion} that is currently set to forced mode.
-     * @return The {@link ApiVersion} or null if none is set.
+     * Returns the {@link MediaProtocol} that is currently set to forced mode.
+     * @return The {@link MediaProtocol} or null if none is set.
      */
     @Nullable
     @Contract(pure = true)
-    ApiVersion getForcedApiVersion();
+    MediaProtocol getForcedMediaProtocol();
 
     /**
      * Gets the used map of workarounds.

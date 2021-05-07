@@ -51,15 +51,15 @@ public final class DriverSelector {
 
     @ApiStatus.Internal
     private static final class Result {
-        final public @NotNull EnumSet<ApiVersion> set;
+        final public @NotNull EnumSet<MediaProtocol> set;
         final public @NotNull String method;
 
-        public Result(@NotNull EnumSet<ApiVersion> set, @NotNull String method) {
+        public Result(@NotNull EnumSet<MediaProtocol> set, @NotNull String method) {
             this.set = set;
             this.method = method;
         }
 
-        private boolean can(@NotNull ApiVersion version) {
+        private boolean can(@NotNull MediaProtocol version) {
             return set.contains(version);
         }
     }
@@ -80,24 +80,24 @@ public final class DriverSelector {
                     " = " + result.set + " by " + result.method);
         }
 
-        if (result.can(ApiVersion.YBRID_V2_BETA))
+        if (result.can(MediaProtocol.YBRID_V2_BETA))
             return new io.ybrid.api.driver.ybrid.v2.Driver(session);
 
-        if (result.can(ApiVersion.YBRID_V1))
+        if (result.can(MediaProtocol.YBRID_V1))
             return new io.ybrid.api.driver.ybrid.v1.Driver(session);
 
-        if (result.can(ApiVersion.ICY) || result.can(ApiVersion.ICECAST_V2_4) || result.can(ApiVersion.ICECAST_V2_5_BETA))
+        if (result.can(MediaProtocol.ICY) || result.can(MediaProtocol.ICECAST_V2_4) || result.can(MediaProtocol.ICECAST_V2_5_BETA))
             return new io.ybrid.api.driver.icy.Driver(session);
 
-        if (result.can(ApiVersion.PLAIN))
+        if (result.can(MediaProtocol.PLAIN))
             return new io.ybrid.api.driver.plain.Driver(session);
 
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
     private static Result getSupportedVersions(@NotNull MediaEndpoint mediaEndpoint) {
-        if (mediaEndpoint.getForcedApiVersion() != null) {
-            return new Result(EnumSet.of(mediaEndpoint.getForcedApiVersion()), "force on MediaEndpoint");
+        if (mediaEndpoint.getForcedMediaProtocol() != null) {
+            return new Result(EnumSet.of(mediaEndpoint.getForcedMediaProtocol()), "force on MediaEndpoint");
         }
 
         try {
@@ -111,22 +111,22 @@ public final class DriverSelector {
         }
 
         if (mediaEndpoint.getWorkarounds().get(Workaround.WORKAROUND_GUESS_ICY).equals(TriState.TRUE))
-            return new Result(EnumSet.of(ApiVersion.ICY), "using default");
+            return new Result(EnumSet.of(MediaProtocol.ICY), "using default");
 
         // Best guess:
-        return new Result(EnumSet.of(ApiVersion.PLAIN), "using default");
+        return new Result(EnumSet.of(MediaProtocol.PLAIN), "using default");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromOptions(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+    private static EnumSet<MediaProtocol> getSupportedVersionsFromOptions(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
         return getSupportedVersionsFromYbridV2Server(mediaEndpoint, null, "OPTIONS");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+    private static EnumSet<MediaProtocol> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
         return getSupportedVersionsFromYbridV2Server(mediaEndpoint, new Path("/ctrl/v2/session/info"), "GET");
     }
 
-    private static EnumSet<ApiVersion> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method) throws IOException, URISyntaxException {
-        final EnumSet<ApiVersion> ret = EnumSet.noneOf(ApiVersion.class);
+    private static EnumSet<MediaProtocol> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method) throws IOException, URISyntaxException {
+        final EnumSet<MediaProtocol> ret = EnumSet.noneOf(MediaProtocol.class);
         final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
         final @NotNull JSONRequest request;
         JSONArray supportedVersions;
@@ -139,7 +139,7 @@ public final class DriverSelector {
 
         supportedVersions = Objects.requireNonNull(request.getResponseBody()).getJSONObject("__responseHeader").getJSONArray("supportedVersions");
         for (int i = 0; i < supportedVersions.length(); i++) {
-            ret.add(ApiVersion.fromWire(supportedVersions.getString(i)));
+            ret.add(MediaProtocol.fromWire(supportedVersions.getString(i)));
         }
 
         return ret;

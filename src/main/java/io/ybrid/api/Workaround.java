@@ -58,7 +58,7 @@ public enum Workaround {
      */
     WORKAROUND_INVALID_PLAYBACK_URI,
     /**
-     * Workaround used to force failed {@link ApiVersion} detection to assume {@link ApiVersion#ICY}.
+     * Workaround used to force failed {@link MediaProtocol} detection to assume {@link MediaProtocol#ICY}.
      */
     WORKAROUND_GUESS_ICY;
 }

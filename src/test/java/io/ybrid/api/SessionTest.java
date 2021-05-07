@@ -68,7 +68,7 @@ public class SessionTest {
         final @NotNull Transaction transaction;
         final @Nullable Throwable error;
 
-        mediaEndpoint.forceApiVersion(ApiVersion.PLAIN);
+        mediaEndpoint.forceMediaProtocol(MediaProtocol.PLAIN);
 
         session = mediaEndpoint.createSession();
         session.connect();

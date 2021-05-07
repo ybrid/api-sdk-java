@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * This enum is used to identify a specific version of the Ybrid® API.
  */
-public enum ApiVersion {
+public enum MediaProtocol {
     /**
      * Plain stream, e.g. HTTP. With no additional controls.
      */
@@ -62,7 +62,7 @@ public enum ApiVersion {
      * @return The corresponding enum value.
      */
     @ApiStatus.Internal
-    public static ApiVersion fromWire(@NotNull String input) {
+    public static MediaProtocol fromWire(@NotNull String input) {
         switch (input) {
             case "v1":
                 return YBRID_V1;
