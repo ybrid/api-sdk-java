@@ -64,5 +64,9 @@ public enum Capability {
     /**
      * The {@link Session} supports skipping backwards to the previous {@link Item}.
      */
-    SKIP_BACKWARDS;
+    SKIP_BACKWARDS,
+    /**
+     * The {@link Session} supports pausing.
+     */
+    PAUSE;
 }
