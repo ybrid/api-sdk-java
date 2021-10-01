@@ -52,7 +52,8 @@ public final class JSONRequest extends Request {
     static private final @NotNull MediaTypeMap acceptableMediaTypes = new MediaTypeMap();
 
     static {
-        acceptableMediaTypes.put(new MediaType("application/json"), Quality.MOST_ACCEPTABLE);
+        acceptableMediaTypes.put(new MediaType("application/vnd.nacamar.ybrid+json; version=v2"), Quality.MOST_ACCEPTABLE);
+        acceptableMediaTypes.put(new MediaType("application/json"), Quality.LEAST_ACCEPTABLE);
         acceptableMediaTypes.put(MediaType.MEDIA_TYPE_ANY, Quality.NOT_ACCEPTABLE);
     }
 
@@ -66,6 +67,12 @@ public final class JSONRequest extends Request {
             return false;
 
         contentType = contentType.toLowerCase(Locale.ROOT);
+
+        if (contentType.equals("application/vnd.nacamar.ybrid+json; version=v2"))
+            return true;
+
+        if (contentType.equals("application/vnd.nacamar.ybrid+json"))
+            return true;
 
         // No charset given, so we guess it's UTF-8.
         if (contentType.equals("application/json"))
