@@ -23,7 +23,6 @@
 package io.ybrid.api;
 
 import io.ybrid.api.session.Command;
-import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.Transaction;
 import io.ybrid.api.transport.ServiceTransportDescription;
 import io.ybrid.api.transport.ServiceURITransportDescription;

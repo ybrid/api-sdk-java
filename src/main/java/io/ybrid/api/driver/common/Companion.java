@@ -22,11 +22,9 @@
 
 package io.ybrid.api.driver.common;
 
-import io.ybrid.api.driver.PingRequest;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.net.URI;
 
 public class Companion implements io.ybrid.api.metadata.Companion {
