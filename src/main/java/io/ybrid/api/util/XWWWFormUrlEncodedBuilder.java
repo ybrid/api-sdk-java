@@ -70,7 +70,7 @@ public class XWWWFormUrlEncodedBuilder implements MessageBody {
      * @param entry The entry to append.
      * @see #append(String, Object)
      */
-    public void append(Map.Entry<@NotNull String, @Nullable ?> entry) {
+    public void append(Map.Entry<@NotNull String, ?> entry) {
         append(entry.getKey(), entry.getValue());
     }
 
@@ -98,8 +98,8 @@ public class XWWWFormUrlEncodedBuilder implements MessageBody {
      * This is the same as calling {@link #append(Map.Entry)} for each entry.
      * @param map The map to add.
      */
-    public void append(@NotNull Map<@NotNull String, @Nullable ?> map) {
-        for (Map.Entry<@NotNull String, @Nullable ?> entry : map.entrySet())
+    public void append(@NotNull Map<@NotNull String, ?> map) {
+        for (Map.Entry<@NotNull String, ?> entry : map.entrySet())
             append(entry);
     }
 
@@ -111,11 +111,11 @@ public class XWWWFormUrlEncodedBuilder implements MessageBody {
      * @param map The map to add.
      * @param prefix The prefix to use or {@code null}.
      */
-    public void append(@NotNull Map<@NotNull String, @Nullable ?> map, @Nullable String prefix) {
+    public void append(@NotNull Map<@NotNull String, ?> map, @Nullable String prefix) {
         if (prefix == null) {
             append(map);
         } else {
-            for (Map.Entry<@NotNull String, @Nullable ?> entry : map.entrySet())
+            for (Map.Entry<@NotNull String, ?> entry : map.entrySet())
                 append(prefix + entry.getKey(), entry.getValue());
         }
     }

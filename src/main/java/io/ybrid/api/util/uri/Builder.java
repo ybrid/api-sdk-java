@@ -257,7 +257,7 @@ public final class Builder implements Cloneable {
         this.query = builder.toString();
     }
 
-    public void setQuery(@NotNull Map<@NotNull String, @Nullable ?> map) {
+    public void setQuery(@NotNull Map<@NotNull String, ?> map) {
         final @NotNull XWWWFormUrlEncodedBuilder builder = new XWWWFormUrlEncodedBuilder();
         builder.append(map);
         setQuery(builder);

@@ -183,7 +183,7 @@ public class QualityMap<T> {
      * @param values The map to add the values from.
      */
     public void putAll(@NotNull QualityMap<? extends T> values) {
-        for (final @NotNull Map.Entry<@NotNull ? extends T, @NotNull Quality> entry : values.entrySet()) {
+        for (final @NotNull Map.Entry<? extends T, @NotNull Quality> entry : values.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -197,7 +197,7 @@ public class QualityMap<T> {
      * @param values The map to add the values from.
      */
     public void putAll(@NotNull Map<? extends T, ?> values) {
-        for (final @NotNull Map.Entry<@NotNull ? extends T, @NotNull ?> entry : values.entrySet()) {
+        for (final @NotNull Map.Entry<? extends T, ?> entry : values.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }

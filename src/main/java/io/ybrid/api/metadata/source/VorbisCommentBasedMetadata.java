@@ -82,7 +82,7 @@ public class VorbisCommentBasedMetadata implements SourceTrackMetadata, BasicTra
         this.vendor = vendor;
         this.source = source;
 
-        for (final @NotNull Map.Entry<@NotNull String, @NotNull ? extends Collection<String>> entry : comments.entrySet()) {
+        for (final @NotNull Map.Entry<@NotNull String, ? extends Collection<String>> entry : comments.entrySet()) {
             final @NotNull String key = entry.getKey().toUpperCase(Locale.ROOT);
             assertValidKey(key);
             this.comments.put(key, new ArrayList<>(entry.getValue()));
