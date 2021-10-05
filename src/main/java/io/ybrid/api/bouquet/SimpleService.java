@@ -43,7 +43,7 @@ public class SimpleService implements Service {
     }
 
     public SimpleService(@NotNull String displayName, @NotNull Identifier identifier) {
-        this(displayName, identifier, (URI)null, null);
+        this(displayName, identifier, null, null);
     }
 
     public SimpleService() {

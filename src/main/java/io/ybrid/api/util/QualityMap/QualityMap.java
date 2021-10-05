@@ -136,7 +136,7 @@ public class QualityMap<T> {
         for (final @NotNull Map.Entry<@NotNull T, @NotNull Quality> entry : map.entrySet()) {
             if (ret.length() > 0)
                 ret.append(", ");
-            ret.append(entry.getKey().toString()).append("; q=").append(entry.getValue().toString());
+            ret.append(entry.getKey()).append("; q=").append(entry.getValue());
         }
 
         return ret.toString();

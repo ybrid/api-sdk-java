@@ -62,7 +62,7 @@ final class Item extends SimpleItem {
                 if (type.startsWith("_"))
                     level = Level.WARNING;
 
-                LOGGER.log(level, "Unrecognized value for type: " + type + ": " + e.toString());
+                LOGGER.log(level, "Unrecognized value for type: " + type + ": " + e);
                 this.type = null;
             }
         }

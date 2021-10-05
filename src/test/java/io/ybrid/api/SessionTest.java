@@ -52,7 +52,7 @@ public class SessionTest {
             session.connect();
 
             session.attachPlayer(newTransportDescription -> transportDescription[0] = newTransportDescription);
-            session.createTransaction((Request<?>) Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
+            session.createTransaction(Command.CONNECT_INITIAL_TRANSPORT.makeRequest()).run();
             assertNotNull(transportDescription[0]);
 
             session.close();

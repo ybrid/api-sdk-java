@@ -128,7 +128,7 @@ public class BuilderTest {
                     throw e;
                 }
 
-                System.out.println("builder.toString() = " + builder.toString());
+                System.out.println("builder.toString() = " + builder);
                 System.out.println("builder.toURIString() = " + builder.toURIString());
 
                 assertEquals(validVector.scheme, builder.getRawScheme());
