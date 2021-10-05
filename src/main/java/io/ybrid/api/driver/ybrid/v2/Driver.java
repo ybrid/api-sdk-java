@@ -133,7 +133,7 @@ final public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Nullable
-    protected Response v2request(@NotNull Path command, @Nullable Map<String, String> parameters) throws IOException {
+    private Response v2request(@NotNull Path command, @Nullable Map<String, String> parameters) throws IOException {
         Response response = null;
 
         if (token != null) {
@@ -170,11 +170,11 @@ final public class Driver extends io.ybrid.api.driver.common.Driver {
     }
 
     @Nullable
-    protected Response v2request(@NotNull Path command) throws IOException {
+    private Response v2request(@NotNull Path command) throws IOException {
         return v2request(command, null);
     }
 
-    protected boolean shouldRequestSessionInfo(@NotNull SubInfo what) {
+    private boolean shouldRequestSessionInfo(@NotNull SubInfo what) {
         Instant lastUpdate;
 
         assertConnected();

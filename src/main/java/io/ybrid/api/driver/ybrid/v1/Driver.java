@@ -78,7 +78,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         setChanged(SubInfo.METADATA);
     }
 
-    protected JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
+    private JSONObject request(@NotNull String command, @Nullable Map<String, String> parameters) throws IOException {
         final @NotNull Builder builder = baseURI.clone();
 
         try {
@@ -100,7 +100,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
         return request(builder.toURL(), parameters);
     }
 
-    protected JSONObject request(@NotNull String command) throws IOException {
+    private JSONObject request(@NotNull String command) throws IOException {
         return request(command, null);
     }
 

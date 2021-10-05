@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 final class Item extends SimpleItem {
     static final Logger LOGGER = Logger.getLogger(Item.class.getName());
-    protected static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
+    private static final String[] metadataList = {METADATA_ARTIST, METADATA_DESCRIPTION, METADATA_TITLE};
 
 
     Item(@NotNull JSONObject json) throws URISyntaxException {
