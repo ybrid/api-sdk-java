@@ -34,6 +34,7 @@ import java.net.URL;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("HttpUrlsUsage")
 public class BuilderTest {
     private static abstract class Vector {
         public final @NotNull String uri;

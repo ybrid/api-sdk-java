@@ -159,6 +159,7 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
         }
     }
 
+    @SuppressWarnings("EmptyMethod")
     public void acceptSessionSpecific(@NotNull SourceMetadata sourceMetadata) {
         // no-op
     }
