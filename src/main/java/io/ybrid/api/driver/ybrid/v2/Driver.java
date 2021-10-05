@@ -275,16 +275,7 @@ final public class Driver extends io.ybrid.api.driver.common.Driver {
                 v2request(COMMAND_PLAYOUT_WIND, parameters);
                 break;
             }
-            case SKIP_FORWARD: {
-                HashMap<String, String> parameters = new HashMap<>();
-                final @Nullable ItemType itemType = (ItemType) request.getArgumentNullable(0);
-
-                if (itemType != null) {
-                    parameters.put("item-type", itemType.name());
-                }
-                v2request(COMMAND_PLAYOUT_SKIP_FORWARDS, parameters);
-                break;
-            }
+            case SKIP_FORWARD:
             case SKIP_BACKWARD: {
                 HashMap<String, String> parameters = new HashMap<>();
                 final @Nullable ItemType itemType = (ItemType) request.getArgumentNullable(0);
@@ -292,7 +283,7 @@ final public class Driver extends io.ybrid.api.driver.common.Driver {
                 if (itemType != null) {
                     parameters.put("item-type", itemType.name());
                 }
-                v2request(COMMAND_PLAYOUT_SKIP_BACKWARDS, parameters);
+                v2request(request.getCommand() == Command.SKIP_FORWARD ? COMMAND_PLAYOUT_SKIP_FORWARDS : COMMAND_PLAYOUT_SKIP_BACKWARDS, parameters);
                 break;
             }
             case SWAP_ITEM: {
