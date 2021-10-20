@@ -29,7 +29,6 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.Identifier;
-import io.ybrid.api.util.hasIdentifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -166,12 +165,5 @@ public enum Command implements io.ybrid.api.transaction.Command<Command> {
         if (argument instanceof Service)
             argument = ((Service) argument).getIdentifier();
         return io.ybrid.api.transaction.Command.super.makeRequest(argument);
-    }
-
-    @ApiStatus.Experimental
-    public @NotNull Request<Command> makeRequest(@Nullable hasIdentifier argument) {
-        if (argument instanceof Serializable || argument == null)
-            return makeRequest((Serializable) argument);
-        return makeRequest(Objects.requireNonNull(argument).getIdentifier());
     }
 }
