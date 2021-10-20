@@ -40,8 +40,8 @@ import java.net.URISyntaxException;
 public class Driver extends io.ybrid.api.driver.common.Driver {
     private final @NotNull PlayoutInfo playoutInfo = new PlayoutInfo();
 
-    public Driver(Session session) {
-        super(session);
+    public Driver(Session session, @NotNull URI baseURI) {
+        super(session, baseURI);
         this.currentService = new SimpleService();
         setChanged(SubInfo.CAPABILITIES);
         setChanged(SubInfo.BOUQUET);

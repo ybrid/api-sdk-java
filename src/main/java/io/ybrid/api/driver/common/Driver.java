@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
@@ -48,6 +49,7 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     static final Logger LOGGER = Logger.getLogger(Driver.class.getName());
 
     protected final Session session;
+    protected final @NotNull URI baseURI;
     protected final CapabilitySet capabilities = new CapabilitySet();
     private final EnumSet<SubInfo> changed = EnumSet.noneOf(SubInfo.class);
     protected boolean connected = false;
@@ -55,13 +57,14 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     protected String token;
     protected Service currentService;
 
-    protected Driver(Session session) {
+    protected Driver(Session session, @NotNull URI baseURI) {
         this.session = session;
+        this.baseURI = baseURI;
     }
 
     protected final @NotNull Builder guessPlaybackURI(@NotNull String protocol) throws IllegalArgumentException, URISyntaxException {
         final @NotNull MediaEndpoint mediaEndpoint = session.getMediaEndpoint();
-        final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
+        final @NotNull Builder builder = new Builder(baseURI);
 
         assertConnected();
 

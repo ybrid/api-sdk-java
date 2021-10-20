@@ -32,8 +32,8 @@ import java.net.URISyntaxException;
 
 @ApiStatus.Internal
 public class Driver extends io.ybrid.api.driver.plain.Driver {
-    public Driver(Session session) {
-        super(session);
+    public Driver(Session session, @NotNull URI baseURI) {
+        super(session, baseURI);
     }
 
     @Override

@@ -23,17 +23,24 @@
 package io.ybrid.api.driver;
 
 
-import io.ybrid.api.*;
+import io.ybrid.api.MediaEndpoint;
+import io.ybrid.api.MediaProtocol;
+import io.ybrid.api.Session;
+import io.ybrid.api.Workaround;
 import io.ybrid.api.util.TriState;
+import io.ybrid.api.util.Utils;
 import io.ybrid.api.util.uri.Builder;
 import io.ybrid.api.util.uri.Path;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Objects;
@@ -53,10 +60,12 @@ public final class DriverSelector {
     private static final class Result {
         final public @NotNull EnumSet<MediaProtocol> set;
         final public @NotNull String method;
+        final public @Nullable URI baseURI;
 
-        public Result(@NotNull EnumSet<MediaProtocol> set, @NotNull String method) {
+        public Result(@NotNull EnumSet<MediaProtocol> set, @NotNull String method, @Nullable URI baseURI) {
             this.set = set;
             this.method = method;
+            this.baseURI = baseURI;
         }
 
         private boolean can(@NotNull MediaProtocol version) {
@@ -74,62 +83,67 @@ public final class DriverSelector {
     public static @NotNull Driver getFactory(@NotNull Session session) throws MalformedURLException {
         @NotNull MediaEndpoint mediaEndpoint = session.getMediaEndpoint();
         final @NotNull Result result = getSupportedVersions(mediaEndpoint);
+        final @NotNull URI baseURI = Objects.requireNonNull(Utils.firstOf(result.baseURI, mediaEndpoint.getURI()));
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.info("Supported versions for " + mediaEndpoint.getURI() +
-                    " = " + result.set + " by " + result.method);
+                    " = " + result.set + " by " + result.method + " with base URI " + baseURI);
         }
 
         if (result.can(MediaProtocol.YBRID_V2_BETA))
-            return new io.ybrid.api.driver.ybrid.v2.Driver(session);
+            return new io.ybrid.api.driver.ybrid.v2.Driver(session, baseURI);
 
         if (result.can(MediaProtocol.YBRID_V1))
-            return new io.ybrid.api.driver.ybrid.v1.Driver(session);
+            return new io.ybrid.api.driver.ybrid.v1.Driver(session, baseURI);
 
         if (result.can(MediaProtocol.ICY) || result.can(MediaProtocol.ICECAST_V2_4) || result.can(MediaProtocol.ICECAST_V2_5_BETA))
-            return new io.ybrid.api.driver.icy.Driver(session);
+            return new io.ybrid.api.driver.icy.Driver(session, baseURI);
 
         if (result.can(MediaProtocol.PLAIN))
-            return new io.ybrid.api.driver.plain.Driver(session);
+            return new io.ybrid.api.driver.plain.Driver(session, baseURI);
 
         throw new UnsupportedOperationException("Server and client do not share a common supported version.");
     }
 
     private static Result getSupportedVersions(@NotNull MediaEndpoint mediaEndpoint) {
         if (mediaEndpoint.getForcedMediaProtocol() != null) {
-            return new Result(EnumSet.of(mediaEndpoint.getForcedMediaProtocol()), "force on MediaEndpoint");
+            return new Result(EnumSet.of(mediaEndpoint.getForcedMediaProtocol()), "force on MediaEndpoint", null);
         }
 
         try {
-            return new Result(getSupportedVersionsFromOptions(mediaEndpoint), "OPTIONS");
+            return getSupportedVersionsFromOptions(mediaEndpoint);
         } catch (Exception ignored) {
         }
 
         try {
-            return new Result(getSupportedVersionsFromYbridV2Server(mediaEndpoint), "Ybrid v2 request");
+            return getSupportedVersionsFromYbridV2Server(mediaEndpoint);
         } catch (Exception ignored) {
         }
 
         if (mediaEndpoint.getWorkarounds().get(Workaround.WORKAROUND_GUESS_ICY).equals(TriState.TRUE))
-            return new Result(EnumSet.of(MediaProtocol.ICY), "using default");
+            return new Result(EnumSet.of(MediaProtocol.ICY), "using default", null);
 
         // Best guess:
-        return new Result(EnumSet.of(MediaProtocol.PLAIN), "using default");
+        return new Result(EnumSet.of(MediaProtocol.PLAIN), "using default", null);
     }
 
-    private static EnumSet<MediaProtocol> getSupportedVersionsFromOptions(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
-        return getSupportedVersionsFromYbridV2Server(mediaEndpoint, null, "OPTIONS");
+    @Contract("_ -> new")
+    private static @NotNull Result getSupportedVersionsFromOptions(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+        return getSupportedVersionsFromYbridV2Server(mediaEndpoint, null, "OPTIONS", "OPTIONS");
     }
 
-    private static EnumSet<MediaProtocol> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
-        return getSupportedVersionsFromYbridV2Server(mediaEndpoint, new Path("/ctrl/v2/session/info"), "GET");
+    @Contract("_ -> new")
+    private static @NotNull Result getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint) throws IOException, URISyntaxException {
+        return getSupportedVersionsFromYbridV2Server(mediaEndpoint, new Path("/ctrl/v2/session/info"), "GET", "Ybrid v2 request");
     }
 
-    private static EnumSet<MediaProtocol> getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method) throws IOException, URISyntaxException {
+    @Contract("_, _, _, _ -> new")
+    private static @NotNull Result getSupportedVersionsFromYbridV2Server(@NotNull MediaEndpoint mediaEndpoint, @Nullable Path pathSuffix, @NotNull String method, @NotNull String resultMethod) throws IOException, URISyntaxException {
         final EnumSet<MediaProtocol> ret = EnumSet.noneOf(MediaProtocol.class);
         final @NotNull Builder builder = new Builder(mediaEndpoint.getURI());
         final @NotNull JSONRequest request;
-        JSONArray supportedVersions;
+        final @NotNull JSONArray supportedVersions;
+        @Nullable URI baseURI = null;
 
         if (pathSuffix != null)
             builder.appendPath(pathSuffix);
@@ -142,6 +156,31 @@ public final class DriverSelector {
             ret.add(MediaProtocol.fromWire(supportedVersions.getString(i)));
         }
 
-        return ret;
+        try {
+            baseURI = URI.create(getBaseURI(request.getResponseBody().getJSONObject("__responseObject")));
+        } catch (Throwable ignored) {
+        }
+
+        return new Result(ret, resultMethod, baseURI);
+    }
+
+    private static @NotNull String getBaseURI(@NotNull JSONObject responseObject) {
+        if (responseObject.has("baseURI"))
+            return responseObject.getString("baseURI");
+
+        if (responseObject.has("baseURL"))
+            return responseObject.getString("baseURL");
+
+        if (responseObject.has("playout")) {
+            final @NotNull JSONObject playoutInfo = responseObject.getJSONObject("playout");
+
+            if (playoutInfo.has("baseURI"))
+                return playoutInfo.getString("baseURI");
+
+            if (playoutInfo.has("baseURL"))
+                return playoutInfo.getString("baseURL");
+        }
+
+        throw new IllegalArgumentException();
     }
 }

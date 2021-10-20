@@ -61,13 +61,13 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     private PlayoutInfo playoutInfo;
     private @NotNull Builder baseURI;
 
-    public Driver(Session session) {
-        super(session);
+    public Driver(Session session, @NotNull URI baseURI) {
+        super(session, baseURI);
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
 
         try {
-            this.baseURI = new Builder(session.getMediaEndpoint().getURI());
+            this.baseURI = new Builder(baseURI);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
