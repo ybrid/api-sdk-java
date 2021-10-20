@@ -57,7 +57,7 @@ public abstract class Driver implements io.ybrid.api.driver.Driver {
     protected String token;
     protected Service currentService;
 
-    protected Driver(Session session, @NotNull URI baseURI) {
+    protected Driver(@NotNull Session session, @NotNull URI baseURI) {
         this.session = session;
         this.baseURI = baseURI;
     }

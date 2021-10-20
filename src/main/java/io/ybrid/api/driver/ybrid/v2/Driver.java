@@ -79,7 +79,7 @@ final public class Driver extends io.ybrid.api.driver.common.Driver {
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_BAD_PACKED_RESPONSE);
     }
 
-    private URL getUrl(@NotNull Path command) throws IOException {
+    private @NotNull URL getUrl(@NotNull Path command) throws IOException {
         try {
             final @NotNull Builder builder = new Builder(state.getBaseURI());
 

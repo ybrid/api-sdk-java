@@ -345,7 +345,7 @@ final class State implements KnowsSubInfoState {
         setChanged(SubInfo.PLAYOUT);
     }
 
-    void accept(Response response) {
+    void accept(@NotNull Response response) {
         token = response.getToken();
         updateBouquet(response.getRawBouquet());
         updateMetadata(response.getRawMetadata()); // This must be after updateBouquet() has been called.

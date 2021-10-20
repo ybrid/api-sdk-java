@@ -61,7 +61,7 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     private PlayoutInfo playoutInfo;
     private @NotNull Builder baseURI;
 
-    public Driver(Session session, @NotNull URI baseURI) {
+    public Driver(@NotNull Session session, @NotNull URI baseURI) {
         super(session, baseURI);
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
