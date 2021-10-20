@@ -259,28 +259,32 @@ final class State implements KnowsSubInfoState {
         services.clear();
 
         for (int i = 0; i < list.length(); i++) {
+            final @NotNull JSONObject json = list.optJSONObject(i);
+            final @NotNull String identifier = json.getString("id");
+            @NotNull String displayName;
+            final @NotNull Service service;
+            @Nullable URI iconURI;
+
             try {
-                final @NotNull JSONObject json = list.optJSONObject(i);
-                final @NotNull String identifier = json.getString("id");
-                @NotNull String displayName;
-                final @NotNull Service service;
-
-                try {
-                    displayName = json.getString("displayName");
-                } catch (Throwable e) {
-                    if (workaroundMap.get(Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME).toBool(true)) {
-                        displayName = identifier;
-                        workaroundMap.enableIfAutomatic(Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME);
-                    } else {
-                        throw new RuntimeException("Service \"" + identifier + "\" has no displayName. Consider to enabling " + Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME, e);
-                    }
+                displayName = json.getString("displayName");
+            } catch (Throwable e) {
+                if (workaroundMap.get(Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME).toBool(true)) {
+                    displayName = identifier;
+                    workaroundMap.enableIfAutomatic(Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME);
+                } else {
+                    throw new RuntimeException("Service \"" + identifier + "\" has no displayName. Consider to enabling " + Workaround.WORKAROUND_SERVICE_WITH_NO_DISPLAY_NAME, e);
                 }
-
-                service = new SimpleService(displayName, new Identifier(identifier, SimpleService.class), jsonToURI(json, "iconURL"), null);
-
-                services.put(service.getIdentifier(), service);
-            } catch (URISyntaxException ignored) {
             }
+
+            try {
+                iconURI = jsonToURI(json, "iconURL");
+            } catch (Throwable e) {
+                iconURI = null;
+            }
+
+            service = new SimpleService(displayName, new Identifier(identifier, SimpleService.class), iconURI, null);
+
+            services.put(service.getIdentifier(), service);
         }
 
         /*
