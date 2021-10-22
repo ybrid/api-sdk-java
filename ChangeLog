@@ -1,4 +1,14 @@
 1.2.0 - UNRELEASED
+    * Removed most deprecated, and ScheduledForRemoval API
+    * Unified logic for network requests
+    * Added Command enum GenericCommand (with no-op, sleep, and ping commands).
+    * Replaced Companion.onView() with createOnViewRequest()
+    * Added interface RequestExecutor.
+    * Renamed enum ApiVersion to MediaProtocol
+    * Added Capability.PAUSE
+    * Updated Media Type logic in requests, including support for new application/vnd.nacamar.ybrid+json
+    * Added support for Base URI via OPTIONS request
+    * Updated workarounds for invalid server responses
 
 1.1.2 - 2021-04-20
     * baseURI/baseURL support in Ybrid® “v1” driver
