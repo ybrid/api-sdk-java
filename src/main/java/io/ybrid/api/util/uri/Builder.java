@@ -225,6 +225,12 @@ public final class Builder implements Cloneable {
             setRawPort(toURL().getDefaultPort());
     }
 
+    public void setPort(int port) {
+        if (port < 1 || port > 65535)
+            throw new IllegalArgumentException("Port is out of range: " + port);
+        this.port = port;
+    }
+
     public void setRawQuery(@Nullable String query) throws URISyntaxException {
         if (query != null && !VALIDATOR_QUERY.matcher(query).matches())
             throw new URISyntaxException(toURIString(), "Invalid new query: " + query);

@@ -236,7 +236,13 @@ public final class Driver extends io.ybrid.api.driver.common.Driver {
     @Override
     public @NotNull URI getStreamURI() throws IllegalArgumentException, URISyntaxException {
         final @NotNull Builder builder = baseURI.clone();
-        builder.setRawScheme(session.getMediaEndpoint().isSecure() ? "icyxs" : "icyx");
+        if (session.getMediaEndpoint().isSecure()) {
+            builder.setRawScheme("icyxs");
+            builder.setPort(443);
+        } else {
+            builder.setRawScheme("icyx");
+            builder.setPort(80);
+        }
         builder.setQuery("sessionId", token);
         return builder.toURI();
     }
