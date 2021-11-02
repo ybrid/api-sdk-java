@@ -73,6 +73,9 @@ final public class Driver extends io.ybrid.api.driver.common.Driver {
 
     public Driver(@NotNull Session session, @NotNull URI baseURI) {
         super(session, baseURI);
+
+        LOGGER.warning("Talking with experimental server at " + baseURI);
+
         state = new State(session, baseURI);
 
         session.getActiveWorkarounds().enableIfAutomatic(Workaround.WORKAROUND_POST_BODY_AS_QUERY_STRING);
