@@ -305,10 +305,20 @@ final class State implements KnowsSubInfoState {
             services.put(service.getIdentifier(), service);
         }
 
+        active = raw.getString("activeServiceId");
+        if (active == null) {
+            currentService = null;
+        } else {
+            currentService = services.get(new Identifier(active, Service.class));
+            if (currentMetadata == null) {
+                currentMetadata = new InvalidMetadata(currentService);
+            }
+        }
+
         /*
          * Check if the server provided a primary service.
-         * There is a bug in V2_BETA servers where they do not not
-         * provide the info on swaps. We try to work around this.
+         * There is a bug in V2_BETA servers of them not
+         * providing the info on swaps. We try to work around this.
          */
         if (raw.has("primaryServiceId")) {
             primary = raw.getString("primaryServiceId");
@@ -316,6 +326,20 @@ final class State implements KnowsSubInfoState {
                 defaultService = null;
             } else {
                 defaultService = services.get(new Identifier(primary, Service.class));
+
+                if (defaultService == null) {
+                    LOGGER.severe("Server provided invalid default service. Service not part of bouquet: " + primary);
+
+                    if (!workaroundMap.get(Workaround.WORKAROUND_DEFAULT_SERVICE_NOT_IN_BOUQUET).toBool(true)) {
+                        throw new IllegalStateException("Server provided invalid default service. Service not part of bouquet: " + primary);
+                    }
+
+                    if (currentService != null) {
+                        workaroundMap.enableIfAutomatic(Workaround.WORKAROUND_DEFAULT_SERVICE_NOT_IN_BOUQUET);
+                        LOGGER.warning("Assuming current service as default service: " + currentService);
+                        defaultService = currentService;
+                    }
+                }
             }
         } else {
             // No default service provided. Try to reuse the old one.
@@ -327,16 +351,6 @@ final class State implements KnowsSubInfoState {
 
             if (defaultService == null)
                 throw new IllegalStateException("Server did not provide any default service and old default service is gone");
-        }
-
-        active = raw.getString("activeServiceId");
-        if (active == null) {
-            currentService = null;
-        } else {
-            currentService = services.get(new Identifier(active, Service.class));
-            if (currentMetadata == null) {
-                currentMetadata = new InvalidMetadata(currentService);
-            }
         }
 
         setChanged(SubInfo.BOUQUET);

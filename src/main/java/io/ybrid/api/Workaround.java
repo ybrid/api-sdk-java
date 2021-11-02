@@ -64,5 +64,9 @@ public enum Workaround {
     /**
      * Workaround used for servers invalidly skipping {@link io.ybrid.api.bouquet.Bouquet}s.
      */
-    WORKAROUND_NO_BOUQUET;
+    WORKAROUND_NO_BOUQUET,
+    /**
+     * Workaround used for servers sending a default service that is not part of the bouquet.
+     */
+    WORKAROUND_DEFAULT_SERVICE_NOT_IN_BOUQUET;
 }
