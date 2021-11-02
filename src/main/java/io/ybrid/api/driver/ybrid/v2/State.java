@@ -249,8 +249,26 @@ final class State implements KnowsSubInfoState {
         String primary;
         String active;
 
-        if (raw == null)
+        LOGGER.info("raw = " + raw + ", workaroundMap = " + workaroundMap + ", services = " + services);
+
+        if (raw == null) {
+            final @NotNull Service service;
+
+            if (!workaroundMap.get(Workaround.WORKAROUND_NO_BOUQUET).toBool(true) || !services.isEmpty()) {
+                return;
+            }
+
+            LOGGER.severe("Server sent invalid reply (required bouquet is missing)");
+            workaroundMap.enableIfAutomatic(Workaround.WORKAROUND_NO_BOUQUET);
+
+            service = new SimpleService();
+            services.put(service.getIdentifier(), service);
+            defaultService = service;
+            currentService = service;
+            currentMetadata = new InvalidMetadata(currentService);
+            setChanged(SubInfo.BOUQUET);
             return;
+        }
 
         list = raw.getJSONArray("availableServices");
         if (list == null)

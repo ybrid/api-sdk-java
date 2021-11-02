@@ -43,7 +43,7 @@ public final class Bouquet {
      */
     public Bouquet(@NotNull Service defaultService, @NotNull Collection<Service> services) {
         if (!services.contains(defaultService))
-            throw new IllegalArgumentException("Default Service not part of Services");
+            throw new IllegalArgumentException("Default Service not part of Services. Default is: " + defaultService + ", Services: " + services);
 
         this.defaultService = defaultService;
         this.services = new HashSet<>(services);

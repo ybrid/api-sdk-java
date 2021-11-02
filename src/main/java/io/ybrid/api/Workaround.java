@@ -60,5 +60,9 @@ public enum Workaround {
     /**
      * Workaround used to force failed {@link MediaProtocol} detection to assume {@link MediaProtocol#ICY}.
      */
-    WORKAROUND_GUESS_ICY;
+    WORKAROUND_GUESS_ICY,
+    /**
+     * Workaround used for servers invalidly skipping {@link io.ybrid.api.bouquet.Bouquet}s.
+     */
+    WORKAROUND_NO_BOUQUET;
 }
