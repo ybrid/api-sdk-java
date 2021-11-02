@@ -60,11 +60,13 @@ public final class DriverSelector {
     private static final class Result {
         final public @NotNull EnumSet<MediaProtocol> set;
         final public @NotNull String method;
+        final public boolean autoDetected;
         final public @Nullable URI baseURI;
 
-        public Result(@NotNull EnumSet<MediaProtocol> set, @NotNull String method, @Nullable URI baseURI) {
+        public Result(@NotNull EnumSet<MediaProtocol> set, @NotNull String method, boolean autoDetected, @Nullable URI baseURI) {
             this.set = set;
             this.method = method;
+            this.autoDetected = autoDetected;
             this.baseURI = baseURI;
         }
 
@@ -90,7 +92,7 @@ public final class DriverSelector {
                     " = " + result.set + " by " + result.method + " with base URI " + baseURI);
         }
 
-        if (result.can(MediaProtocol.YBRID_V2_BETA))
+        if (result.can(MediaProtocol.YBRID_V2_BETA) && !result.autoDetected)
             return new io.ybrid.api.driver.ybrid.v2.Driver(session, baseURI);
 
         if (result.can(MediaProtocol.YBRID_V1))
@@ -107,7 +109,7 @@ public final class DriverSelector {
 
     private static Result getSupportedVersions(@NotNull MediaEndpoint mediaEndpoint) {
         if (mediaEndpoint.getForcedMediaProtocol() != null) {
-            return new Result(EnumSet.of(mediaEndpoint.getForcedMediaProtocol()), "force on MediaEndpoint", null);
+            return new Result(EnumSet.of(mediaEndpoint.getForcedMediaProtocol()), "force on MediaEndpoint", false, null);
         }
 
         try {
@@ -121,10 +123,10 @@ public final class DriverSelector {
         }
 
         if (mediaEndpoint.getWorkarounds().get(Workaround.WORKAROUND_GUESS_ICY).equals(TriState.TRUE))
-            return new Result(EnumSet.of(MediaProtocol.ICY), "using default", null);
+            return new Result(EnumSet.of(MediaProtocol.ICY), "using default", true, null);
 
         // Best guess:
-        return new Result(EnumSet.of(MediaProtocol.PLAIN), "using default", null);
+        return new Result(EnumSet.of(MediaProtocol.PLAIN), "using default", true, null);
     }
 
     @Contract("_ -> new")
@@ -161,7 +163,7 @@ public final class DriverSelector {
         } catch (Throwable ignored) {
         }
 
-        return new Result(ret, resultMethod, baseURI);
+        return new Result(ret, resultMethod, true, baseURI);
     }
 
     private static @NotNull String getBaseURI(@NotNull JSONObject responseObject) {

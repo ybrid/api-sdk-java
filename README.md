@@ -1,6 +1,10 @@
 # api-sdk-java
 API wrapper SDK written in Java
 
+## Important Note
+
+For reasons of the experimental status of the Ybrid® "v2" protocol it has been disabled by default.
+
 ## Maven Integration
 
 In order to use 'api-sdk-java' in your project, you need to add the following 'repository' to the 'repositories' section of your project's pom:

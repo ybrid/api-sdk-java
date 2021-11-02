@@ -43,6 +43,7 @@ public enum MediaProtocol {
     YBRID_V1,
     /**
      * Beta of version 2 of the Ybrid® API.
+     * <b>Note: This protocol is not stable as of this writing and should not be used in production.</b>
      */
     YBRID_V2_BETA,
     /**
