@@ -23,7 +23,7 @@
 package io.ybrid.api.driver.plain;
 
 import io.ybrid.api.Capability;
-import io.ybrid.api.Session;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.SimpleService;

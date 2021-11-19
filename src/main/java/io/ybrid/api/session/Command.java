@@ -22,7 +22,6 @@
 
 package io.ybrid.api.session;
 
-import io.ybrid.api.Session;
 import io.ybrid.api.SubInfo;
 import io.ybrid.api.SwapMode;
 import io.ybrid.api.bouquet.Service;

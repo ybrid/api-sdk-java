@@ -45,7 +45,7 @@ A simple example of using the Alias and Session classes as often seen in applica
 
 ```java
 import io.ybrid.api.*;
-import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Session;
 
 import java.io.IOException;
 import java.net.URI;

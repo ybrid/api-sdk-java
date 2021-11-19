@@ -22,6 +22,7 @@
 
 package io.ybrid.api.transaction;
 
+import io.ybrid.api.session.Session;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * This class represents a single request to the {@link io.ybrid.api.Session} or related objects.
+ * This class represents a single request to the {@link Session} or related objects.
  * It provides a uniform way to make API requests.
  * <P>
  * Instances can be created using {@link Command#makeRequest()}, and {@link Command#makeRequest(Serializable)}.

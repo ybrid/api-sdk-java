@@ -22,7 +22,7 @@
 
 package io.ybrid.api.driver.icy;
 
-import io.ybrid.api.Session;
+import io.ybrid.api.session.Session;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 

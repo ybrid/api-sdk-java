@@ -22,7 +22,7 @@
 
 package io.ybrid.api.transaction;
 
-import io.ybrid.api.Session;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.session.Command;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;

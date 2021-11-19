@@ -28,6 +28,7 @@ import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.ItemType;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.ClockManager;
 import io.ybrid.api.util.Identifier;

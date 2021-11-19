@@ -23,6 +23,7 @@
 package io.ybrid.api;
 
 import io.ybrid.api.metadata.Item;
+import io.ybrid.api.session.Session;
 
 /**
  * This enum contains all possible capabilities which might be supported by a {@link Session}.

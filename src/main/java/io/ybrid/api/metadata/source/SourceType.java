@@ -22,7 +22,7 @@
 
 package io.ybrid.api.metadata.source;
 
-import io.ybrid.api.Session;
+import io.ybrid.api.session.Session;
 
 /**
  * This enum lists all possible source of metadata that can be handled by the {@link Session}.

@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.session.Session;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

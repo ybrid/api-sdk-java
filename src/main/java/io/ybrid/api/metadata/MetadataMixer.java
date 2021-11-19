@@ -26,6 +26,7 @@ import io.ybrid.api.*;
 import io.ybrid.api.bouquet.Bouquet;
 import io.ybrid.api.bouquet.Service;
 import io.ybrid.api.metadata.source.Source;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.util.Identifier;
 import io.ybrid.api.util.hasIdentifier;
 import org.jetbrains.annotations.ApiStatus;

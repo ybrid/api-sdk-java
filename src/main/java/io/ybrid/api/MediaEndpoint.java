@@ -22,6 +22,7 @@
 
 package io.ybrid.api;
 
+import io.ybrid.api.session.Session;
 import io.ybrid.api.util.QualityMap.LanguageMap;
 import io.ybrid.api.util.hasAcceptedLanguages;
 import org.jetbrains.annotations.ApiStatus;

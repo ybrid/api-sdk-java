@@ -30,6 +30,7 @@ import io.ybrid.api.driver.ybrid.common.SwapInfo;
 import io.ybrid.api.metadata.InvalidMetadata;
 import io.ybrid.api.metadata.Sync;
 import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.Identifier;
 import io.ybrid.api.util.TriState;

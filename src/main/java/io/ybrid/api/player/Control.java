@@ -22,7 +22,7 @@
 
 package io.ybrid.api.player;
 
-import io.ybrid.api.Session;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.RequestBasedTransaction;
 import io.ybrid.api.transaction.Transaction;

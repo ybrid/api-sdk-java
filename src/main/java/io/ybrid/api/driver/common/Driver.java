@@ -28,6 +28,7 @@ import io.ybrid.api.driver.CapabilitySet;
 import io.ybrid.api.driver.JSONRequest;
 import io.ybrid.api.metadata.source.SourceMetadata;
 import io.ybrid.api.session.Command;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.util.uri.Builder;
 import org.jetbrains.annotations.Contract;

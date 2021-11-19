@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
+ * Copyright (c) 2021 nacamar GmbH - Ybrid®, a Hybrid Dynamic Live Audio Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package io.ybrid.api;
+package io.ybrid.api.session;
 
+import io.ybrid.api.*;
 import io.ybrid.api.driver.Driver;
 import io.ybrid.api.driver.DriverSelector;
 import io.ybrid.api.metadata.MetadataMixer;
 import io.ybrid.api.metadata.source.Source;
 import io.ybrid.api.metadata.source.SourceType;
 import io.ybrid.api.player.Control;
-import io.ybrid.api.session.Command;
 import io.ybrid.api.transaction.GenericCommand;
 import io.ybrid.api.transaction.Request;
 import io.ybrid.api.transaction.SessionTransaction;
@@ -38,6 +38,7 @@ import io.ybrid.api.transport.ServiceURITransportDescription;
 import io.ybrid.api.util.Connectable;
 import io.ybrid.api.util.QualityMap.MediaTypeMap;
 import io.ybrid.api.util.Utils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +79,8 @@ public final class Session implements Connectable, KnowsSubInfoState {
         return driver;
     }
 
-    Session(@NotNull MediaEndpoint mediaEndpoint) {
+    @ApiStatus.Internal
+    public Session(@NotNull MediaEndpoint mediaEndpoint) {
         this.mediaEndpoint = mediaEndpoint;
         this.metadataMixer = new MetadataMixer(this);
 

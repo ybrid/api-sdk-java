@@ -25,7 +25,7 @@ package io.ybrid.api.driver;
 
 import io.ybrid.api.MediaEndpoint;
 import io.ybrid.api.MediaProtocol;
-import io.ybrid.api.Session;
+import io.ybrid.api.session.Session;
 import io.ybrid.api.Workaround;
 import io.ybrid.api.util.TriState;
 import io.ybrid.api.util.Utils;
