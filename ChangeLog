@@ -9,6 +9,8 @@
     * Updated Media Type logic in requests, including support for new application/vnd.nacamar.ybrid+json
     * Added support for Base URI via OPTIONS request
     * Updated workarounds for invalid server responses
+    * Disabled Ybrid® "v2" by default
+    * Added workaround for Ybrid® "v2" servers without bouquet.
 
 1.1.2 - 2021-04-20
     * baseURI/baseURL support in Ybrid® “v1” driver
