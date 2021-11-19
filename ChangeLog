@@ -1,4 +1,4 @@
-1.2.0 - UNRELEASED
+1.2.0 - 2021-11-21
     * Removed most deprecated, and ScheduledForRemoval API
     * Unified logic for network requests
     * Added Command enum GenericCommand (with no-op, sleep, and ping commands).
